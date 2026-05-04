@@ -1,163 +1,172 @@
-import { useRef } from 'react';
-import { motion } from 'framer-motion';
-import { partnerBrands } from '@/data/products';
-import ScrollReveal from '@/components/ScrollReveal';
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import hpmLogo from '@/assets/hpm-logo.png';
-import largestSellingBadge from '@/assets/largest-selling-badge.png';
 import hpmMachine from '@/assets/hpm-machine.png';
-import PartnerLogo from '@/components/PartnerLogo';
+import largestSellingBadge from '@/assets/largest-selling-badge.png';
+import BrandImage from '@/components/BrandImage';
+
+const hpmStats = [
+  { val: '920mm', label: 'Min. Cutting Width' },
+  { val: '1880mm', label: 'Max. Cutting Width' },
+  { val: '7 Sizes', label: 'Range Available' },
+  { val: '4000+', label: 'Units Sold in India' },
+];
+
+const hpmFacts = [
+  { k: 'Origin', v: 'Taiwan, since 1983' },
+  { k: 'Focus', v: 'Programmable Cutters + Pile Handling' },
+  { k: 'India Agent', v: 'Sai Enterprises, Hyderabad' },
+  { k: 'Partnership', v: 'Since 2000 · Sole Representative' },
+];
 
 const BrandPartnersSection = () => {
-  const containerRef = useRef(null);
+  const dividerRef = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState(false);
 
-  // Duplicate for seamless loop
-  const duplicatedBrands = [...partnerBrands, ...partnerBrands, ...partnerBrands];
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setRevealed(true); obs.disconnect(); }
+    }, { threshold: 0.3 });
+    if (dividerRef.current) obs.observe(dividerRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <section id="partners" ref={containerRef} className="py-16 sm:py-20 md:py-24 bg-secondary/30 overflow-hidden">
-      <div className="px-6 sm:px-8 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <ScrollReveal animation="fadeUp" className="text-center mb-10 sm:mb-12">
-            <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-4">
-              <span className="w-8 h-px bg-primary" />
-              Partners
-              <span className="w-8 h-px bg-primary" />
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight">
-              Global <span className="text-primary italic">partners.</span>
-            </h2>
-          </ScrollReveal>
+    <section style={{ background: '#F0F4FF', padding: '120px 0', overflow: 'hidden' }}>
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7">
+
+        {/* Divider with line-draw */}
+        <div ref={dividerRef} style={{ display: 'flex', alignItems: 'center', marginBottom: 80 }}>
+          <div style={{
+            height: 1, flex: 1, background: '#0D1421', opacity: 0.12,
+            transform: revealed ? 'scaleX(1)' : 'scaleX(0)',
+            transformOrigin: 'right',
+            transition: 'transform 0.9s cubic-bezier(0.16,1,0.3,1)',
+          }} />
+          <div style={{
+            padding: '0 32px',
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 10, letterSpacing: '0.32em', textTransform: 'uppercase',
+            color: 'rgba(13,20,33,0.38)', whiteSpace: 'nowrap',
+          }}>
+            Exclusive Indian Partner
+          </div>
+          <div style={{
+            height: 1, flex: 1, background: '#0D1421', opacity: 0.12,
+            transform: revealed ? 'scaleX(1)' : 'scaleX(0)',
+            transformOrigin: 'left',
+            transition: 'transform 0.9s cubic-bezier(0.16,1,0.3,1)',
+          }} />
         </div>
-      </div>
 
-      {/* Scrolling Marquee - Row 1 */}
-      <div className="relative mb-6 sm:mb-8">
-        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-secondary/100 via-secondary/60 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-secondary/100 via-secondary/60 to-transparent z-10 pointer-events-none" />
-        
-        <motion.div
-          className="flex gap-10 sm:gap-16"
-          animate={{ x: ['0%', '-33.33%'] }}
-          transition={{
-            x: {
-              duration: 25,
-              repeat: Infinity,
-              ease: 'linear',
-            },
-          }}
-        >
-          {duplicatedBrands.map((brand, index) => (
-            <motion.div
-              key={`row1-${brand.name}-${index}`}
-              className="flex-shrink-0 flex flex-col items-center group cursor-default"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="whitespace-nowrap group-hover:text-primary transition-colors duration-300">
-                <PartnerLogo name={brand.name} variant="dark" size="md" />
+        {/* Two-column layout */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 96, alignItems: 'start',
+        }} className="max-[900px]:grid-cols-1 max-[900px]:gap-14">
+
+          {/* Left: brand info */}
+          <div>
+            <BrandImage
+              src={hpmLogo}
+              alt="HPM"
+              className="mb-7"
+              style={{ height: 28 }}
+            />
+
+            <h2 style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(36px,4vw,54px)', fontWeight: 600,
+              lineHeight: 1.05, color: '#060A10', letterSpacing: '-0.02em',
+              marginBottom: 20,
+            }}>
+              India's Sole HPM<br />Agent Since 2000.
+            </h2>
+
+            <p style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 14, lineHeight: 1.8, color: 'rgba(13,20,33,0.55)',
+              maxWidth: 420, marginBottom: 44,
+            }}>
+              HPM's paper cutter manufacturing story starts in 1983. The range is now known for programmable paper cutters and pile handling systems — used by printers, finishers, and packaging plants that need dependable output.
+            </p>
+
+            {/* Facts table */}
+            <div style={{ borderTop: '1px solid rgba(13,20,33,0.08)' }}>
+              {hpmFacts.map((f) => (
+                <div key={f.k} style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
+                  padding: '14px 0', borderBottom: '1px solid rgba(13,20,33,0.07)',
+                }}>
+                  <span style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+                    color: 'rgba(13,20,33,0.32)',
+                  }}>{f.k}</span>
+                  <span style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 13, color: '#060A10', fontWeight: 500,
+                  }}>{f.v}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 36 }}>
+              <Link to="/machinery/post-press" className="cta-blue" style={{ color: '#3B82F6' }}>
+                Explore HPM Machines <span className="arr">→</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right: machine showcase */}
+          <div>
+            <div style={{ position: 'relative' }}>
+              {/* Machine card */}
+              <div style={{
+                background: '#060A10', aspectRatio: '4/3', overflow: 'hidden',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative',
+              }}>
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'radial-gradient(circle at 50% 60%, rgba(59,130,246,0.12) 0%, transparent 65%)',
+                  pointerEvents: 'none',
+                }} />
+                <img
+                  src={hpmMachine}
+                  alt="HPM Paper Cutter"
+                  style={{
+                    width: '85%', height: '85%', objectFit: 'contain',
+                    filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.6))',
+                    animation: 'float 5s ease-in-out infinite',
+                  }}
+                />
+                {/* Badge */}
+                <div style={{ position: 'absolute', bottom: -20, right: -20, width: 100, height: 100 }}>
+                  <img src={largestSellingBadge} alt="India's Largest Selling Paper Cutter" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
               </div>
-              <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-muted-foreground mt-2 whitespace-nowrap">
-                <span className="w-1 h-1 rounded-full bg-primary/60" />
-                {brand.country}
-              </span>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
 
-      {/* Scrolling Marquee - Row 2 (Reverse, slightly faster) */}
-      <div className="relative mb-8 sm:mb-10">
-        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-secondary/100 via-secondary/60 to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-secondary/100 via-secondary/60 to-transparent z-10 pointer-events-none" />
-        
-        <motion.div
-          className="flex gap-10 sm:gap-16"
-          animate={{ x: ['-33.33%', '0%'] }}
-          transition={{
-            x: {
-              duration: 22,
-              repeat: Infinity,
-              ease: 'linear',
-            },
-          }}
-        >
-          {duplicatedBrands.map((brand, index) => (
-            <motion.div
-              key={`row2-${brand.name}-${index}`}
-              className="flex-shrink-0 flex flex-col items-center group cursor-default"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="whitespace-nowrap opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                <PartnerLogo name={brand.name} variant="muted" size="md" />
-              </div>
-              <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 mt-2 whitespace-nowrap">
-                <span className="w-1 h-1 rounded-full bg-primary/40" />
-                {brand.country}
-              </span>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-
-      {/* HPM Exclusive Partnership */}
-      <div className="px-6 sm:px-8 md:px-12 lg:px-20">
-        <div className="max-w-5xl mx-auto">
-          <ScrollReveal animation="scaleUp" delay={0.2}>
-            <motion.div
-              whileHover={{ scale: 1.01 }}
-              className="relative border border-primary/20 bg-background overflow-hidden"
-            >
-              {/* Subtle corner accents */}
-              <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/30" />
-              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/30" />
-
-              <div className="grid md:grid-cols-2 gap-0">
-                {/* Left - HPM branding */}
-                <div className="p-8 sm:p-10 md:p-12 flex flex-col justify-center">
-                  <span className="text-[9px] uppercase tracking-[0.25em] text-primary font-medium mb-6 block">
-                    Exclusive Partnership
-                  </span>
-                  
-                  <img 
-                    src={hpmLogo} 
-                    alt="HPM Paper Cutter" 
-                    className="w-48 sm:w-56 md:w-64 h-auto object-contain mb-6"
-                  />
-                  
-                  <p className="text-foreground font-serif text-lg sm:text-xl mb-2">
-                    Sole Agent for HPM in India
-                  </p>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                    Authorized exclusive distributor of HPM paper cutting machines across the Indian subcontinent.
-                  </p>
-
-                  {/* Largest Selling Badge */}
-                  <div className="flex items-center gap-4">
-                    <img 
-                      src={largestSellingBadge} 
-                      alt="India's Largest Selling Paper Cutter" 
-                      className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
-                    />
-                    <div>
-                      <p className="text-xs font-semibold text-foreground">India's Largest Selling</p>
-                      <p className="text-[10px] text-muted-foreground">Paper Cutting Machine</p>
-                    </div>
+              {/* Stats grid */}
+              <div style={{
+                display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1,
+                background: 'rgba(13,20,33,0.06)', marginTop: 28,
+              }}>
+                {hpmStats.map((s) => (
+                  <div key={s.label} style={{ background: '#F0F4FF', padding: '20px' }}>
+                    <div style={{
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: 32, color: '#060A10', fontWeight: 600, lineHeight: 1,
+                    }}>{s.val}</div>
+                    <div style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase',
+                      color: 'rgba(13,20,33,0.38)', marginTop: 4,
+                    }}>{s.label}</div>
                   </div>
-                </div>
-
-                {/* Right - Machine image */}
-                <div className="relative bg-secondary/20 flex items-center justify-center p-6 sm:p-8 min-h-[280px]">
-                  <motion.img 
-                    src={hpmMachine}
-                    alt="HPM Paper Cutting Machine"
-                    className="w-full max-w-md h-auto object-contain"
-                    whileHover={{ scale: 1.03 }}
-                    transition={{ duration: 0.4 }}
-                  />
-                </div>
+                ))}
               </div>
-            </motion.div>
-          </ScrollReveal>
+            </div>
+          </div>
         </div>
       </div>
     </section>

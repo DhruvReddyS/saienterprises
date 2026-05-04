@@ -165,7 +165,7 @@ const ProductUniverse = () => {
                     animate={isInView ? { opacity: 1, scale: 1 } : {}}
                     transition={{ duration: 0.4, delay: 0.5 + prodIndex * 0.05 }}
                   >
-                    <Link to={`/machinery/${category.slug}/${product.id}`}>
+                    <Link to={`/machinery/${category.slug}?preview=${product.id}`}>
                       <motion.div
                         whileHover={{ y: -4, boxShadow: '0 10px 40px rgba(0,0,0,0.1)' }}
                         whileTap={{ scale: 0.98 }}

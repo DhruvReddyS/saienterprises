@@ -1,148 +1,264 @@
-import { useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import { productCategories } from '@/data/products';
-import ScrollReveal from '@/components/ScrollReveal';
+import heroImage from '@/assets/hero-industrial.jpg';
+import hpmMachineImage from '@/assets/hpm-machine.png';
+import corrugationImage from '@/assets/corrugation-hero.jpg';
+import brochureImage from '@/assets/brochure-hero.jpg';
+
+const CATS = [
+  {
+    id: 'pre-press', name: 'Pre-Press',
+    desc: 'Plate imaging, exposure & processing',
+    img: heroImage,
+    slug: 'pre-press',
+    machines: ['Screen / Plate Exposure Machine', 'Fully Automatic CTCP', 'CTP System', 'Plate Processor', 'Plate Backing Oven'],
+  },
+  {
+    id: 'press', name: 'Press',
+    desc: 'Offset & card-processing machinery',
+    img: heroImage,
+    slug: 'press',
+    machines: ['Mini Offset 16×22"', 'Web Offset Printing Machine', 'Variable-Data Printing Machine', 'Auto Cards Matching Machine'],
+  },
+  {
+    id: 'post-press', name: 'Post-Press',
+    desc: 'Cutting, lamination, binding & finishing',
+    img: hpmMachineImage,
+    slug: 'post-press',
+    machines: ['HPM Programmable Paper Cutter', 'Three Knife Trimmer', 'Perfect Binder', 'Thermal Laminator', 'UV Aqua Coater'],
+    imgContain: true,
+  },
+  {
+    id: 'corrugation', name: 'Corrugation',
+    desc: 'Corrugation, laminating, cutting & handling',
+    img: corrugationImage,
+    slug: 'corrugation',
+    machines: ['Fully Automatic Flute Laminator', 'Double Profile Paper Corrugation', 'Thin Blade Slitter Scorer', 'Four Bar Rotary Cutting'],
+  },
+  {
+    id: 'allied', name: 'Allied / Consumables',
+    desc: 'Allied accessories & consumables',
+    img: brochureImage,
+    slug: 'allied',
+    machines: ['Rigid Box', 'Thermal Tape', 'Numbering', 'Jelly Glue', 'Kanefusa Knives (Japanese)'],
+  },
+];
 
 const OfferingsSection = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [curIdx, setCurIdx] = useState(0);
+  const [prog, setProg] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  useEffect(() => {
+    if (isMobile) return;
+    const onScroll = () => {
+      const sec = sectionRef.current;
+      if (!sec) return;
+      const rect = sec.getBoundingClientRect();
+      const secH = sec.offsetHeight;
+      const vh = window.innerHeight;
+      const p = Math.max(0, Math.min(1, -rect.top / (secH - vh)));
+      setProg(p);
+      const idx = Math.min(CATS.length - 1, Math.floor(p * CATS.length));
+      setCurIdx(idx);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isMobile]);
+
+  const cat = CATS[curIdx];
+
+  if (isMobile) {
+    return (
+      <section style={{ background: '#060A10' }}>
+        {CATS.map((c, i) => (
+          <div key={c.id} style={{
+            padding: '60px 28px',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.28)', marginBottom: 20,
+            }}>
+              0{i + 1} / 05
+            </div>
+            <div style={{ aspectRatio: '16/9', overflow: 'hidden', marginBottom: 24 }}>
+              <img src={c.img} alt={c.name} style={{
+                width: '100%', height: '100%',
+                objectFit: c.imgContain ? 'contain' : 'cover',
+                background: c.imgContain ? '#0D1421' : undefined,
+              }} />
+            </div>
+            <div style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(44px,10vw,72px)', fontWeight: 700, lineHeight: 0.88,
+              color: '#fff', letterSpacing: '-0.03em', marginBottom: 16,
+            }}>
+              {c.name}
+            </div>
+            <div style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#3B82F6',
+              marginBottom: 16,
+            }}>
+              {c.desc}
+            </div>
+            {c.machines.slice(0, 3).map((m) => (
+              <div key={m} style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.32)', marginBottom: 6,
+              }}>
+                {m}
+              </div>
+            ))}
+              <Link
+              to={`/machinery/${c.slug}`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                marginTop: 24, padding: '11px 22px',
+                background: '#3B82F6', color: '#fff',
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase',
+                textDecoration: 'none', transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
+            >
+              View Category <span style={{ fontSize: 14 }}>→</span>
+            </Link>
+          </div>
+        ))}
+      </section>
+    );
+  }
 
   return (
-    <section ref={containerRef} className="relative py-16 sm:py-20 md:py-24 bg-foreground overflow-hidden">
-      {/* Subtle ambient glow */}
-      <motion.div 
-        className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/10 blur-[100px] pointer-events-none"
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.1, 0.15, 0.1]
-        }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-
-      <div className="relative z-10 px-6 sm:px-8 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <ScrollReveal animation="fadeUp" className="text-center mb-10 sm:mb-14">
-            <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-4">
-              <span className="w-8 h-px bg-primary" />
-              Machinery
-              <span className="w-8 h-px bg-primary" />
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-background leading-tight">
-              Complete print<br />
-              <span className="text-primary">workflow</span> coverage.
-            </h2>
-          </ScrollReveal>
-
-          {/* Category Cards Grid - Equal height cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-            {productCategories.map((category, index) => {
-              const isActive = activeIndex === index;
-              
-              return (
-                <ScrollReveal key={category.id} animation="fadeUp" delay={index * 0.1}>
-                  <Link
-                    to={`/machinery/${category.slug}`}
-                    className={`group relative block h-full transition-all duration-500 overflow-hidden ${
-                      isActive 
-                        ? 'bg-primary' 
-                        : 'bg-background/5 hover:bg-background/10 border border-background/10'
-                    }`}
-                    onMouseEnter={() => setActiveIndex(index)}
-                  >
-                    {/* Fixed height container with flex */}
-                    <div className="p-4 sm:p-5 md:p-6 min-h-[240px] sm:min-h-[260px] md:min-h-[280px] flex flex-col relative">
-                      {category.heroImage && (
-                        <>
-                          <img
-                            src={category.heroImage}
-                            alt={category.name}
-                            className="absolute inset-0 w-full h-full object-cover opacity-20 transition-transform duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/55 to-foreground/35" />
-                        </>
-                      )}
-
-                      {/* Large Number */}
-                      <span className={`absolute top-3 right-3 sm:top-4 sm:right-4 text-5xl sm:text-6xl md:text-7xl font-serif transition-colors duration-300 ${
-                        isActive ? 'text-primary-foreground/10' : 'text-background/5'
-                      }`}>
-                        0{index + 1}
-                      </span>
-
-                      {/* Content */}
-                      <div className="relative z-10 flex flex-col h-full pt-10 sm:pt-12 md:pt-14">
-                        <h3 className={`font-serif text-xl sm:text-2xl md:text-3xl mb-2 sm:mb-3 transition-colors duration-300 ${
-                          isActive ? 'text-primary-foreground' : 'text-background'
-                        }`}>
-                          {category.name}
-                        </h3>
-                        
-                        <p className={`text-xs sm:text-sm leading-relaxed mb-auto line-clamp-3 transition-colors duration-300 ${
-                          isActive ? 'text-primary-foreground/70' : 'text-background/50'
-                        }`}>
-                          {category.description}
-                        </p>
-
-                        {/* Products count */}
-                        <div className={`flex items-center justify-between pt-3 sm:pt-4 mt-4 border-t transition-colors duration-300 ${
-                          isActive ? 'border-primary-foreground/20' : 'border-background/10'
-                        }`}>
-                          <span className={`text-[10px] sm:text-xs uppercase tracking-wider transition-colors duration-300 ${
-                            isActive ? 'text-primary-foreground/60' : 'text-background/40'
-                          }`}>
-                            {category.products.length} Products
-                          </span>
-                          
-                          <motion.div 
-                            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                              isActive 
-                                ? 'bg-primary-foreground text-primary' 
-                                : 'bg-background/10 text-background/50 group-hover:bg-primary group-hover:text-primary-foreground'
-                            }`}
-                            whileHover={{ scale: 1.1 }}
-                          >
-                            <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </motion.div>
-                        </div>
-                      </div>
-
-                      {/* Bottom accent line */}
-                      <motion.div
-                        className={`absolute bottom-0 left-0 h-1 transition-all duration-500 ${
-                          isActive ? 'bg-primary-foreground/20' : 'bg-primary'
-                        }`}
-                        initial={{ width: 0 }}
-                        animate={{ width: isActive ? '100%' : '0%' }}
-                        whileHover={{ width: '100%' }}
-                      />
-                    </div>
-                  </Link>
-                </ScrollReveal>
-              );
-            })}
+    <div ref={sectionRef} style={{ height: `${CATS.length * 100}vh`, position: 'relative' }}>
+      <div style={{
+        position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
+        display: 'grid', gridTemplateColumns: '52% 48%',
+        background: '#060A10',
+      }}>
+        {/* LEFT: typography */}
+        <div style={{
+          position: 'relative', display: 'flex', flexDirection: 'column',
+          justifyContent: 'flex-end', padding: '80px 56px 72px 56px', zIndex: 2,
+        }}>
+          {/* vertical timeline bar */}
+          <div style={{
+            position: 'absolute', left: 32, top: 80, bottom: 80,
+            width: 1, background: 'rgba(255,255,255,0.07)',
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: 0, width: '100%',
+              background: '#3B82F6',
+              height: `${prog * 100}%`,
+              transition: 'height 0.15s linear',
+            }} />
           </div>
 
-          {/* View All Link */}
-          <ScrollReveal animation="fadeUp" delay={0.4} className="text-center mt-8 sm:mt-12">
-            <Link
-              to="/machinery"
-              className="inline-flex items-center gap-3 text-primary hover:text-primary/80 transition-colors"
-            >
-              <span className="text-sm font-medium tracking-wide">Explore all machinery</span>
-              <motion.div
-                className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center"
-                whileHover={{ x: 5 }}
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </motion.div>
-            </Link>
-          </ScrollReveal>
+          <div style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.28)', marginBottom: 20,
+          }}>
+            0{curIdx + 1} / 05
+          </div>
+
+          <div style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(54px,9vw,120px)',
+            fontWeight: 700, lineHeight: 0.88,
+            color: '#fff', letterSpacing: '-0.03em',
+            transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.16,1,0.3,1)',
+          }}>
+            {cat.name}
+          </div>
+
+          <div style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase',
+            color: '#3B82F6', marginTop: 20,
+          }}>
+            {cat.desc}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 20 }}>
+            {cat.machines.slice(0, 3).map((m) => (
+              <div key={m} style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.32)',
+              }}>
+                {m}
+              </div>
+            ))}
+          </div>
+
+          <Link
+            to={`/machinery/${cat.slug}`}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              marginTop: 28, padding: '13px 28px',
+              background: '#3B82F6', color: '#fff',
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase',
+              textDecoration: 'none', transition: 'background 0.2s',
+              boxShadow: '0 8px 28px rgba(59,130,246,0.28)',
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
+          >
+            View Category <span style={{ fontSize: 14 }}>→</span>
+          </Link>
+        </div>
+
+        {/* RIGHT: full-bleed image */}
+        <div style={{ position: 'relative', overflow: 'hidden' }}>
+          {CATS.map((c, i) => (
+            <div key={c.id} style={{
+              position: 'absolute', inset: 0,
+              opacity: i === curIdx ? 1 : 0,
+              transition: 'opacity 0.5s ease',
+            }}>
+              <img
+                src={c.img}
+                alt={c.name}
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: c.imgContain ? 'contain' : 'cover',
+                  background: c.imgContain ? '#0D1421' : undefined,
+                  transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1)',
+                  transform: i === curIdx ? 'scale(1)' : 'scale(1.03)',
+                }}
+              />
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to right, rgba(6,10,16,0.6) 0%, transparent 40%), linear-gradient(to top, rgba(6,10,16,0.4) 0%, transparent 50%)',
+              }} />
+            </div>
+          ))}
+
+          {/* Index label top right */}
+          <div style={{
+            position: 'absolute', top: 28, right: 32, zIndex: 2,
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11, letterSpacing: '0.24em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.3)',
+          }}>
+            0{curIdx + 1} / 05
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

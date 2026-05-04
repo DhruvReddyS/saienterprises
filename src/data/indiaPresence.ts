@@ -29,6 +29,10 @@ export interface PresenceCity {
   stateId: string;
   lat: number;
   lng: number;
+  mapPosition?: {
+    x: number;
+    y: number;
+  };
   mapOffset?: {
     x?: number;
     y?: number;
@@ -46,6 +50,7 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'tg',
     lat: 17.385,
     lng: 78.4867,
+    mapPosition: { x: 33.3, y: 63.9 },
     entries: [
       {
         id: 'hyderabad-hq',
@@ -83,7 +88,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'dl',
     lat: 28.6139,
     lng: 77.209,
-    mapOffset: { x: 2, y: -3 },
+    mapPosition: { x: 30.8, y: 29.5 },
+    mapOffset: { x: 7, y: -1 },
     entries: [
       {
         id: 'delhi-sales-office',
@@ -116,7 +122,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'ap',
     lat: 16.5062,
     lng: 80.648,
-    mapOffset: { x: 6, y: 6 },
+    mapPosition: { x: 41.7, y: 66.8 },
+    mapOffset: { x: 7, y: 5 },
     entries: [
       {
         id: 'vijayawada-service',
@@ -135,7 +142,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'wb',
     lat: 22.5726,
     lng: 88.3639,
-    mapOffset: { x: 4, y: -2 },
+    mapPosition: { x: 68.3, y: 46.3 },
+    mapOffset: { x: 6, y: -1 },
     entries: [
       {
         id: 'kolkata-service',
@@ -168,7 +176,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'mh',
     lat: 18.5204,
     lng: 73.8567,
-    mapOffset: { x: 10, y: 7 },
+    mapPosition: { x: 19.6, y: 57.2 },
+    mapOffset: { x: 7, y: 6 },
     entries: [
       {
         id: 'pune-service',
@@ -215,7 +224,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'mh',
     lat: 19.076,
     lng: 72.8777,
-    mapOffset: { x: -8, y: 2 },
+    mapPosition: { x: 16.3, y: 55.3 },
+    mapOffset: { x: -50, y: 4 },
     entries: [
       {
         id: 'mumbai-service',
@@ -248,7 +258,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'gj',
     lat: 23.0225,
     lng: 72.5714,
-    mapOffset: { x: -2, y: 4 },
+    mapPosition: { x: 11.1, y: 47.4 },
+    mapOffset: { x: -60, y: 4 },
     entries: [
       {
         id: 'ahmedabad-partner',
@@ -277,7 +288,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'rj',
     lat: 26.9124,
     lng: 75.7873,
-    mapOffset: { x: 7, y: -1 },
+    mapPosition: { x: 23.5, y: 30.2 },
+    mapOffset: { x: -38, y: 4 },
     entries: [
       {
         id: 'jaipur-partner',
@@ -308,7 +320,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'ga',
     lat: 15.2993,
     lng: 74.124,
-    mapOffset: { x: -3, y: 8 },
+    mapPosition: { x: 18.8, y: 71.8 },
+    mapOffset: { x: -20, y: 6 },
     entries: [
       {
         id: 'goa-partner',
@@ -333,6 +346,7 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'br',
     lat: 25.5941,
     lng: 85.1376,
+    mapPosition: { x: 61.3, y: 37.4 },
     mapOffset: { x: 7, y: -1 },
     entries: [
       {
@@ -358,7 +372,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'tn',
     lat: 11.0168,
     lng: 76.9558,
-    mapOffset: { x: 6, y: 2 },
+    mapPosition: { x: 29.4, y: 83.3 },
+    mapOffset: { x: 7, y: 5 },
     entries: [
       {
         id: 'coimbatore-partner',
@@ -383,7 +398,8 @@ export const indiaPresenceCities: PresenceCity[] = [
     stateId: 'ka',
     lat: 12.9716,
     lng: 77.5946,
-    mapOffset: { x: -3, y: 4 },
+    mapPosition: { x: 24.5, y: 74.7 },
+    mapOffset: { x: -55, y: 4 },
     entries: [
       {
         id: 'bangalore-partner',

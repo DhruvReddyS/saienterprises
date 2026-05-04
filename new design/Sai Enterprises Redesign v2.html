@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sai Enterprises — Graphic Machinery Suppliers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --cyan: hsl(195,85%,40%);
+  --cyan-rgb: 14,165,233;
+  --magenta: hsl(335,75%,50%);
+  --ink: #080b0d;
+  --ink-2: #0f1419;
+  --paper: #f2ede6;
+  --paper-2: #e8e2db;
+  --paper-3: #ddd7cf;
+  --muted-paper: rgba(242,237,230,0.5);
+  --muted-ink: rgba(8,11,13,0.45);
+}
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection { background: var(--cyan); color: #fff; }
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-thumb { background: var(--cyan); }
+
+/* ── TYPOGRAPHY ── */
+.serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: 0.08s; }
+.reveal.d2 { transition-delay: 0.16s; }
+.reveal.d3 { transition-delay: 0.24s; }
+.reveal.d4 { transition-delay: 0.32s; }
+.reveal.d5 { transition-delay: 0.40s; }
+
+/* ── MASK LINES ── */
+.ml { overflow: hidden; display: block; }
+.ml-inner {
+  display: block;
+  transform: translateY(108%);
+  transition: transform 1s cubic-bezier(0.16,1,0.3,1);
+}
+.ml.in .ml-inner { transform: none; }
+.ml.d1 .ml-inner { transition-delay: 0.06s; }
+.ml.d2 .ml-inner { transition-delay: 0.12s; }
+.ml.d3 .ml-inner { transition-delay: 0.18s; }
+
+/* ── SCROLL PROGRESS ── */
+#sp { position: fixed; top:0; left:0; height:1.5px; background:var(--cyan); z-index:500; width:0; pointer-events:none; }
+
+/* ── PAGE TRANSITION ── */
+#ptbar {
+  position: fixed; top:0; left:0; right:0; bottom:0; z-index:900;
+  background: var(--ink);
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+#hdr {
+  position: fixed; top:0; left:0; right:0; z-index:200;
+  transition: background 0.5s, border-color 0.5s;
+}
+#hdr.bg {
+  background: rgba(242,237,230,0.94);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(8,11,13,0.07);
+}
+#hdr.dark-bg {
+  background: rgba(8,11,13,0.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(242,237,230,0.06);
+}
+.hdr-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px; padding: 0 56px;
+}
+@media(max-width:768px){ .hdr-inner { padding: 0 24px; height: 64px; } }
+
+.hdr-logo { display:flex; flex-direction:column; gap:1px; text-decoration:none; color:inherit; }
+.hdr-logo .brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size:18px; font-weight:700; letter-spacing:0.04em;
+  color: var(--paper); transition: color 0.4s;
+}
+.hdr-logo .brand-sub { font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(242,237,230,0.4); transition: color 0.4s; }
+#hdr.bg .hdr-logo .brand-name { color: var(--ink); }
+#hdr.bg .hdr-logo .brand-sub { color: rgba(8,11,13,0.4); }
+
+.hdr-nav { display:flex; align-items:center; gap:4px; list-style:none; }
+@media(max-width:768px){ .hdr-nav { display:none; } }
+
+.hdr-link {
+  font-size:10px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600;
+  text-decoration:none; padding:8px 14px; position:relative;
+  color: rgba(242,237,230,0.55); transition: color 0.25s;
+}
+.hdr-link:hover { color: rgba(242,237,230,0.9); }
+.hdr-link.act { color: rgba(242,237,230,0.95); }
+.hdr-link.act::after {
+  content:''; position:absolute; bottom:5px; left:14px; right:14px;
+  height:1px; background:var(--cyan);
+}
+#hdr.bg .hdr-link { color: rgba(8,11,13,0.45); }
+#hdr.bg .hdr-link:hover { color: var(--ink); }
+#hdr.bg .hdr-link.act { color: var(--ink); }
+#hdr.bg .hdr-link.act::after { background:var(--cyan); }
+
+.hdr-cta {
+  font-size:10px; letter-spacing:0.16em; text-transform:uppercase; font-weight:700;
+  text-decoration:none; padding:10px 22px; margin-left:12px;
+  border:1.5px solid rgba(242,237,230,0.25); color: rgba(242,237,230,0.8);
+  transition: all 0.25s;
+}
+.hdr-cta:hover { background:var(--cyan); border-color:var(--cyan); color:#fff; }
+#hdr.bg .hdr-cta { border-color:rgba(8,11,13,0.2); color:var(--ink); }
+#hdr.bg .hdr-cta:hover { background:var(--cyan); border-color:var(--cyan); color:#fff; }
+
+.hdr-menu-btn {
+  display:none; background:none; border:none; cursor:pointer;
+  color: var(--paper); padding:8px; transition: color 0.4s;
+}
+#hdr.bg .hdr-menu-btn { color: var(--ink); }
+@media(max-width:768px){ .hdr-menu-btn { display:flex; align-items:center; } }
+
+/* Mobile menu */
+.mob-menu {
+  position:fixed; inset:0; z-index:800;
+  background:var(--ink);
+  display:flex; flex-direction:column;
+  padding: 80px 32px 48px;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.mob-menu.open { transform: none; }
+.mob-link {
+  font-family:'Cormorant Garamond',serif;
+  font-size:52px; font-weight:700; color:var(--paper);
+  text-decoration:none; padding:16px 0;
+  border-bottom:1px solid rgba(242,237,230,0.06);
+  display:flex; justify-content:space-between; align-items:center;
+  transition: color 0.2s;
+}
+.mob-link:hover { color:var(--cyan); }
+.mob-cta-wrap { margin-top:40px; }
+
+/* ══════════════════════════════════════
+   SECTION NAV DOTS
+══════════════════════════════════════ */
+#sdots {
+  position:fixed; right:22px; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:10px; z-index:150;
+}
+.sdot {
+  width:5px; height:5px; border-radius:50%;
+  background:rgba(242,237,230,0.2);
+  cursor:pointer; transition: all 0.3s;
+}
+.sdot.act { background:var(--cyan); transform:scale(1.5); }
+.sdot.lt { background:rgba(8,11,13,0.18); }
+.sdot.lt.act { background:var(--cyan); }
+@media(max-width:768px){ #sdots { display:none; } }
+
+/* ══════════════════════════════════════
+   PAGE SYSTEM
+══════════════════════════════════════ */
+.page { display:none; }
+.page.act { display:block; }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+#hero {
+  height: 100vh; min-height:680px;
+  background:var(--ink);
+  display:grid; grid-template-columns:55% 45%;
+  overflow:hidden; position:relative;
+}
+@media(max-width:900px){ #hero { grid-template-columns:1fr; } }
+
+.hero-l {
+  position:relative; z-index:3;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:120px 64px 80px;
+}
+@media(max-width:768px){ .hero-l { padding:96px 28px 64px; } }
+
+.hero-grid {
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  background-image: radial-gradient(circle, rgba(242,237,230,0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.hero-glow {
+  position:absolute; top:50%; left:50%;
+  width:600px; height:500px;
+  transform:translate(-50%,-50%);
+  background: radial-gradient(ellipse, rgba(189,39,93,0.09) 0%, transparent 65%);
+  pointer-events:none; z-index:2;
+  animation: hglow 8s ease-in-out infinite;
+}
+@keyframes hglow {
+  0%,100%{ opacity:0.6; transform:translate(-50%,-50%) scale(1); }
+  50%{ opacity:1; transform:translate(-50%,-50%) scale(1.15); }
+}
+
+.hero-est {
+  display:flex; align-items:center; gap:16px; margin-bottom:44px;
+}
+.hero-est-line { width:36px; height:1px; background:var(--cyan); }
+.hero-est-text { font-size:10px; letter-spacing:0.34em; text-transform:uppercase; color:rgba(242,237,230,0.38); }
+
+.hero-hl {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(60px,8.5vw,116px);
+  font-weight:700; line-height:0.9;
+  letter-spacing:-0.025em;
+  color:var(--paper);
+  margin-bottom:36px;
+}
+.hero-hl .period { color:var(--cyan); }
+
+.hero-sub {
+  font-size:16px; font-weight:300;
+  color:rgba(242,237,230,0.48); line-height:1.7;
+  max-width:380px; margin-bottom:48px;
+}
+
+.hero-ctas { display:flex; align-items:center; gap:36px; margin-bottom:80px; flex-wrap:wrap; }
+
+.cta-arrow {
+  font-size:12px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700;
+  color:var(--paper); text-decoration:none;
+  display:inline-flex; align-items:center; gap:10px;
+  transition: gap 0.25s ease;
+}
+.cta-arrow:hover { gap:18px; }
+.cta-arrow .arr { color:var(--cyan); font-size:18px; display:inline-block; transition: transform 0.25s; }
+.cta-arrow:hover .arr { transform: translateX(4px); }
+
+.cta-line {
+  font-size:12px; letter-spacing:0.1em; text-transform:uppercase; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+  display:inline-flex; align-items:center; gap:10px;
+  position:relative; padding-bottom:2px;
+}
+.cta-line::after {
+  content:''; position:absolute; bottom:0; left:0; right:0;
+  height:1px; background:var(--cyan); transform:scaleX(1);
+  transition: opacity 0.2s;
+}
+.cta-line:hover { gap:18px; }
+.cta-line .arr { font-size:18px; display:inline-block; transition: transform 0.25s; }
+.cta-line:hover .arr { transform: translateX(4px); }
+
+.hero-stats { display:flex; gap:44px; }
+.h-stat { display:flex; flex-direction:column; gap:5px; }
+.h-stat-tick { width:1px; height:22px; background:rgba(242,237,230,0.18); margin-bottom:5px; }
+.h-stat-val {
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px; font-weight:600; color:var(--paper); line-height:1;
+}
+.h-stat-lbl { font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:rgba(242,237,230,0.35); }
+
+/* Hero right */
+.hero-r {
+  position:relative; overflow:hidden;
+}
+@media(max-width:900px){ .hero-r { display:none; } }
+.hero-r-img {
+  position:absolute; inset:0;
+  clip-path: polygon(13% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+.hero-r-img img {
+  width:100%; height:100%; object-fit:cover;
+  transform:scale(1.05);
+  animation: imgzoom 3s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes imgzoom { to { transform:scale(1); } }
+.hero-r-img::after {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(to left, transparent 60%, var(--ink) 100%),
+              linear-gradient(to bottom, transparent 70%, rgba(8,11,13,0.5) 100%);
+}
+/* cyan diagonal accent line */
+.hero-diag {
+  position:absolute; inset:0; pointer-events:none; z-index:4;
+  overflow:hidden;
+}
+.hero-diag::after {
+  content:''; position:absolute;
+  left:13%; top:0; width:1px; height:100%;
+  background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+  opacity:0.4;
+}
+
+/* ══════════════════════════════════════
+   CREDIBILITY STRIP
+══════════════════════════════════════ */
+#cred {
+  background:var(--ink-2);
+  border-top:1px solid rgba(242,237,230,0.05);
+  border-bottom:1px solid rgba(242,237,230,0.05);
+  overflow:hidden; padding:32px 0 20px;
+}
+.marquee-wrap { overflow:hidden; }
+.marquee-track {
+  display:flex; white-space:nowrap;
+  animation: mq 24s linear infinite;
+  width:max-content;
+}
+.marquee-track:hover { animation-play-state:paused; }
+@keyframes mq { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.mq-item {
+  display:inline-flex; align-items:center; gap:18px; padding:0 28px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase;
+  color:rgba(242,237,230,0.55); cursor:default; transition:color 0.2s;
+}
+.mq-item:hover { color:var(--cyan); }
+.mq-dia { color:var(--cyan); font-size:9px; opacity:0.7; }
+.cred-body {
+  max-width:660px; margin:20px auto 0;
+  text-align:center; font-size:13px; font-weight:300;
+  color:rgba(242,237,230,0.38); line-height:1.8;
+  padding:0 24px 12px;
+}
+
+/* ══════════════════════════════════════
+   OFFERINGS STICKY SCROLL
+══════════════════════════════════════ */
+#off { position:relative; height:500vh; }
+.off-sticky {
+  position:sticky; top:0; height:100vh; overflow:hidden;
+  display:grid; grid-template-columns:52% 48%;
+  background:var(--ink);
+}
+@media(max-width:768px){
+  #off { height:auto; }
+  .off-sticky { position:relative; grid-template-columns:1fr; height:auto; }
+}
+
+/* Left: typography field */
+.off-l {
+  position:relative; display:flex; flex-direction:column; justify-content:flex-end;
+  padding:64px 56px 72px 56px; z-index:2;
+}
+.off-tl-bar {
+  position:absolute; left:32px; top:80px; bottom:80px;
+  width:1px; background:rgba(242,237,230,0.07);
+}
+.off-tl-fill {
+  position:absolute; top:0; left:0; width:100%;
+  background:var(--cyan); transition: height 0.15s linear;
+}
+.off-cat-idx {
+  font-size:10px; letter-spacing:0.28em; text-transform:uppercase;
+  color:rgba(242,237,230,0.28); margin-bottom:20px;
+}
+.off-cat-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(54px,9vw,120px);
+  font-weight:700; line-height:0.88;
+  color:var(--paper); letter-spacing:-0.03em;
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.off-cat-desc { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--cyan); margin-top:20px; }
+.off-machines { display:flex; flex-direction:column; gap:7px; margin-top:20px; }
+.off-mname { font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(242,237,230,0.32); }
+.off-nav-link { margin-top:28px; display:inline-flex; align-items:center; gap:10px; }
+
+/* Right: full-bleed image */
+.off-r { position:relative; overflow:hidden; }
+.off-r-img {
+  position:absolute; inset:0;
+  transition: opacity 0.5s ease;
+}
+.off-r-img img {
+  width:100%; height:100%; object-fit:cover;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.off-r-img .off-r-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(to right, rgba(8,11,13,0.6) 0%, transparent 40%),
+              linear-gradient(to top, rgba(8,11,13,0.4) 0%, transparent 50%);
+}
+.off-r-idx {
+  position:absolute; top:28px; right:32px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:11px; letter-spacing:0.24em; text-transform:uppercase;
+  color:rgba(242,237,230,0.3); z-index:2;
+}
+
+/* Mobile offerings: stacked */
+.off-mobile { display:none; background:var(--ink); }
+@media(max-width:768px){ .off-sticky{display:none;} .off-mobile{display:block;} }
+.off-mob-card { padding:60px 28px; border-bottom:1px solid rgba(242,237,230,0.06); }
+.off-mob-img { aspect-ratio:16/9; overflow:hidden; margin-bottom:24px; }
+.off-mob-img img { width:100%; height:100%; object-fit:cover; }
+
+/* ══════════════════════════════════════
+   HPM PARTNER
+══════════════════════════════════════ */
+#hpm { background:var(--paper); padding:120px 0; overflow:hidden; }
+.hpm-inner { max-width:1300px; margin:0 auto; padding:0 64px; }
+@media(max-width:768px){ .hpm-inner { padding:0 28px; } }
+
+.hpm-divider {
+  display:flex; align-items:center; gap:0; margin-bottom:80px;
+}
+.hpm-div-line {
+  height:1px; flex:1; background:var(--ink); opacity:0.1;
+  transform:scaleX(0); transform-origin:center;
+  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.hpm-div-line.in { transform:scaleX(1); }
+.hpm-div-text {
+  padding:0 32px;
+  font-size:10px; letter-spacing:0.32em; text-transform:uppercase;
+  color:rgba(8,11,13,0.38); white-space:nowrap;
+}
+
+.hpm-layout { display:grid; grid-template-columns:1fr 1fr; gap:96px; align-items:start; }
+@media(max-width:900px){ .hpm-layout { grid-template-columns:1fr; gap:56px; } }
+
+/* HPM logo image */
+.hpm-logo-img { height:56px; width:auto; object-fit:contain; object-position:left; margin-bottom:28px; display:block; }
+
+.hpm-hero-text {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,4vw,54px); font-weight:600;
+  line-height:1.05; color:var(--ink); letter-spacing:-0.02em;
+  margin-bottom:20px;
+}
+.hpm-body { font-size:14px; line-height:1.8; color:rgba(8,11,13,0.55); max-width:420px; margin-bottom:44px; }
+.hpm-facts { border-top:1px solid rgba(8,11,13,0.08); }
+.hpm-fact {
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:14px 0; border-bottom:1px solid rgba(8,11,13,0.07);
+  font-size:13px;
+}
+.hpm-fact-k { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(8,11,13,0.32); }
+.hpm-fact-v { color:var(--ink); font-weight:500; }
+.hpm-ctas { display:flex; gap:24px; flex-wrap:wrap; margin-top:36px; }
+
+/* HPM machine showcase */
+.hpm-showcase {
+  position:relative;
+}
+.hpm-machine-wrap {
+  position:relative;
+  background:var(--ink);
+  aspect-ratio:4/3; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.hpm-machine-wrap img {
+  width:85%; height:85%; object-fit:contain;
+  filter:drop-shadow(0 30px 60px rgba(0,0,0,0.6));
+  animation:mfloat 5s ease-in-out infinite;
+}
+@keyframes mfloat {
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
+}
+.hpm-machine-glow {
+  position:absolute; inset:0;
+  background: radial-gradient(circle at 50% 60%, rgba(14,165,233,0.12) 0%, transparent 65%);
+  pointer-events:none;
+}
+.hpm-badge {
+  position:absolute; bottom:-20px; right:-20px;
+  width:110px; height:110px;
+}
+.hpm-badge img { width:100%; height:100%; object-fit:contain; }
+
+.hpm-stats-row {
+  display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(8,11,13,0.06);
+  margin-top:28px;
+}
+.hpm-stat {
+  background:var(--paper); padding:20px 20px;
+}
+.hpm-stat-v {
+  font-family:'Cormorant Garamond',serif;
+  font-size:32px; color:var(--ink); font-weight:600;
+  line-height:1;
+}
+.hpm-stat-k { font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(8,11,13,0.38); margin-top:4px; }
+
+/* HPM Carousel */
+.hpm-car { overflow:hidden; margin-top:32px; }
+.hpm-car-track {
+  display:flex; gap:16px;
+  transition: transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  cursor:grab; user-select:none;
+}
+.hpm-car-track:active { cursor:grabbing; }
+.hpm-car-card {
+  flex:0 0 calc(50% - 8px);
+  border-top:1px solid rgba(8,11,13,0.1);
+  padding-top:16px;
+}
+@media(max-width:600px){ .hpm-car-card { flex:0 0 80%; } }
+.hpm-car-img {
+  aspect-ratio:16/10; background:var(--ink);
+  overflow:hidden; position:relative; margin-bottom:12px;
+}
+.hpm-car-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s; }
+.hpm-car-card:hover .hpm-car-img img { transform:scale(1.04); }
+.hpm-car-img-ph {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  background-image: repeating-linear-gradient(-45deg, rgba(242,237,230,0.03) 0px, rgba(242,237,230,0.03) 1px, transparent 1px, transparent 10px);
+}
+.hpm-car-cat { font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--cyan); }
+.hpm-car-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px; font-weight:600; color:var(--ink); line-height:1.2;
+}
+.hpm-prog { height:1px; background:rgba(8,11,13,0.08); margin-top:20px; position:relative; }
+.hpm-prog-fill { position:absolute; left:0; top:0; height:100%; background:var(--cyan); transition:width 0.45s ease; }
+.hpm-car-btns { display:flex; gap:8px; margin-top:10px; }
+.hpm-car-btn {
+  background:none; border:1px solid rgba(8,11,13,0.12);
+  padding:7px 14px; cursor:pointer; font-size:13px;
+  transition:all 0.2s; color:var(--ink);
+}
+.hpm-car-btn:hover { background:var(--cyan); border-color:var(--cyan); color:#fff; }
+
+/* ══════════════════════════════════════
+   INDIA PRESENCE MAP
+══════════════════════════════════════ */
+#pres {
+  background:var(--ink); padding:120px 0;
+  overflow:hidden; position:relative;
+}
+.pres-inner { max-width:1300px; margin:0 auto; padding:0 64px; }
+@media(max-width:768px){ .pres-inner { padding:0 28px; } }
+
+.pres-header { margin-bottom:72px; }
+.pres-eyebrow { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:rgba(242,237,230,0.3); margin-bottom:12px; }
+.pres-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(40px,5.5vw,72px);
+  font-weight:300; letter-spacing:0.18em; text-transform:uppercase;
+  color:rgba(242,237,230,0.88); line-height:1;
+}
+
+.pres-layout { display:grid; grid-template-columns:1fr 320px; gap:48px; align-items:start; }
+@media(max-width:900px){ .pres-layout { grid-template-columns:1fr; } }
+
+/* Map */
+.map-wrap { position:relative; }
+.map-svg { width:100%; max-height:600px; }
+.city-g { cursor:pointer; }
+.city-pulse {
+  fill:var(--cyan); opacity:0;
+  animation: cpulse 2.5s ease-out infinite;
+}
+@keyframes cpulse { 0%{r:4;opacity:0.5} 100%{r:18;opacity:0} }
+.city-dot-c { fill:rgba(242,237,230,0.1); stroke:rgba(242,237,230,0.2); stroke-width:1; transition:all 0.25s; }
+.city-g:hover .city-dot-c, .city-g.city-act .city-dot-c { fill:var(--cyan); stroke:var(--cyan); }
+.city-g.city-hq .city-dot-c { fill:var(--cyan); stroke:var(--cyan); }
+
+/* Panel */
+.pres-panel {
+  background:rgba(242,237,230,0.04);
+  border:1px solid rgba(242,237,230,0.07);
+  padding:32px;
+  min-height:280px;
+}
+.pres-cn {
+  font-family:'Cormorant Garamond',serif;
+  font-size:38px; font-weight:600; color:var(--paper); margin-bottom:4px;
+}
+.pres-cs { font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--cyan); margin-bottom:24px; }
+.pres-ent { padding:14px 0; border-bottom:1px solid rgba(242,237,230,0.06); }
+.pres-ent:last-child { border-bottom:none; }
+.pres-et { font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:rgba(242,237,230,0.3); margin-bottom:5px; }
+.pres-ec { font-size:13px; color:var(--paper); font-weight:500; margin-bottom:3px; }
+.pres-ed { font-size:12px; color:rgba(242,237,230,0.42); line-height:1.6; }
+
+/* ══════════════════════════════════════
+   WHY SAI
+══════════════════════════════════════ */
+#why { background:var(--paper); padding:120px 0; overflow:hidden; }
+.why-inner { max-width:1300px; margin:0 auto; padding:0 64px; }
+@media(max-width:768px){ .why-inner { padding:0 28px; } }
+
+.why-hdr { display:grid; grid-template-columns:1fr 1fr; gap:64px; margin-bottom:80px; align-items:end; }
+@media(max-width:768px){ .why-hdr { grid-template-columns:1fr; } }
+
+.why-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,5.5vw,72px); font-weight:600; line-height:1.0;
+  letter-spacing:-0.02em; color:var(--ink);
+}
+.why-desc { font-size:14px; color:rgba(8,11,13,0.52); line-height:1.8; max-width:380px; }
+
+.why-row {
+  display:grid; grid-template-columns:96px 1fr 1fr;
+  gap:48px; align-items:start; padding:40px 0;
+  border-bottom:1px solid rgba(8,11,13,0.07);
+  position:relative; overflow:hidden;
+}
+@media(max-width:768px){ .why-row { grid-template-columns:56px 1fr; gap:20px; padding:28px 0; } }
+.why-row:first-of-type { border-top:1px solid rgba(8,11,13,0.07); }
+.why-num {
+  font-family:'Cormorant Garamond',serif;
+  font-size:80px; font-weight:300; color:rgba(8,11,13,0.06);
+  line-height:1; letter-spacing:-0.04em;
+}
+.why-rtitle {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(24px,3vw,36px); font-weight:600; color:var(--ink);
+  line-height:1.1; padding-top:8px;
+}
+.why-rdesc { font-size:13px; color:rgba(8,11,13,0.5); line-height:1.75; padding-top:10px; }
+@media(max-width:768px){ .why-rdesc { display:none; } }
+.why-rline {
+  position:absolute; bottom:0; left:0; width:0; height:1px;
+  background:var(--cyan); transition:width 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.why-row.in .why-rline { width:100%; }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+#foot { background:var(--ink); color:var(--paper); padding:100px 0 48px; overflow:hidden; }
+.foot-inner { max-width:1300px; margin:0 auto; padding:0 64px; }
+@media(max-width:768px){ .foot-inner { padding:0 28px; } }
+.foot-top {
+  display:grid; grid-template-columns:1.3fr 0.7fr; gap:80px;
+  padding-bottom:64px; border-bottom:1px solid rgba(242,237,230,0.07);
+}
+@media(max-width:900px){ .foot-top { grid-template-columns:1fr; gap:48px; } }
+.foot-brand {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(42px,5.5vw,72px); font-weight:300; line-height:0.92;
+  letter-spacing:-0.02em; color:var(--paper); margin-bottom:20px;
+}
+.foot-brand em { font-style:italic; color:var(--cyan); }
+.foot-motto { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(242,237,230,0.25); margin-bottom:40px; }
+.foot-cl { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; color:rgba(242,237,230,0.55); text-decoration:none; transition:color 0.2s; }
+.foot-cl:hover { color:var(--paper); }
+.foot-dot { width:4px; height:4px; background:var(--cyan); border-radius:50%; flex-shrink:0; }
+.foot-nav { display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+.foot-ng { display:flex; flex-direction:column; gap:10px; }
+.foot-nlbl { font-size:9px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cyan); margin-bottom:4px; }
+.foot-nlink { font-size:12px; color:rgba(242,237,230,0.45); text-decoration:none; transition:color 0.2s; }
+.foot-nlink:hover { color:var(--paper); }
+.foot-btm {
+  display:flex; justify-content:space-between; align-items:center;
+  padding-top:28px; font-size:9px; letter-spacing:0.16em; text-transform:uppercase;
+  color:rgba(242,237,230,0.18); flex-wrap:wrap; gap:12px;
+}
+
+/* ══════════════════════════════════════
+   MACHINERY HUB
+══════════════════════════════════════ */
+#mach-page { background:var(--paper); }
+
+.mach-hero {
+  background:var(--ink); padding:140px 64px 80px;
+  position:relative; overflow:hidden; min-height:72vh;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+@media(max-width:768px){ .mach-hero { padding:100px 28px 64px; min-height:auto; } }
+
+/* Background image for machinery hub */
+.mach-hero-bg {
+  position:absolute; inset:0; z-index:0;
+}
+.mach-hero-bg img {
+  width:100%; height:100%; object-fit:cover;
+  opacity:0.2;
+}
+.mach-hero-bg::after {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(to top, var(--ink) 25%, rgba(8,11,13,0.7) 60%, rgba(8,11,13,0.5) 100%);
+}
+.mach-hero-content { position:relative; z-index:2; }
+
+.mach-hl {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(64px,10vw,148px);
+  font-weight:700; line-height:0.85;
+  color:var(--paper); letter-spacing:-0.03em; margin-bottom:48px;
+}
+.mach-hl sup {
+  font-size:0.2em; font-weight:400;
+  letter-spacing:0.06em; vertical-align:super;
+  color:var(--cyan); font-style:italic;
+}
+.mach-search-wrap { max-width:720px; margin-bottom:0; }
+.mach-search {
+  width:100%; background:transparent;
+  border:none; border-bottom:1px solid rgba(242,237,230,0.2);
+  padding:16px 0; font-size:16px; color:var(--paper);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  outline:none; transition:border-color 0.25s;
+}
+.mach-search::placeholder { color:rgba(242,237,230,0.25); }
+.mach-search:focus { border-bottom-color:var(--cyan); }
+
+.mach-filter-bar {
+  background:var(--ink);
+  padding:0 64px;
+  border-bottom:1px solid rgba(242,237,230,0.07);
+  position:sticky; top:72px; z-index:100;
+  display:flex; position:relative;
+}
+@media(max-width:768px){ .mach-filter-bar { padding:0 20px; top:64px; } }
+.mach-fb { position:relative; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.mach-flist { display:flex; gap:0; list-style:none; }
+.mach-fbtn {
+  font-size:10px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600;
+  color:rgba(242,237,230,0.32); background:none; border:none; cursor:pointer;
+  padding:16px 20px; transition:color 0.2s; white-space:nowrap;
+}
+.mach-fbtn.act { color:var(--paper); }
+.mach-funder {
+  position:absolute; bottom:0; height:1.5px; background:var(--cyan);
+  transition:left 0.35s cubic-bezier(0.16,1,0.3,1), width 0.35s cubic-bezier(0.16,1,0.3,1);
+  pointer-events:none;
+}
+
+.mach-grid-wrap { padding:64px 64px; max-width:1300px; margin:0 auto; }
+@media(max-width:768px){ .mach-grid-wrap { padding:40px 28px; } }
+
+/* editorial mixed grid */
+.ed-row { display:grid; gap:1px; background:rgba(8,11,13,0.07); margin-bottom:1px; }
+.ed-wn { grid-template-columns:60% 40%; }
+.ed-3 { grid-template-columns:1fr 1fr 1fr; }
+.ed-full { grid-template-columns:1fr; }
+@media(max-width:768px){ .ed-wn, .ed-3 { grid-template-columns:1fr 1fr; } }
+@media(max-width:480px){ .ed-wn, .ed-3 { grid-template-columns:1fr; } }
+
+.ed-item {
+  background:var(--paper); padding:24px 24px 20px;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:background 0.2s;
+}
+.ed-item:hover { background:var(--paper-2); }
+.ed-item:hover .ed-img img { transform:scale(1.04); }
+.ed-item:hover .ed-name { transform:translateX(-4px); }
+.ed-cat { font-size:9px; letter-spacing:0.24em; text-transform:uppercase; color:var(--cyan); margin-bottom:10px; }
+.ed-img { aspect-ratio:16/10; overflow:hidden; margin-bottom:14px; position:relative; background:var(--paper-2); }
+.ed-img img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s cubic-bezier(0.16,1,0.3,1); }
+.ed-img-ph {
+  position:absolute; inset:0;
+  background-image:repeating-linear-gradient(-45deg,rgba(8,11,13,0.04) 0,rgba(8,11,13,0.04) 1px,transparent 1px,transparent 10px);
+  display:flex; align-items:center; justify-content:center;
+}
+.ed-name {
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px; font-weight:600; color:var(--ink); line-height:1.2;
+  transition:transform 0.3s, color 0.2s;
+}
+.ed-item.lg .ed-name { font-size:28px; }
+.ed-hline {
+  position:absolute; bottom:0; left:0; width:0; height:1.5px;
+  background:var(--cyan); transition:width 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.ed-item:hover .ed-hline { width:100%; }
+
+/* ══════════════════════════════════════
+   CONTACT PAGE
+══════════════════════════════════════ */
+#cont-page { background:var(--paper); }
+.cont-layout { display:grid; grid-template-columns:40% 60%; min-height:100vh; }
+@media(max-width:900px){ .cont-layout { grid-template-columns:1fr; } }
+
+.cont-l {
+  background:var(--ink); padding:120px 56px 80px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  position:relative; overflow:hidden;
+}
+@media(max-width:768px){ .cont-l { padding:96px 28px 64px; } }
+.cont-l-bg {
+  position:absolute; inset:0; opacity:0.12;
+}
+.cont-l-bg img { width:100%; height:100%; object-fit:cover; }
+.cont-l-bg::after { content:''; position:absolute; inset:0; background:var(--ink); opacity:0.7; }
+.cont-l-content { position:relative; z-index:2; }
+
+.cont-co {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(52px,6vw,84px); font-weight:300; line-height:0.9;
+  letter-spacing:-0.02em; color:var(--paper); margin-bottom:52px;
+}
+.cont-co em { font-style:italic; color:var(--cyan); }
+
+.cont-drow { padding:20px 0; border-bottom:1px solid rgba(242,237,230,0.07); }
+.cont-dlbl { font-size:9px; letter-spacing:0.28em; text-transform:uppercase; color:var(--cyan); margin-bottom:5px; }
+.cont-dval { font-size:14px; color:rgba(242,237,230,0.7); text-decoration:none; display:block; line-height:1.6; transition:color 0.2s; }
+.cont-dval:hover { color:var(--paper); }
+
+.cont-l-foot { position:relative; z-index:2; }
+.cont-l-sig { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(242,237,230,0.2); }
+
+.cont-r { padding:120px 72px 80px; display:flex; flex-direction:column; justify-content:center; position:relative; }
+@media(max-width:768px){ .cont-r { padding:64px 28px; } }
+
+.cont-success {
+  display:none; position:absolute; inset:0;
+  background:var(--paper); flex-direction:column;
+  align-items:flex-start; justify-content:center;
+  padding:72px; z-index:20;
+}
+.cont-success.on { display:flex; animation:fadeup 0.5s ease; }
+@keyframes fadeup { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+.cont-success-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(40px,5vw,64px); font-weight:600; color:var(--ink); margin-bottom:16px;
+}
+.cont-success-sub { font-size:14px; color:rgba(8,11,13,0.5); margin-bottom:32px; }
+.cont-success-back { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--cyan); cursor:pointer; text-decoration:none; }
+
+.cont-eyebrow { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--cyan); margin-bottom:24px; }
+.cont-form-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(38px,4.5vw,58px); font-weight:600; line-height:1.0;
+  color:var(--ink); margin-bottom:52px;
+}
+.cf { position:relative; margin-bottom:36px; }
+.cf input, .cf textarea, .cf select {
+  width:100%; background:transparent; border:none;
+  border-bottom:1px solid rgba(8,11,13,0.15);
+  padding:12px 0 8px; font-size:15px; color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  outline:none; resize:none; appearance:none;
+  transition:border-color 0.25s;
+}
+.cf textarea { min-height:88px; }
+.cf input:focus, .cf textarea:focus, .cf select:focus { border-bottom-color:var(--cyan); }
+.cf-label {
+  position:absolute; top:12px; left:0;
+  font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+  color:rgba(8,11,13,0.35); font-weight:500; pointer-events:none;
+  transform-origin:left top;
+  transition:transform 0.25s, color 0.25s;
+}
+.cf input:focus ~ .cf-label,
+.cf input:not(:placeholder-shown) ~ .cf-label,
+.cf textarea:focus ~ .cf-label,
+.cf textarea:not(:placeholder-shown) ~ .cf-label { transform:translateY(-20px) scale(0.78); color:var(--cyan); }
+
+.cf-grid { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+@media(max-width:600px){ .cf-grid { grid-template-columns:1fr; } }
+
+.cf-submit {
+  margin-top:8px; background:none; border:none; cursor:pointer; padding:0;
+  display:inline-flex; align-items:center; gap:16px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:32px; font-weight:600; color:var(--ink);
+  transition:gap 0.25s, color 0.25s;
+}
+.cf-submit:hover { gap:26px; color:var(--cyan); }
+.cf-submit .arr { font-size:28px; }
+
+/* ══════════════════════════════════════
+   ABOUT PAGE
+══════════════════════════════════════ */
+#abt-page { background:var(--paper); }
+
+.abt-hero {
+  padding:140px 64px 80px; max-width:1300px; margin:0 auto;
+  position:relative;
+}
+@media(max-width:768px){ .abt-hero { padding:100px 28px 60px; } }
+.abt-bg-word {
+  position:absolute; top:80px; right:-20px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(100px,16vw,220px); font-weight:700;
+  color:rgba(8,11,13,0.035); line-height:1;
+  pointer-events:none; user-select:none; letter-spacing:-0.04em;
+}
+
+.abt-headline {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(52px,7vw,100px); font-weight:600;
+  line-height:0.92; letter-spacing:-0.02em;
+  color:var(--ink); max-width:840px;
+}
+.abt-intro {
+  margin-top:36px; font-size:15px; font-weight:300;
+  color:rgba(8,11,13,0.55); line-height:1.85;
+  max-width:560px;
+}
+
+/* Quote section */
+.abt-quote-wrap {
+  background:var(--ink); padding:100px 64px;
+  text-align:center; position:relative; overflow:hidden;
+}
+@media(max-width:768px){ .abt-quote-wrap { padding:80px 28px; } }
+.abt-q-bg {
+  position:absolute; inset:0; opacity:0.07;
+}
+.abt-q-bg img { width:100%; height:100%; object-fit:cover; }
+.abt-q-bg::after { content:''; position:absolute; inset:0; background:var(--ink); opacity:0.6; }
+.abt-q-content { position:relative; z-index:2; }
+.abt-qrule { width:48px; height:1px; background:var(--cyan); margin:0 auto 44px; }
+.abt-quote {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(32px,4.5vw,62px); font-weight:300; font-style:italic;
+  color:var(--paper); line-height:1.25; max-width:900px;
+  margin:0 auto 44px; letter-spacing:-0.01em;
+}
+.abt-quote em { color:var(--cyan); }
+
+/* Journey chapters */
+.abt-chapters { max-width:1300px; margin:0 auto; }
+.abt-ch {
+  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;
+  padding:80px 64px; border-bottom:1px solid rgba(8,11,13,0.07);
+  position:relative;
+}
+@media(max-width:900px){ .abt-ch { grid-template-columns:1fr; gap:28px; padding:60px 28px; } }
+.abt-ch-yr { font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px; }
+.abt-ch-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,4vw,52px); font-weight:600; line-height:1.05; color:var(--ink);
+}
+.abt-ch-body { font-size:14px; line-height:1.85; color:rgba(8,11,13,0.52); padding-top:8px; }
+
+/* CTA band */
+.abt-cta-band {
+  background:var(--ink-2); padding:100px 64px; text-align:center;
+}
+@media(max-width:768px){ .abt-cta-band { padding:80px 28px; } }
+.abt-cta-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,5vw,64px); font-weight:300; color:var(--paper);
+  line-height:1.1; margin-bottom:40px;
+}
+</style>
+</head>
+<body>
+
+<div id="sp"></div>
+
+<div id="ptbar"></div>
+
+<!-- Header -->
+<header id="hdr">
+  <div class="hdr-inner">
+    <a class="hdr-logo" href="#" onclick="nav('home');return false;">
+      <span class="brand-name">Sai Enterprises</span>
+      <span class="brand-sub">Graphic Machinery Suppliers</span>
+    </a>
+    <ul class="hdr-nav">
+      <li><a class="hdr-link" href="#" onclick="nav('home');return false;" data-p="home">Home</a></li>
+      <li><a class="hdr-link" href="#" onclick="nav('mach');return false;" data-p="mach">Machinery</a></li>
+      <li><a class="hdr-link" href="#" onclick="nav('about');return false;" data-p="about">About</a></li>
+      <li><a class="hdr-link" href="#" onclick="nav('cont');return false;" data-p="cont">Contact</a></li>
+      <a class="hdr-cta" href="#" onclick="nav('cont');return false;">Get Quote</a>
+    </ul>
+    <button class="hdr-menu-btn" id="mob-btn" aria-label="Menu">
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="0" y1="1" x2="22" y2="1"/>
+        <line x1="0" y1="8" x2="22" y2="8"/>
+        <line x1="0" y1="15" x2="22" y2="15"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<nav class="mob-menu" id="mob-menu">
+  <a class="mob-link" href="#" onclick="nav('home');closeMob();return false;">Home <span>→</span></a>
+  <a class="mob-link" href="#" onclick="nav('mach');closeMob();return false;">Machinery <span>→</span></a>
+  <a class="mob-link" href="#" onclick="nav('about');closeMob();return false;">About <span>→</span></a>
+  <a class="mob-link" href="#" onclick="nav('cont');closeMob();return false;">Contact <span>→</span></a>
+  <div class="mob-cta-wrap">
+    <a href="#" onclick="nav('cont');closeMob();return false;" style="display:inline-flex;align-items:center;gap:10px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;font-weight:700;color:var(--cyan);text-decoration:none;border-bottom:1px solid var(--cyan);padding-bottom:2px;">
+      Request Quote →
+    </a>
+  </div>
+</nav>
+
+<!-- Section dots -->
+<nav id="sdots" aria-label="Sections"></nav>
+
+<!-- ════════════════════════════════════
+     PAGES
+════════════════════════════════════ -->
+<div id="pages">
+
+<!-- ══ HOME ══ -->
+<div class="page act" id="pg-home">
+
+  <!-- HERO -->
+  <section id="s-hero" data-screen-label="01 Hero" data-dark="1">
+    <div id="hero">
+      <!-- Left -->
+      <div class="hero-l">
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+
+        <div class="hero-est reveal">
+          <div class="hero-est-line"></div>
+          <span class="hero-est-text">Est. 2000 · Hyderabad</span>
+        </div>
+
+        <h1 class="hero-hl">
+          <span class="ml"><span class="ml-inner">GRAPHIC</span></span>
+          <span class="ml d1"><span class="ml-inner">MACHINERY</span></span>
+          <span class="ml d2"><span class="ml-inner">SUPPLIERS<span class="period">.</span></span></span>
+        </h1>
+
+        <p class="hero-sub reveal d3">
+          India's trusted name in graphic machinery since 2000 — pre-press to post-press, corrugation, and allied finishing workflows.
+        </p>
+
+        <div class="hero-ctas reveal d4">
+          <a class="cta-arrow" href="#" onclick="nav('mach');return false;">
+            Explore Machinery <span class="arr">→</span>
+          </a>
+          <a class="cta-line" href="#" onclick="nav('cont');return false;">
+            Get a Quote <span class="arr">→</span>
+          </a>
+        </div>
+
+        <div class="hero-stats reveal d5">
+          <div class="h-stat">
+            <div class="h-stat-tick"></div>
+            <div class="h-stat-val" data-cnt="24">0</div>
+            <div class="h-stat-lbl">Years</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-tick"></div>
+            <div class="h-stat-val" data-cnt="4000">0</div>
+            <div class="h-stat-lbl">Machines</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-tick"></div>
+            <div class="h-stat-val" data-cnt="2000">0</div>
+            <div class="h-stat-lbl">Clients</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: real photograph -->
+      <div class="hero-r">
+        <div class="hero-r-img">
+          <img src="uploads/hero-industrial.jpg" alt="Graphic printing facility" />
+        </div>
+        <div class="hero-diag"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREDIBILITY STRIP -->
+  <section id="s-cred" data-screen-label="02 Credibility" data-dark="1">
+    <div id="cred">
+      <div class="marquee-wrap">
+        <div class="marquee-track" id="mq-track"></div>
+      </div>
+      <p class="cred-body">
+        A trusted name in graphic machinery since 2000 — from pre-press to post-press, we put the right machine in the right hands.
+      </p>
+    </div>
+  </section>
+
+  <!-- OFFERINGS -->
+  <section id="s-off" data-screen-label="03 Offerings" data-dark="1">
+    <div id="off">
+      <!-- Sticky desktop -->
+      <div class="off-sticky" id="off-sticky">
+        <div class="off-l" id="off-l">
+          <div class="off-tl-bar">
+            <div class="off-tl-fill" id="off-tl"></div>
+          </div>
+          <div class="off-cat-idx" id="off-idx">01 / 05</div>
+          <div class="off-cat-name" id="off-name">Pre-Press</div>
+          <div class="off-cat-desc" id="off-desc">Plate imaging, exposure &amp; processing</div>
+          <div class="off-machines" id="off-mach"></div>
+          <a class="cta-arrow off-nav-link" href="#" onclick="nav('mach');return false;" style="font-size:11px;color:rgba(242,237,230,0.7);">
+            View Category <span class="arr" style="color:var(--cyan);">→</span>
+          </a>
+        </div>
+        <div class="off-r" id="off-r">
+          <!-- images layered, switched by JS -->
+          <div class="off-r-img" id="off-img-0" style="opacity:1;">
+            <img src="uploads/hero-industrial.jpg" alt="Pre-press machinery" />
+            <div class="off-r-overlay"></div>
+          </div>
+          <div class="off-r-img" id="off-img-1" style="opacity:0;">
+            <img src="uploads/hero-industrial.jpg" alt="Press machinery" />
+            <div class="off-r-overlay"></div>
+          </div>
+          <div class="off-r-img" id="off-img-2" style="opacity:0;">
+            <img src="uploads/hpm-machine.png" alt="Post-press machinery" style="object-fit:contain;background:var(--ink-2);" />
+            <div class="off-r-overlay"></div>
+          </div>
+          <div class="off-r-img" id="off-img-3" style="opacity:0;">
+            <img src="uploads/corrugation-hero.jpg" alt="Corrugation machinery" />
+            <div class="off-r-overlay"></div>
+          </div>
+          <div class="off-r-img" id="off-img-4" style="opacity:0;">
+            <img src="uploads/brochure-hero.jpg" alt="Allied machinery" style="object-position:center top;" />
+            <div class="off-r-overlay"></div>
+          </div>
+          <div class="off-r-idx" id="off-ridx">01 / 05</div>
+        </div>
+      </div>
+
+      <!-- Mobile: stacked cards -->
+      <div class="off-mobile" id="off-mob"></div>
+    </div>
+  </section>
+
+  <!-- HPM PARTNER -->
+  <section id="s-hpm" data-screen-label="04 HPM Partner" data-dark="0">
+    <div id="hpm">
+      <div class="hpm-inner">
+        <div class="hpm-divider">
+          <div class="hpm-div-line" id="hdl-l"></div>
+          <div class="hpm-div-text">Exclusive Indian Partner</div>
+          <div class="hpm-div-line" id="hdl-r"></div>
+        </div>
+
+        <div class="hpm-layout">
+          <!-- Left: brand info -->
+          <div class="reveal">
+            <img src="uploads/hpm-logo.png" alt="HPM Paper Cutter" class="hpm-logo-img" />
+            <h2 class="hpm-hero-text">India's Sole HPM<br>Agent Since 2000.</h2>
+            <p class="hpm-body">
+              HPM's paper cutter manufacturing story starts in 1983. The range is now known for programmable paper cutters and pile handling systems — used by printers, finishers, and packaging plants that need dependable output.
+            </p>
+            <div class="hpm-facts">
+              <div class="hpm-fact">
+                <span class="hpm-fact-k">Origin</span>
+                <span class="hpm-fact-v">Taiwan, since 1983</span>
+              </div>
+              <div class="hpm-fact">
+                <span class="hpm-fact-k">Focus</span>
+                <span class="hpm-fact-v">Programmable Cutters + Pile Handling</span>
+              </div>
+              <div class="hpm-fact">
+                <span class="hpm-fact-k">India Agent</span>
+                <span class="hpm-fact-v">Sai Enterprises, Hyderabad</span>
+              </div>
+              <div class="hpm-fact">
+                <span class="hpm-fact-k">Partnership</span>
+                <span class="hpm-fact-v">Since 2000 · Sole Representative</span>
+              </div>
+            </div>
+            <div class="hpm-ctas">
+              <a class="cta-line" href="#" onclick="nav('mach');return false;" style="font-size:12px;">Explore HPM Machines <span class="arr">→</span></a>
+            </div>
+          </div>
+
+          <!-- Right: machine + carousel -->
+          <div class="reveal d2">
+            <div class="hpm-showcase">
+              <div class="hpm-machine-wrap">
+                <div class="hpm-machine-glow"></div>
+                <img src="uploads/hpm-machine.png" alt="HPM Paper Cutter" />
+                <div class="hpm-badge">
+                  <img src="uploads/largest-selling-badge.png" alt="India's Largest Selling Paper Cutter" />
+                </div>
+              </div>
+              <div class="hpm-stats-row">
+                <div class="hpm-stat">
+                  <div class="hpm-stat-v">920mm</div>
+                  <div class="hpm-stat-k">Min. Cutting Width</div>
+                </div>
+                <div class="hpm-stat">
+                  <div class="hpm-stat-v">1880mm</div>
+                  <div class="hpm-stat-k">Max. Cutting Width</div>
+                </div>
+                <div class="hpm-stat">
+                  <div class="hpm-stat-v">7 sizes</div>
+                  <div class="hpm-stat-k">Range Available</div>
+                </div>
+                <div class="hpm-stat">
+                  <div class="hpm-stat-v">4000+</div>
+                  <div class="hpm-stat-k">Units Sold in India</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Carousel -->
+            <div class="hpm-car" id="hpm-car">
+              <div class="hpm-car-track" id="hpm-ct">
+                <div class="hpm-car-card">
+                  <div class="hpm-car-img">
+                    <img src="uploads/hpm-machine.png" alt="HPM Programmable Cutter" style="object-fit:contain;background:var(--ink-2);" />
+                  </div>
+                  <div class="hpm-car-cat">Post-Press · HPM</div>
+                  <div class="hpm-car-name">Programmable Paper Cutter System</div>
+                </div>
+                <div class="hpm-car-card">
+                  <div class="hpm-car-img">
+                    <div class="hpm-car-img-ph"><span style="font-family:monospace;font-size:9px;color:rgba(242,237,230,0.25);">[ HPM Heavy-Duty Cutter ]</span></div>
+                  </div>
+                  <div class="hpm-car-cat">Post-Press · HPM</div>
+                  <div class="hpm-car-name">Heavy Duty Digital Programmable Cutter</div>
+                </div>
+                <div class="hpm-car-card">
+                  <div class="hpm-car-img">
+                    <div class="hpm-car-img-ph"><span style="font-family:monospace;font-size:9px;color:rgba(242,237,230,0.25);">[ Pile Turner ]</span></div>
+                  </div>
+                  <div class="hpm-car-cat">Post-Press · Handling</div>
+                  <div class="hpm-car-name">Pile Turner & Lifter System</div>
+                </div>
+                <div class="hpm-car-card">
+                  <div class="hpm-car-img">
+                    <div class="hpm-car-img-ph"><span style="font-family:monospace;font-size:9px;color:rgba(242,237,230,0.25);">[ Three Knife Trimmer ]</span></div>
+                  </div>
+                  <div class="hpm-car-cat">Post-Press · Trimming</div>
+                  <div class="hpm-car-name">Automatic Feeding Three Knife Trimmer</div>
+                </div>
+              </div>
+            </div>
+            <div class="hpm-prog"><div class="hpm-prog-fill" id="hpm-pf" style="width:50%"></div></div>
+            <div class="hpm-car-btns">
+              <button class="hpm-car-btn" onclick="hpmNav(-1)">←</button>
+              <button class="hpm-car-btn" onclick="hpmNav(1)">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESENCE MAP -->
+  <section id="s-pres" data-screen-label="05 India Presence" data-dark="1">
+    <div id="pres">
+      <div class="pres-inner">
+        <div class="pres-header reveal">
+          <div class="pres-eyebrow">Operations</div>
+          <div class="pres-title">WHERE WE<br>OPERATE</div>
+        </div>
+        <div class="pres-layout">
+          <div class="map-wrap reveal">
+            <svg class="map-svg" viewBox="0 0 500 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- India outline (simplified) -->
+              <path d="M182,48 L218,42 L258,50 L296,58 L332,74 L358,96 L372,122 L378,150 L372,177 L360,198 L376,218 L387,243 L392,268 L381,293 L370,314 L350,334 L340,358 L328,382 L314,402 L298,422 L278,444 L258,464 L238,482 L220,498 L202,514 L185,490 L170,464 L158,438 L147,412 L136,386 L128,360 L122,334 L117,308 L113,282 L112,256 L116,230 L124,206 L134,183 L144,160 L152,136 L160,112 L168,88 L174,66 Z"
+                fill="rgba(242,237,230,0.03)" stroke="rgba(242,237,230,0.1)" stroke-width="1.5"/>
+              <path d="M175,195 L305,195 M198,278 L322,278 M148,338 L312,338" stroke="rgba(242,237,230,0.035)" stroke-width="1"/>
+              <g id="city-g"></g>
+            </svg>
+          </div>
+          <div class="pres-panel reveal d2" id="pres-panel">
+            <div class="pres-cn" id="pres-cn">Hyderabad</div>
+            <div class="pres-cs" id="pres-cs">Telangana · Headquarters</div>
+            <div id="pres-ents">
+              <div class="pres-ent">
+                <div class="pres-et">Headquarters</div>
+                <div class="pres-ec">Sai Enterprises</div>
+                <div class="pres-ed">S. Dayaker Reddy · +91-7021220085</div>
+              </div>
+              <div class="pres-ent">
+                <div class="pres-et">Service Centre</div>
+                <div class="pres-ec">Sai Enterprises Service Team</div>
+                <div class="pres-ed">Field service across Telangana &amp; AP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY SAI -->
+  <section id="s-why" data-screen-label="06 Why Sai" data-dark="0">
+    <div id="why">
+      <div class="why-inner">
+        <div class="why-hdr">
+          <div class="reveal">
+            <div style="font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--cyan);margin-bottom:20px;">Why Sai Enterprises</div>
+            <div class="why-title">The case<br>for Sai.</div>
+          </div>
+          <div class="why-desc reveal d2">
+            These are the signals decision-makers look for before opening a serious machinery conversation. No filler — just proof.
+          </div>
+        </div>
+        <div id="why-rows">
+          <div class="why-row reveal" data-screen-label="Why Row 1">
+            <div class="why-num">01</div>
+            <div class="why-rtitle">24 Years of Unbroken Trust</div>
+            <div class="why-rdesc">Sales and service relationships built since 2000. Not just a catalogue — a long-term commitment to every client we serve across India and beyond.</div>
+            <div class="why-rline"></div>
+          </div>
+          <div class="why-row reveal" data-screen-label="Why Row 2">
+            <div class="why-num">02</div>
+            <div class="why-rtitle">4000+ Machines Placed</div>
+            <div class="why-rdesc">Across print, finishing, corrugation, and allied workflows. Every machine placed comes with consultancy, installation, and service continuity.</div>
+            <div class="why-rline"></div>
+          </div>
+          <div class="why-row reveal" data-screen-label="Why Row 3">
+            <div class="why-num">03</div>
+            <div class="why-rtitle">Sole HPM Agent in India</div>
+            <div class="why-rdesc">Authorized sole representative for HPM paper cutters since 2000. Taiwan-quality programmable cutting systems, fully India-backed service.</div>
+            <div class="why-rline"></div>
+          </div>
+          <div class="why-row reveal" data-screen-label="Why Row 4">
+            <div class="why-num">04</div>
+            <div class="why-rtitle">Pan-World Client Reach</div>
+            <div class="why-rdesc">India-led supply with buyers across East Africa and beyond. Nairobi office supports commercial relationships outside India.</div>
+            <div class="why-rline"></div>
+          </div>
+          <div class="why-row reveal" data-screen-label="Why Row 5">
+            <div class="why-num">05</div>
+            <div class="why-rtitle">Full Workflow Coverage</div>
+            <div class="why-rdesc">Pre-press, press, post-press, corrugation, and allied consumables. One trusted supplier for the entire production chain.</div>
+            <div class="why-rline"></div>
+          </div>
+        </div>
+        <div class="reveal" style="margin-top:72px;padding-top:48px;border-top:1px solid rgba(8,11,13,0.07);">
+          <a class="cta-arrow" href="#" onclick="nav('cont');return false;" style="color:var(--ink);font-size:14px;">
+            Talk to Sales <span class="arr">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="s-foot" data-screen-label="07 Footer" data-dark="1">
+    <div id="foot">
+      <div class="foot-inner">
+        <div class="foot-top">
+          <div>
+            <div class="foot-brand">Sai<br><em>Enterprises</em></div>
+            <div class="foot-motto">We Believe in Long-Term Relationships</div>
+            <a class="foot-cl" href="tel:+919312175513"><div class="foot-dot"></div>+91 931 217 5513 · +91 939 767 8950</a>
+            <a class="foot-cl" href="mailto:msrao@saienterprises.info"><div class="foot-dot"></div>msrao@saienterprises.info</a>
+            <a class="foot-cl" href="#"><div class="foot-dot"></div>Hyderabad · Delhi · Pune · Vijayawada · Nairobi</a>
+          </div>
+          <div class="foot-nav">
+            <div class="foot-ng">
+              <div class="foot-nlbl">Navigate</div>
+              <a class="foot-nlink" href="#" onclick="nav('home');return false;">Home</a>
+              <a class="foot-nlink" href="#" onclick="nav('mach');return false;">Machinery</a>
+              <a class="foot-nlink" href="#" onclick="nav('about');return false;">About</a>
+              <a class="foot-nlink" href="#" onclick="nav('cont');return false;">Contact</a>
+            </div>
+            <div class="foot-ng">
+              <div class="foot-nlbl">Machinery</div>
+              <a class="foot-nlink" href="#" onclick="nav('mach');return false;">Pre-Press</a>
+              <a class="foot-nlink" href="#" onclick="nav('mach');return false;">Press</a>
+              <a class="foot-nlink" href="#" onclick="nav('mach');return false;">Post-Press</a>
+              <a class="foot-nlink" href="#" onclick="nav('mach');return false;">Corrugation</a>
+              <a class="foot-nlink" href="#" onclick="nav('mach');return false;">Allied</a>
+            </div>
+          </div>
+        </div>
+        <div class="foot-btm">
+          <span>© 2026 Sai Enterprises</span>
+          <span>HPM · Graphic Machinery Suppliers · Hyderabad</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div><!-- /pg-home -->
+
+<!-- ══ MACHINERY ══ -->
+<div class="page" id="pg-mach">
+  <div id="mach-page">
+    <div class="mach-hero">
+      <div class="mach-hero-bg">
+        <img src="uploads/corrugation-hero.jpg" alt="Machinery" />
+      </div>
+      <div class="mach-hero-content">
+        <h1 class="mach-hl">THE MACHINES<sup>4000+</sup></h1>
+        <div class="mach-search-wrap">
+          <input class="mach-search" id="ms-input" type="text" placeholder="Search by name, type, or use case…" oninput="doSearch(this.value)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="mach-filter-bar" id="mfb">
+      <div class="mach-fb">
+        <ul class="mach-flist" id="mfl">
+          <li><button class="mach-fbtn act" data-fc="all" onclick="setFilter('all',this)">All</button></li>
+          <li><button class="mach-fbtn" data-fc="pre-press" onclick="setFilter('pre-press',this)">Pre-Press</button></li>
+          <li><button class="mach-fbtn" data-fc="press" onclick="setFilter('press',this)">Press</button></li>
+          <li><button class="mach-fbtn" data-fc="post-press" onclick="setFilter('post-press',this)">Post-Press</button></li>
+          <li><button class="mach-fbtn" data-fc="corrugation" onclick="setFilter('corrugation',this)">Corrugation</button></li>
+          <li><button class="mach-fbtn" data-fc="allied" onclick="setFilter('allied',this)">Allied</button></li>
+        </ul>
+        <div class="mach-funder" id="mfu"></div>
+      </div>
+    </div>
+
+    <div class="mach-grid-wrap" id="mgw"></div>
+  </div>
+
+  <div style="background:var(--ink);padding:40px 64px;display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(242,237,230,0.2);">
+    <a href="#" onclick="nav('home');return false;" style="color:inherit;text-decoration:none;">← Home</a>
+    <span>© 2026 Sai Enterprises</span>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<div class="page" id="pg-cont">
+  <div id="cont-page">
+    <div class="cont-layout">
+      <div class="cont-l">
+        <div class="cont-l-bg">
+          <img src="uploads/hero-industrial.jpg" alt="" />
+        </div>
+        <div class="cont-l-content">
+          <div class="cont-co">Sai<br><em>Enterprises</em></div>
+          <div>
+            <div class="cont-drow reveal">
+              <div class="cont-dlbl">Headquarters</div>
+              <span class="cont-dval">Hyderabad, Telangana, India</span>
+            </div>
+            <div class="cont-drow reveal d1">
+              <div class="cont-dlbl">Phone</div>
+              <a class="cont-dval" href="tel:+919312175513">+91 931 217 5513</a>
+              <a class="cont-dval" href="tel:+919397678950">+91 939 767 8950</a>
+            </div>
+            <div class="cont-drow reveal d2">
+              <div class="cont-dlbl">Email</div>
+              <a class="cont-dval" href="mailto:msrao@saienterprises.info">msrao@saienterprises.info</a>
+              <a class="cont-dval" href="mailto:venkat@saienterprises.info">venkat@saienterprises.info</a>
+            </div>
+            <div class="cont-drow reveal d3">
+              <div class="cont-dlbl">India Offices</div>
+              <span class="cont-dval">Delhi · Pune · Vijayawada</span>
+            </div>
+            <div class="cont-drow reveal d4">
+              <div class="cont-dlbl">Overseas</div>
+              <span class="cont-dval">Nairobi, Kenya</span>
+            </div>
+          </div>
+        </div>
+        <div class="cont-l-foot">
+          <div class="cont-l-sig">Est. 2000 · Pan-World Reach</div>
+        </div>
+      </div>
+
+      <div class="cont-r">
+        <div class="cont-success" id="cs">
+          <div class="cont-success-title">Message<br>Sent.</div>
+          <div class="cont-success-sub">We'll respond within 24–48 business hours.</div>
+          <a class="cont-success-back" href="#" onclick="resetForm();return false;">Send another →</a>
+        </div>
+        <div class="cont-eyebrow">Inquire</div>
+        <div class="cont-form-title">Start a<br>machinery<br>conversation.</div>
+        <form id="cform" onsubmit="submitForm(event)">
+          <div class="cf-grid">
+            <div class="cf">
+              <input type="text" id="fn" placeholder=" " required />
+              <label class="cf-label" for="fn">Your Name</label>
+            </div>
+            <div class="cf">
+              <input type="email" id="fe" placeholder=" " required />
+              <label class="cf-label" for="fe">Email</label>
+            </div>
+          </div>
+          <div class="cf-grid">
+            <div class="cf">
+              <input type="text" id="fc" placeholder=" " />
+              <label class="cf-label" for="fc">Company</label>
+            </div>
+            <div class="cf">
+              <input type="tel" id="fp" placeholder=" " />
+              <label class="cf-label" for="fp">Phone</label>
+            </div>
+          </div>
+          <div class="cf">
+            <select id="fcat" style="color:rgba(8,11,13,0.5);">
+              <option value="">— Machinery category —</option>
+              <option>Pre-Press</option><option>Press</option><option>Post-Press</option>
+              <option>Corrugation</option><option>Allied / Consumables</option><option>HPM Paper Cutters</option>
+            </select>
+          </div>
+          <div class="cf">
+            <textarea id="fm" placeholder=" " required></textarea>
+            <label class="cf-label" for="fm">Your Requirement</label>
+          </div>
+          <button type="submit" class="cf-submit">Send Inquiry <span class="arr">→</span></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<div class="page" id="pg-about">
+  <div id="abt-page">
+
+    <div class="abt-hero">
+      <div class="abt-bg-word">SAI</div>
+      <h1 class="abt-headline reveal">
+        <span class="ml"><span class="ml-inner">Machinery supply</span></span>
+        <span class="ml d1"><span class="ml-inner">built around</span></span>
+        <span class="ml d2"><span class="ml-inner">execution.</span></span>
+      </h1>
+      <p class="abt-intro reveal d3">
+        Sai Enterprises is a graphic machinery supplier with 24+ years of market continuity. We support printers and packaging units with machine selection, commercial consultation, and execution guidance — from pre-press to post-press, corrugation, and beyond.
+      </p>
+    </div>
+
+    <div class="abt-quote-wrap">
+      <div class="abt-q-bg"><img src="uploads/hero-industrial.jpg" alt="" /></div>
+      <div class="abt-q-content">
+        <div class="abt-qrule reveal"></div>
+        <blockquote class="abt-quote reveal d1">
+          "We Believe in<br><em>Long-Term Relationships"</em>
+        </blockquote>
+        <div class="abt-qrule reveal d2"></div>
+      </div>
+    </div>
+
+    <div class="abt-chapters">
+      <div class="abt-ch reveal">
+        <div>
+          <div class="abt-ch-yr">2000</div>
+          <div class="abt-ch-title">Sai Enterprises Founded</div>
+        </div>
+        <div class="abt-ch-body">
+          Operations began in Hyderabad with a focus on practical, production-ready graphic machinery. HPM partnership established from the outset — making Sai India's exclusive HPM agent. Founded by Mr. S. Dayaker Reddy and Mr. G. Phani Kumar.
+        </div>
+      </div>
+      <div class="abt-ch reveal">
+        <div>
+          <div class="abt-ch-yr">2010</div>
+          <div class="abt-ch-title">India Presence Expanded</div>
+        </div>
+        <div class="abt-ch-body">
+          Regional support expanded across New Delhi, Pune, and Vijayawada. Sales partners established across Kolkata, Mumbai, Ahmedabad, Jaipur, Bangalore, Coimbatore and Goa — shortening response time nationally.
+        </div>
+      </div>
+      <div class="abt-ch reveal">
+        <div>
+          <div class="abt-ch-yr">2015</div>
+          <div class="abt-ch-title">Kenya Office Established</div>
+        </div>
+        <div class="abt-ch-body">
+          Nairobi office strengthened East Africa support. Exports to Sri Lanka, Nepal, UAE, Oman and African countries cemented pan-world reach — a global supplier built from Hyderabad.
+        </div>
+      </div>
+      <div class="abt-ch reveal">
+        <div>
+          <div class="abt-ch-yr">2026</div>
+          <div class="abt-ch-title">Complete Machinery Stack</div>
+        </div>
+        <div class="abt-ch-body">
+          4000+ machines placed. 2000+ clients served. Complete workflow portfolio: pre-press, press, post-press, corrugation and allied consumables. One supplier for the entire production chain.
+        </div>
+      </div>
+    </div>
+
+    <div class="abt-cta-band">
+      <div class="abt-cta-title reveal">Discuss your machinery<br>requirement with us.</div>
+      <a class="cta-line reveal d1" href="#" onclick="nav('cont');return false;" style="font-size:14px;">
+        Start a conversation <span class="arr">→</span>
+      </a>
+    </div>
+
+  </div>
+
+  <div style="background:var(--ink);padding:40px 64px;display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(242,237,230,0.18);">
+    <a href="#" onclick="nav('home');return false;" style="color:inherit;text-decoration:none;">← Home</a>
+    <span>© 2026 Sai Enterprises · Hyderabad</span>
+  </div>
+</div>
+
+</div><!-- /pages -->
+
+<!-- Tweaks -->
+<div id="tr"></div>
+
+<script type="text/babel">
+const TD = /*EDITMODE-BEGIN*/{
+  "accent": "cyan",
+  "heroOverlay": "dark",
+  "showGrid": true,
+  "sectionSpacing": "generous"
+}/*EDITMODE-END*/;
+
+const { useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakToggle } = window;
+
+function SaiTweaks() {
+  const [t, set] = useTweaks(TD);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const colors = { cyan:'hsl(195,85%,40%)', magenta:'hsl(335,75%,50%)', gold:'hsl(42,80%,42%)' };
+    root.style.setProperty('--cyan', colors[t.accent] || colors.cyan);
+  }, [t.accent]);
+
+  React.useEffect(() => {
+    const g = document.querySelector('.hero-grid');
+    if (g) g.style.opacity = t.showGrid ? '' : '0';
+  }, [t.showGrid]);
+
+  React.useEffect(() => {
+    const overlay = document.querySelector('.hero-r-img::after');
+    // update hero overlay intensity via CSS var
+    document.documentElement.style.setProperty('--hero-overlay', t.heroOverlay === 'dark' ? '0.8' : '0.5');
+  }, [t.heroOverlay]);
+
+  return (
+    <TweaksPanel>
+      <TweakSection title="Accent Color">
+        <TweakRadio value={t.accent}
+          options={[{label:'Cyan',value:'cyan'},{label:'Magenta',value:'magenta'},{label:'Gold',value:'gold'}]}
+          onChange={v=>set('accent',v)} />
+      </TweakSection>
+      <TweakSection title="Hero Overlay">
+        <TweakRadio value={t.heroOverlay}
+          options={[{label:'Dark',value:'dark'},{label:'Light',value:'light'}]}
+          onChange={v=>set('heroOverlay',v)} />
+      </TweakSection>
+      <TweakSection title="Grid Overlay">
+        <TweakToggle label="Dot grid on hero" value={t.showGrid} onChange={v=>set('showGrid',v)} />
+      </TweakSection>
+      <TweakSection title="Section Spacing">
+        <TweakRadio value={t.sectionSpacing}
+          options={[{label:'Generous',value:'generous'},{label:'Compact',value:'compact'}]}
+          onChange={v=>{
+            set('sectionSpacing',v);
+            const pad = v==='generous'?'120px':'72px';
+            document.querySelectorAll('#hpm,#pres,#why,#foot').forEach(el=>{ el.style.paddingTop=pad; el.style.paddingBottom=pad; });
+          }} />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+ReactDOM.createRoot(document.getElementById('tr')).render(<SaiTweaks/>);
+</script>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const CATS = [
+  { id:'pre-press', name:'Pre-Press', desc:'Plate imaging, exposure &amp; processing',
+    img:'uploads/hero-industrial.jpg',
+    machines:['Screen / Plate Exposure Machine','Fully Automatic CTCP','CTP System','Plate Processor','Plate Backing Oven','Large Format Film Separation'] },
+  { id:'press', name:'Press', desc:'Offset &amp; card-processing machinery',
+    img:'uploads/hero-industrial.jpg',
+    machines:['Mini Offset 16×22"','Web Offset Printing Machine','Variable-Data Printing Machine','Auto Cards Matching Machine','Auto Cards Collating Machine'] },
+  { id:'post-press', name:'Post-Press', desc:'Cutting, lamination, binding, finishing',
+    img:'uploads/hpm-machine.png',
+    machines:['HPM Programmable Paper Cutter','HPM Heavy Duty Digital Cutter','Pile Turner','Pile Lifter','Three Knife Trimmer','Perfect Binder','Thermal Laminator','UV Aqua Coater'] },
+  { id:'corrugation', name:'Corrugation', desc:'Corrugation, laminating, cutting &amp; handling',
+    img:'uploads/corrugation-hero.jpg',
+    machines:['Fully Automatic Flute Laminator','Semi Auto Flute Laminator','Double Profile Paper Corrugation Machine','Thin Blade Slitter Scorer','Four Bar Rotary Cutting Machine','Heavy Duty Board Cutter'] },
+  { id:'allied', name:'Allied / Consumables', desc:'Allied accessories &amp; consumables',
+    img:'uploads/brochure-hero.jpg',
+    machines:['Rigid Box','Thermal Tape','Numbering','Jelly Glue','Kanefusa Knives (Japanese)'] }
+];
+
+const ALL_MACH = CATS.flatMap(c => c.machines.map(n => ({ name:n, cat:c.id, catName:c.name, img:c.img })));
+
+const CITIES = [
+  { id:'hyderabad', city:'Hyderabad', state:'Telangana', type:'Headquarters', x:44.5, y:58.5, hq:true,
+    ents:[{t:'Headquarters',co:'Sai Enterprises',d:'S. Dayaker Reddy · +91-7021220085'},{t:'Service Centre',co:'Sai Enterprises Service',d:'Field service, Telangana & AP'}] },
+  { id:'delhi', city:'Delhi', state:'Delhi', type:'Sales Office', x:40.1, y:25.1, hq:false,
+    ents:[{t:'Sales Office',co:'Sai Enterprises',d:'M.S. Rao · +91-9312175513'}] },
+  { id:'pune', city:'Pune', state:'Maharashtra', type:'Service + Partner', x:31.8, y:56.0, hq:false,
+    ents:[{t:'Service Centre',co:'Sai Enterprises',d:'Western region'},{t:'Partner',co:'Maks Enterprises',d:'+91-9422086181'}] },
+  { id:'mumbai', city:'Mumbai', state:'Maharashtra', type:'Service + Partner', x:26.0, y:54.0, hq:false,
+    ents:[{t:'Partner',co:'Raka Enterprises',d:'Dilip Raka · +91-9769719659'}] },
+  { id:'kolkata', city:'Kolkata', state:'West Bengal', type:'Partner', x:72.0, y:44.2, hq:false,
+    ents:[{t:'Partner',co:'Printers Supply Co.',d:'amitabh@printersuppliers.com'}] },
+  { id:'ahmedabad', city:'Ahmedabad', state:'Gujarat', type:'Partner', x:26.5, y:42.8, hq:false,
+    ents:[{t:'Partner',co:'Pankaj Trading Company',d:'+91-9825047083'}] },
+  { id:'bangalore', city:'Bangalore', state:'Karnataka', type:'Partner', x:40.0, y:72.0, hq:false,
+    ents:[{t:'Partner',co:'Ambica Machinery',d:'+91-9845212577'}] },
+  { id:'coimbatore', city:'Coimbatore', state:'Tamil Nadu', type:'Partner', x:39.6, y:77.8, hq:false,
+    ents:[{t:'Partner',co:'PR Packs',d:'+91-9894028111'}] },
+  { id:'jaipur', city:'Jaipur', state:'Rajasthan', type:'Partner', x:36.9, y:31.0, hq:false,
+    ents:[{t:'Partner',co:'SKL Associates',d:'+91-9414068007'}] },
+  { id:'vijayawada', city:'Vijayawada', state:'Andhra Pradesh', type:'Service Centre', x:51.2, y:62.0, hq:false,
+    ents:[{t:'Service Centre',co:'Sai Enterprises',d:'AP region support'}] }
+];
+
+// ══════════════════════════════════════
+// NAV STATE
+// ══════════════════════════════════════
+let curPage = 'home';
+
+function nav(page) {
+  if (page === curPage) { window.scrollTo(0,0); return; }
+
+  const bar = document.getElementById('ptbar');
+  bar.style.transition = 'none';
+  bar.style.transform = 'translateY(100%)';
+  bar.offsetHeight;
+  bar.style.transition = 'transform 0.35s cubic-bezier(0.9,0,0.1,1)';
+  bar.style.transform = 'translateY(0%)';
+
+  setTimeout(() => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('act'));
+    const pg = document.getElementById('pg-'+page);
+    if (!pg) return;
+    pg.classList.add('act');
+    window.scrollTo(0,0);
+    curPage = page;
+    updateHdrState();
+    updateNavLinks();
+    initReveal();
+    if (page==='mach') { renderGrid('all',''); setTimeout(initMachFilter,100); }
+
+    setTimeout(() => {
+      bar.style.transition = 'transform 0.4s cubic-bezier(0.9,0,0.1,1)';
+      bar.style.transform = 'translateY(-100%)';
+    }, 80);
+  }, 220);
+}
+
+function updateHdrState() {
+  const hdr = document.getElementById('hdr');
+  const onDark = ['home','cont'].includes(curPage);
+  hdr.classList.remove('bg','dark-bg');
+  if (onDark) {
+    // scrolled-based update will handle it
+  }
+}
+
+function updateNavLinks() {
+  document.querySelectorAll('[data-p]').forEach(l => l.classList.toggle('act', l.dataset.p === curPage));
+}
+
+// ══════════════════════════════════════
+// SCROLL
+// ══════════════════════════════════════
+let prevScrollY = 0;
+
+function onScroll() {
+  const sy = window.scrollY;
+  const max = document.body.scrollHeight - window.innerHeight;
+  document.getElementById('sp').style.width = (max > 0 ? sy/max*100 : 0) + '%';
+
+  const hdr = document.getElementById('hdr');
+  const heroEl = document.getElementById('hero');
+  hdr.classList.remove('bg','dark-bg');
+
+  if (curPage === 'home') {
+    const heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : 0;
+    if (heroBottom > 72) {
+      // in hero — transparent on dark
+      if (sy > 40) { /* slight bg */ }
+    } else {
+      // past hero
+      const credEl = document.getElementById('cred');
+      const credBottom = credEl ? credEl.getBoundingClientRect().bottom : 0;
+      const offEl = document.getElementById('off');
+      const offBottom = offEl ? offEl.getBoundingClientRect().bottom : 0;
+      const presEl = document.getElementById('pres');
+      const presBottom = presEl ? presEl.getBoundingClientRect().bottom : 0;
+      const presTop = presEl ? presEl.getBoundingClientRect().top : 9999;
+      const footEl = document.getElementById('foot');
+      const footTop = footEl ? footEl.getBoundingClientRect().top : 9999;
+
+      if ((credBottom > 72 && heroBottom <= 72) || offBottom > 72 && offEl.getBoundingClientRect().top < 72 || (presTop < 72 && presBottom > 72) || footTop < 72) {
+        hdr.classList.add('dark-bg');
+      } else {
+        hdr.classList.add('bg');
+      }
+    }
+    updateOfferings();
+    updateDots();
+  } else if (['mach'].includes(curPage)) {
+    hdr.classList.add('dark-bg');
+  } else if (['about'].includes(curPage)) {
+    hdr.classList.add('bg');
+  } else if (curPage === 'cont') {
+    // left panel is dark
+  }
+
+  prevScrollY = sy;
+}
+
+window.addEventListener('scroll', onScroll, { passive:true });
+
+// ══════════════════════════════════════
+// REVEAL
+// ══════════════════════════════════════
+let revealObs;
+
+function initReveal() {
+  if (revealObs) revealObs.disconnect();
+  revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.page.act .reveal:not(.in), .page.act .ml:not(.in)').forEach(el => revealObs.observe(el));
+
+  // Why rows line observer
+  const rowObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.page.act .why-row').forEach(el => rowObs.observe(el));
+}
+
+// Counter
+function runCounters() {
+  document.querySelectorAll('.page.act [data-cnt]').forEach(el => {
+    const end = parseInt(el.dataset.cnt);
+    const dur = 1800;
+    const t0 = performance.now();
+    const fmt = n => n >= 1000 ? n.toLocaleString() + '+' : n + '+';
+    (function step(now) {
+      const p = Math.min((now - t0) / dur, 1);
+      const e = 1 - Math.pow(1-p, 3);
+      el.textContent = fmt(Math.round(end * e));
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  });
+}
+
+// HPM divider lines
+function initHPMLines() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.getElementById('hdl-l')?.classList.add('in');
+        document.getElementById('hdl-r')?.classList.add('in');
+      }
+    });
+  }, { threshold: 0.3 });
+  const s = document.getElementById('s-hpm');
+  if (s) obs.observe(s);
+}
+
+// ══════════════════════════════════════
+// MARQUEE
+// ══════════════════════════════════════
+function buildMarquee() {
+  const items = ['24 Years','Hyderabad','4000+ Machines','2000+ Clients','Pan-World Reach','HPM Sole Agent in India','Est. 2000','Pre-Press to Post-Press'];
+  const html = [...items,...items].map(i => `<span class="mq-item">${i}<span class="mq-dia">◆</span></span>`).join('');
+  const t = document.getElementById('mq-track');
+  if (t) t.innerHTML = html;
+}
+
+// ══════════════════════════════════════
+// OFFERINGS STICKY SCROLL
+// ══════════════════════════════════════
+let curOffIdx = -1;
+
+function updateOfferings() {
+  const sec = document.getElementById('off');
+  if (!sec) return;
+  const rect = sec.getBoundingClientRect();
+  const secH = sec.offsetHeight;
+  const vh = window.innerHeight;
+  const prog = Math.max(0, Math.min(1, -rect.top / (secH - vh)));
+  const idx = Math.min(4, Math.floor(prog * 5));
+
+  const fill = document.getElementById('off-tl');
+  if (fill) fill.style.height = (prog*100)+'%';
+
+  if (idx !== curOffIdx) {
+    curOffIdx = idx;
+    const c = CATS[idx];
+    if (!c) return;
+
+    // Fade name
+    const nm = document.getElementById('off-name');
+    if (nm) {
+      nm.style.opacity = '0'; nm.style.transform = 'translateY(16px)';
+      setTimeout(() => {
+        nm.textContent = c.name;
+        nm.style.transition = 'opacity 0.4s, transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+        nm.style.opacity = '1'; nm.style.transform = '';
+      }, 60);
+    }
+    const dc = document.getElementById('off-desc');
+    if (dc) dc.innerHTML = c.desc;
+    const mi = document.getElementById('off-mach');
+    if (mi) mi.innerHTML = c.machines.slice(0,3).map(m=>`<div class="off-mname">${m}</div>`).join('');
+    const ix = document.getElementById('off-idx');
+    const ri = document.getElementById('off-ridx');
+    const label = `0${idx+1} / 05`;
+    if (ix) ix.textContent = label;
+    if (ri) ri.textContent = label;
+
+    // Switch images
+    for (let i=0;i<5;i++) {
+      const img = document.getElementById('off-img-'+i);
+      if (img) img.style.opacity = i===idx ? '1' : '0';
+    }
+  }
+}
+
+// Mobile offerings: build cards
+function buildMobileOfferings() {
+  const mob = document.getElementById('off-mob');
+  if (!mob) return;
+  mob.innerHTML = CATS.map((c,i) => `
+    <div class="off-mob-card">
+      <div class="off-cat-idx">0${i+1} / 05</div>
+      <div class="off-mob-img"><img src="${c.img}" alt="${c.name}" /></div>
+      <div class="off-cat-name" style="font-size:clamp(44px,10vw,80px);">${c.name}</div>
+      <div class="off-cat-desc">${c.desc}</div>
+      <div class="off-machines" style="margin-top:16px;">${c.machines.slice(0,3).map(m=>`<div class="off-mname">${m}</div>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════
+// INDIA MAP
+// ══════════════════════════════════════
+function buildMap() {
+  const g = document.getElementById('city-g');
+  if (!g) return;
+  CITIES.forEach(city => {
+    const group = document.createElementNS('http://www.w3.org/2000/svg','g');
+    group.classList.add('city-g');
+    if (city.hq) group.classList.add('city-hq');
+    group.dataset.id = city.id;
+
+    const tx = city.x * 5;
+    const ty = city.y * 6;
+
+    const pulse = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    pulse.classList.add('city-pulse');
+    pulse.setAttribute('cx', tx);
+    pulse.setAttribute('cy', ty);
+    pulse.setAttribute('r', '4');
+
+    const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.classList.add('city-dot-c');
+    dot.setAttribute('cx', tx);
+    dot.setAttribute('cy', ty);
+    dot.setAttribute('r', city.hq ? '6' : '4.5');
+
+    group.appendChild(pulse);
+    group.appendChild(dot);
+    group.addEventListener('click', () => selectCity(city.id));
+    group.addEventListener('mouseenter', () => selectCity(city.id));
+    g.appendChild(group);
+  });
+}
+
+function selectCity(id) {
+  const city = CITIES.find(c=>c.id===id);
+  if (!city) return;
+  document.querySelectorAll('.city-g').forEach(g=>g.classList.remove('city-act'));
+  const g = document.querySelector(`[data-id="${id}"]`);
+  if (g) g.classList.add('city-act');
+  document.getElementById('pres-cn').textContent = city.city;
+  document.getElementById('pres-cs').textContent = `${city.state} · ${city.type}`;
+  document.getElementById('pres-ents').innerHTML = city.ents.map(e=>`
+    <div class="pres-ent">
+      <div class="pres-et">${e.t}</div>
+      <div class="pres-ec">${e.co}</div>
+      <div class="pres-ed">${e.d}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════
+// HPM CAROUSEL
+// ══════════════════════════════════════
+let hpmOff = 0;
+
+function hpmNav(dir) {
+  const track = document.getElementById('hpm-ct');
+  if (!track) return;
+  const cards = track.querySelectorAll('.hpm-car-card');
+  const max = Math.max(0, cards.length-2);
+  hpmOff = Math.max(0, Math.min(max, hpmOff+dir));
+  track.style.transform = `translateX(-${hpmOff * 52}%)`;
+  const pf = document.getElementById('hpm-pf');
+  if (pf) pf.style.width = (max > 0 ? (hpmOff/max)*100 : 100) + '%';
+}
+
+// Touch/drag on HPM carousel
+(function(){
+  let sx=0, dragging=false, startOff=0;
+  function setup() {
+    const track = document.getElementById('hpm-ct');
+    if (!track) return;
+    track.addEventListener('mousedown', e=>{sx=e.clientX;dragging=true;startOff=hpmOff;track.style.transition='none';});
+    window.addEventListener('mouseup', e=>{
+      if (!dragging) return; dragging=false;
+      track.style.transition='';
+      const dx = e.clientX - sx;
+      if (dx < -40) hpmNav(1);
+      else if (dx > 40) hpmNav(-1);
+    });
+    track.addEventListener('touchstart', e=>{sx=e.touches[0].clientX;},{ passive:true });
+    track.addEventListener('touchend', e=>{
+      const dx=e.changedTouches[0].clientX - sx;
+      if (dx < -40) hpmNav(1); else if (dx > 40) hpmNav(-1);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', setup);
+})();
+
+// ══════════════════════════════════════
+// MACHINERY GRID
+// ══════════════════════════════════════
+let curCat = 'all', curSearch = '';
+
+function renderGrid(cat, search) {
+  const wrap = document.getElementById('mgw');
+  if (!wrap) return;
+
+  let list = ALL_MACH;
+  if (cat !== 'all') list = list.filter(m=>m.cat===cat);
+  if (search.trim()) list = list.filter(m=>
+    m.name.toLowerCase().includes(search.toLowerCase()) ||
+    m.catName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (!list.length) {
+    wrap.innerHTML = `<div style="padding:80px 0;text-align:center;font-family:'Cormorant Garamond',serif;font-size:40px;color:rgba(8,11,13,0.25);">No machines found.</div>`;
+    return;
+  }
+
+  let html = ''; let i = 0;
+  while (i < list.length) {
+    const rowType = Math.floor(i/2) % 3;
+    if (rowType === 0 && i+1 < list.length) {
+      html += `<div class="ed-row ed-wn">${edItem(list[i],true)}${edItem(list[i+1],false)}</div>`;
+      i+=2;
+    } else if (rowType === 1 && i+2 < list.length) {
+      html += `<div class="ed-row ed-3">${edItem(list[i],false)}${edItem(list[i+1],false)}${edItem(list[i+2],false)}</div>`;
+      i+=3;
+    } else {
+      html += `<div class="ed-row ed-full">${edItem(list[i],true)}</div>`;
+      i+=1;
+    }
+  }
+  wrap.innerHTML = html;
+}
+
+function edItem(m, lg) {
+  const isHpm = m.img && m.img.endsWith('.png');
+  return `
+    <div class="ed-item${lg?' lg':''}">
+      <div class="ed-cat">${m.catName}</div>
+      <div class="ed-img">
+        <img src="${m.img}" alt="${m.name}" style="${isHpm?'object-fit:contain;background:var(--paper-2);':''}" loading="lazy" />
+      </div>
+      <div class="ed-name">${m.name}</div>
+      <div class="ed-hline"></div>
+    </div>`;
+}
+
+function doSearch(val) { curSearch = val; renderGrid(curCat, val); }
+function setFilter(cat, btn) {
+  curCat = cat;
+  document.querySelectorAll('.mach-fbtn').forEach(b=>b.classList.remove('act'));
+  btn.classList.add('act');
+  renderGrid(cat, curSearch);
+  const u = document.getElementById('mfu');
+  if (u) { u.style.left = btn.offsetLeft+'px'; u.style.width = btn.offsetWidth+'px'; }
+}
+function initMachFilter() {
+  const first = document.querySelector('.mach-fbtn.act');
+  const u = document.getElementById('mfu');
+  if (first && u) { u.style.left = first.offsetLeft+'px'; u.style.width = first.offsetWidth+'px'; }
+}
+
+// ══════════════════════════════════════
+// CONTACT FORM
+// ══════════════════════════════════════
+function submitForm(e) {
+  e.preventDefault();
+  document.getElementById('cs').classList.add('on');
+}
+function resetForm() {
+  document.getElementById('cs').classList.remove('on');
+  document.getElementById('cform').reset();
+}
+
+// ══════════════════════════════════════
+// MOBILE MENU
+// ══════════════════════════════════════
+document.getElementById('mob-btn').addEventListener('click', () => {
+  document.getElementById('mob-menu').classList.toggle('open');
+});
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
+
+// ══════════════════════════════════════
+// SECTION DOTS
+// ══════════════════════════════════════
+const HOME_SECS = [
+  { id:'s-hero', lbl:'Hero', dark:true },
+  { id:'s-cred', lbl:'Credibility', dark:true },
+  { id:'s-off', lbl:'Offerings', dark:true },
+  { id:'s-hpm', lbl:'HPM', dark:false },
+  { id:'s-pres', lbl:'Presence', dark:true },
+  { id:'s-why', lbl:'Why Sai', dark:false },
+  { id:'s-foot', lbl:'Footer', dark:true }
+];
+
+function buildDots() {
+  const nav = document.getElementById('sdots');
+  nav.innerHTML = HOME_SECS.map(s =>
+    `<div class="sdot${s.dark?'':' lt'}" data-s="${s.id}" title="${s.lbl}" onclick="scrollToSec('${s.id}')"></div>`
+  ).join('');
+}
+
+function scrollToSec(id) {
+  const el = document.getElementById(id);
+  if (el) window.scrollTo({ top: el.offsetTop, behavior:'smooth' });
+}
+
+function updateDots() {
+  if (curPage !== 'home') { document.querySelectorAll('.sdot').forEach(d=>d.classList.remove('act')); return; }
+  HOME_SECS.forEach(s => {
+    const el = document.getElementById(s.id);
+    const dot = document.querySelector(`[data-s="${s.id}"]`);
+    if (!el || !dot) return;
+    const r = el.getBoundingClientRect();
+    const inView = r.top <= window.innerHeight*0.5 && r.bottom > window.innerHeight*0.5;
+    dot.classList.toggle('act', inView);
+    dot.classList.toggle('lt', !s.dark);
+  });
+}
+
+// ══════════════════════════════════════
+// MAGNETIC BUTTONS
+// ══════════════════════════════════════
+function attachMagnetic() {
+  document.querySelectorAll('.cta-arrow, .cta-line, .hdr-cta').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const r = el.getBoundingClientRect();
+      const dx = (e.clientX - r.left - r.width/2) * 0.35;
+      const dy = (e.clientY - r.top - r.height/2) * 0.35;
+      el.style.transform = `translate(${dx}px,${dy}px)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transition = 'transform 0.5s cubic-bezier(0.16,1,0.3,1)';
+      el.style.transform = '';
+      setTimeout(()=> el.style.transition='', 500);
+    });
+  });
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildMarquee();
+  buildMap();
+  buildDots();
+  buildMobileOfferings();
+  initReveal();
+  runCounters();
+  initHPMLines();
+  updateNavLinks();
+  updateHdrState();
+  // initial header on dark (home page, top)
+  document.getElementById('hdr').style.background = 'transparent';
+  setTimeout(attachMagnetic, 400);
+  setTimeout(initMachFilter, 300);
+  // set initial offerings
+  updateOfferings();
+  if (curPage==='mach') renderGrid('all','');
+});
+
+window.addEventListener('scroll', updateDots, { passive:true });
+</script>
+</body>
+</html>

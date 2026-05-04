@@ -23,9 +23,9 @@ const sizeStyles = {
 };
 
 const colorStyles = {
-  light: 'text-background',
-  dark: 'text-foreground',
-  muted: 'text-muted-foreground',
+  light: 'text-white',
+  dark: 'text-white',
+  muted: 'text-white/60',
 };
 
 const PartnerLogo = ({ name, variant = 'dark', size = 'md' }: PartnerLogoProps) => {

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Eye, Search } from 'lucide-react';
 import { useRef } from 'react';
@@ -9,7 +9,7 @@ import ScrollProgress from '@/components/ScrollProgress';
 import PageTransition from '@/components/PageTransition';
 import MachinePreviewModal from '@/components/ui/MachinePreviewModal';
 import { productCategories, Product } from '@/data/products';
-import { matchesMachineSearch } from '@/lib/machineSearch';
+import { buildSearchableMachine, searchMachines } from '@/lib/machineSearch';
 
 const postPressGroups = [
   {
@@ -101,6 +101,7 @@ const postPressGroups = [
 
 const MachineryCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const heroRef = useRef<HTMLElement>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
@@ -118,6 +119,39 @@ const MachineryCategory = () => {
   const normalizedSlug = categorySlug === 'hlm' || categorySlug === 'hpm' ? 'post-press' : categorySlug;
   const category = productCategories.find(c => c.slug === normalizedSlug);
   const activeCategorySlug = category?.slug ?? normalizedSlug ?? '';
+
+  const categorySearchMachines = useMemo(
+    () =>
+      category
+        ? category.products.map((product) =>
+            buildSearchableMachine(product, category.name, category.slug, category.heroImage),
+          )
+        : [],
+    [category],
+  );
+
+  const activeProducts = useMemo(
+    () =>
+      !searchQuery.trim()
+        ? categorySearchMachines
+        : searchMachines(searchQuery, categorySearchMachines, categorySearchMachines.length).map((item) => item.machine),
+    [categorySearchMachines, searchQuery],
+  );
+
+  useEffect(() => {
+    const previewId = searchParams.get('preview');
+    if (!previewId || !category) return;
+
+    if (selectedProduct?.id === previewId && isModalOpen) return;
+
+    const previewProduct = category.products.find((product) => product.id === previewId);
+    if (!previewProduct) return;
+
+    const previewIndex = activeProducts.findIndex((product) => product.id === previewId);
+    setSelectedProduct(previewProduct);
+    setSelectedIndex(previewIndex >= 0 ? previewIndex : 0);
+    setIsModalOpen(true);
+  }, [searchParams, category, activeProducts, selectedProduct, isModalOpen]);
 
   if (!category) {
     return (
@@ -139,6 +173,9 @@ const MachineryCategory = () => {
     setSelectedProduct(product);
     setSelectedIndex(index);
     setIsModalOpen(true);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('preview', product.id);
+    setSearchParams(nextParams, { replace: true });
   };
 
   const handleNext = () => {
@@ -146,6 +183,9 @@ const MachineryCategory = () => {
     const nextIndex = (selectedIndex + 1) % activeProducts.length;
     setSelectedProduct(activeProducts[nextIndex]);
     setSelectedIndex(nextIndex);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('preview', activeProducts[nextIndex].id);
+    setSearchParams(nextParams, { replace: true });
   };
 
   const handlePrev = () => {
@@ -153,12 +193,10 @@ const MachineryCategory = () => {
     const prevIndex = selectedIndex === 0 ? activeProducts.length - 1 : selectedIndex - 1;
     setSelectedProduct(activeProducts[prevIndex]);
     setSelectedIndex(prevIndex);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('preview', activeProducts[prevIndex].id);
+    setSearchParams(nextParams, { replace: true });
   };
-
-  const activeProducts = useMemo(
-    () => category.products.filter((product) => matchesMachineSearch(product, searchQuery, category.name)),
-    [category.products, category.name, searchQuery]
-  );
 
   const isPostPress = category.id === 'post-press';
   const groupedPostPress = isPostPress
@@ -181,14 +219,109 @@ const MachineryCategory = () => {
       activeProducts.findIndex((product) => product.id === productId)
     );
 
+  const renderProductCard = (product: Product, index: number) => {
+    const sizeCount = product.sizes?.length ?? 0;
+    const featureCount = product.features?.length ?? 0;
+    const quickStat =
+      sizeCount > 0
+        ? `${sizeCount} size${sizeCount > 1 ? 's' : ''} available`
+        : featureCount > 0
+          ? `${featureCount} feature${featureCount > 1 ? 's' : ''} listed`
+          : 'Open the machine preview';
+
+    return (
+      <motion.article
+        key={product.id}
+        initial={{ opacity: 0, y: 40, scale: 0.96 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: Math.min(index, 8) * 0.04, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="group overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_30px_70px_-48px_rgba(15,23,42,0.28)]"
+      >
+        <motion.div
+          className="relative aspect-[4/3] overflow-hidden cursor-pointer bg-[linear-gradient(180deg,rgba(15,23,42,0.08),rgba(15,23,42,0.02))]"
+          onClick={() => handleOpenPreview(product, index)}
+          whileHover={{ scale: 1.01 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.img
+            src={product.image || category.heroImage}
+            alt={product.name}
+            className="w-full h-full object-cover"
+            whileHover={{ scale: 1.08 }}
+            transition={{ duration: 0.7 }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/16 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-foreground/28 to-transparent" />
+
+          <div className="absolute left-4 top-4 rounded-full border border-background/16 bg-background/10 px-3 py-1 text-[11px] font-medium tracking-[0.16em] text-background/72 backdrop-blur-sm">
+            {String(index + 1).padStart(2, '0')}
+          </div>
+          <div className="absolute right-4 top-4 rounded-full border border-background/16 bg-background/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-background/78 backdrop-blur-sm">
+            Preview
+          </div>
+
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            whileHover={{ opacity: 1 }}
+          >
+            <motion.div
+              initial={{ scale: 0.84 }}
+              whileHover={{ scale: 1 }}
+              className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/90 shadow-lg"
+            >
+              <Eye className="h-7 w-7 text-primary-foreground" />
+            </motion.div>
+          </motion.div>
+
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+            <p className="text-[10px] uppercase tracking-[0.16em] text-background/56">{category.name}</p>
+            <motion.h3 className="mt-2 font-serif text-xl sm:text-2xl text-background leading-tight">
+              {product.name}
+            </motion.h3>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-background/68 line-clamp-2">
+              {product.description}
+            </p>
+          </div>
+        </motion.div>
+
+        <div className="border-t border-border bg-[linear-gradient(180deg,rgba(15,23,42,0.01),rgba(15,23,42,0.06))] p-5">
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full border border-border bg-background px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {quickStat}
+            </span>
+            {product.applications?.[0] && (
+              <span className="rounded-full border border-border bg-background px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                {product.applications[0]}
+              </span>
+            )}
+          </div>
+
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <span className="text-xs text-muted-foreground">Open the quick machine preview</span>
+            <button
+              type="button"
+              onClick={() => handleOpenPreview(product, index)}
+              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:text-primary/80"
+            >
+              Open preview
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+      </motion.article>
+    );
+  };
+
   return (
     <PageTransition>
       <ScrollProgress />
       <Header />
       
-      <main className="bg-gradient-to-b from-primary/[0.06] via-background to-background">
+      <main className="bg-background">
         {/* Hero */}
-        <section ref={heroRef} className="relative min-h-[44vh] flex items-center justify-center bg-gradient-to-b from-primary/[0.12] via-background to-background border-b border-border/60 overflow-hidden">
+        <section ref={heroRef} className="relative min-h-[44vh] flex items-center justify-center border-b border-border/60 bg-[radial-gradient(circle_at_top_left,rgba(210,160,78,0.12),transparent_24%),linear-gradient(180deg,rgba(15,23,42,0.04),rgba(15,23,42,0))] overflow-hidden">
           {category.heroImage && (
             <div className="absolute inset-0 pointer-events-none">
               <img
@@ -250,7 +383,7 @@ const MachineryCategory = () => {
         <section className="border-y border-border/60 bg-primary/[0.05] px-6 sm:px-8 md:px-16 lg:px-24 py-6">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <p className="caption mb-1">Navigate Machinery</p>
+              <p className="caption mb-1">Machinery Categories</p>
               <p className="text-sm text-muted-foreground">
                 Switch categories quickly or continue through the complete machine listing below.
               </p>
@@ -300,13 +433,8 @@ const MachineryCategory = () => {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
-              <span className="inline-flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-4">
-                <span className="w-8 h-px bg-primary" />
-                Catalogue
-                <span className="w-8 h-px bg-primary" />
-              </span>
               <h2 className="font-serif text-2xl sm:text-3xl text-foreground">
-                Complete <span className="text-primary italic">machine list.</span>
+                Machine previews.
               </h2>
             </motion.div>
 
@@ -327,68 +455,7 @@ const MachineryCategory = () => {
                       </p>
                     </motion.div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                      {group.products.map((product, index) => {
-                        const globalIndex = productActiveIndex(product.id);
-                        return (
-                          <motion.div
-                            key={product.id}
-                            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.04, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                            className="group overflow-hidden rounded-2xl border border-border bg-background"
-                          >
-                            <motion.div
-                              className="relative aspect-[4/3] overflow-hidden cursor-pointer bg-secondary/30"
-                              onClick={() => handleOpenPreview(product, globalIndex)}
-                              whileHover={{ scale: 1.02 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <motion.img
-                                src={product.image || category.heroImage}
-                                alt={product.name}
-                                className="w-full h-full object-cover"
-                                whileHover={{ scale: 1.1 }}
-                                transition={{ duration: 0.7 }}
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-primary/45 via-primary/10 to-transparent opacity-45 group-hover:opacity-60 transition-opacity duration-500" />
-                              <motion.div className="absolute inset-0 flex items-center justify-center" initial={{ opacity: 0 }} whileHover={{ opacity: 1 }}>
-                                <motion.div initial={{ scale: 0.8 }} whileHover={{ scale: 1 }} className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
-                                  <Eye className="w-7 h-7 text-primary-foreground" />
-                                </motion.div>
-                              </motion.div>
-                              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                                <motion.h3 className="font-serif text-xl sm:text-2xl text-background mb-2 group-hover:text-primary transition-colors duration-300">
-                                  {product.name}
-                                </motion.h3>
-                                {product.sizes && product.sizes.length > 0 && (
-                                  <p className="text-sm text-background/60">
-                                    {product.sizes.length} size{product.sizes.length > 1 ? 's' : ''} available
-                                  </p>
-                                )}
-                              </div>
-                              <div className="absolute top-4 left-4">
-                                <span className="text-sm font-medium text-background/30 font-mono">
-                                  {String(globalIndex + 1).padStart(2, '0')}
-                                </span>
-                              </div>
-                            </motion.div>
-                            <motion.div className="p-4 border-t border-border bg-gradient-to-r from-primary/[0.05] to-transparent transition-all duration-300" whileHover={{ backgroundColor: 'hsl(var(--secondary) / 0.45)' }}>
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs text-muted-foreground">Quick preview</span>
-                                <Link
-                                  to={`/machinery/${activeCategorySlug}/${product.id}`}
-                                  className="text-xs text-primary hover:underline inline-flex items-center gap-1 group/link"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  Details
-                                  <ArrowRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
-                                </Link>
-                              </div>
-                            </motion.div>
-                          </motion.div>
-                        );
-                      })}
+                      {group.products.map((product) => renderProductCard(product, productActiveIndex(product.id)))}
                     </div>
                   </div>
                 ))}
@@ -399,93 +466,14 @@ const MachineryCategory = () => {
                       <h3 className="font-serif text-2xl sm:text-3xl text-foreground">Additional Machines</h3>
                     </div>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                      {uncategorizedPostPress.map((product, index) => {
-                        const globalIndex = productActiveIndex(product.id);
-                        return (
-                          <motion.div
-                            key={product.id}
-                            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: index * 0.04, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                            className="group overflow-hidden rounded-2xl border border-border bg-background"
-                          >
-                            <motion.div
-                              className="relative aspect-[4/3] overflow-hidden cursor-pointer bg-secondary/30"
-                              onClick={() => handleOpenPreview(product, globalIndex)}
-                              whileHover={{ scale: 1.02 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <motion.img src={product.image || category.heroImage} alt={product.name} className="w-full h-full object-cover" whileHover={{ scale: 1.1 }} transition={{ duration: 0.7 }} />
-                              <div className="absolute inset-0 bg-gradient-to-t from-primary/45 via-primary/10 to-transparent opacity-45 group-hover:opacity-60 transition-opacity duration-500" />
-                            </motion.div>
-                            <motion.div className="p-4 border-t border-border bg-gradient-to-r from-primary/[0.05] to-transparent transition-all duration-300" whileHover={{ backgroundColor: 'hsl(var(--secondary) / 0.45)' }}>
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs text-muted-foreground">Quick preview</span>
-                                <Link to={`/machinery/${activeCategorySlug}/${product.id}`} className="text-xs text-primary hover:underline inline-flex items-center gap-1">
-                                  Details
-                                  <ArrowRight className="w-3 h-3" />
-                                </Link>
-                              </div>
-                            </motion.div>
-                          </motion.div>
-                        );
-                      })}
+                      {uncategorizedPostPress.map((product) => renderProductCard(product, productActiveIndex(product.id)))}
                     </div>
                   </div>
                 )}
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                {activeProducts.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                    className="group overflow-hidden rounded-2xl border border-border bg-background"
-                  >
-                    <motion.div 
-                      className="relative aspect-[4/3] overflow-hidden cursor-pointer bg-secondary/30"
-                      onClick={() => handleOpenPreview(product, index)}
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <motion.img src={product.image || category.heroImage} alt={product.name} className="w-full h-full object-cover" whileHover={{ scale: 1.1 }} transition={{ duration: 0.7 }} />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/45 via-primary/10 to-transparent opacity-45 group-hover:opacity-60 transition-opacity duration-500" />
-                      <motion.div className="absolute inset-0 flex items-center justify-center" initial={{ opacity: 0 }} whileHover={{ opacity: 1 }}>
-                        <motion.div initial={{ scale: 0.8 }} whileHover={{ scale: 1 }} className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
-                          <Eye className="w-7 h-7 text-primary-foreground" />
-                        </motion.div>
-                      </motion.div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                        <motion.h3 className="font-serif text-xl sm:text-2xl text-background mb-2 group-hover:text-primary transition-colors duration-300">
-                          {product.name}
-                        </motion.h3>
-                        {product.sizes && product.sizes.length > 0 && (
-                          <p className="text-sm text-background/60">
-                            {product.sizes.length} size{product.sizes.length > 1 ? 's' : ''} available
-                          </p>
-                        )}
-                      </div>
-                      <div className="absolute top-4 left-4">
-                        <span className="text-sm font-medium text-background/30 font-mono">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                      </div>
-                    </motion.div>
-                    <motion.div className="p-4 border-t border-border bg-gradient-to-r from-primary/[0.05] to-transparent transition-all duration-300" whileHover={{ backgroundColor: 'hsl(var(--secondary) / 0.45)' }}>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-muted-foreground">Quick preview</span>
-                        <Link to={`/machinery/${activeCategorySlug}/${product.id}`} className="text-xs text-primary hover:underline inline-flex items-center gap-1 group/link" onClick={(e) => e.stopPropagation()}>
-                          Details
-                          <ArrowRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
-                        </Link>
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                ))}
+                {activeProducts.map((product, index) => renderProductCard(product, index))}
               </div>
             )}
             {activeProducts.length === 0 && (
@@ -507,12 +495,6 @@ const MachineryCategory = () => {
             viewport={{ once: true }}
             className="max-w-2xl mx-auto text-center"
           >
-            <span className="inline-flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-6">
-              <span className="w-8 h-px bg-primary" />
-              Support
-              <span className="w-8 h-px bg-primary" />
-            </span>
-            
             <h3 className="text-foreground mb-4 text-2xl sm:text-3xl font-serif">
               Need help selecting the right machine?
             </h3>
@@ -541,7 +523,13 @@ const MachineryCategory = () => {
       {/* Preview Modal */}
       <MachinePreviewModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedProduct(null);
+          const nextParams = new URLSearchParams(searchParams);
+          nextParams.delete('preview');
+          setSearchParams(nextParams, { replace: true });
+        }}
         product={selectedProduct}
         categorySlug={activeCategorySlug}
         onNext={handleNext}

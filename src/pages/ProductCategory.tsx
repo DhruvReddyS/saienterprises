@@ -106,7 +106,7 @@ const ProductCategory = () => {
                       transition={{ duration: 0.4, delay: prodIndex * 0.05 }}
                     >
                       <Link
-                        to={`/machinery/${category.slug}/${product.id}`}
+                        to={`/machinery/${category.slug}?preview=${product.id}`}
                         className="block h-full p-5 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 group"
                       >
                         <div className="aspect-[4/3] rounded-lg bg-secondary/50 mb-4 overflow-hidden">

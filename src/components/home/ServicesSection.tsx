@@ -1,218 +1,317 @@
-import { useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import InquiryModal from '@/components/InquiryModal';
-import ScrollReveal from '@/components/ScrollReveal';
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import saiLogo from '@/assets/sai-logo-cmyk.png';
 
-const services = [
-  {
-    title: "Trading & Export",
-    description: "Complete range of graphic machinery for national and international markets.",
-    stats: "50+ Countries",
-  },
-  {
-    title: "Modernization",
-    description: "Upgrading existing units to advanced multi-color presses.",
-    stats: "200+ Upgrades",
-  },
-  {
-    title: "Service & Support",
-    description: "Continuous technical support, maintenance, and reliability assurance.",
-    stats: "24/7 Support",
-  },
-  {
-    title: "HPM Sole Agent",
-    description: "Exclusive authorized agent in India for HPM packaging machines.",
-    stats: "Exclusive",
-    highlight: true,
-  },
+const serviceSteps = [
+  { number: '01', title: 'Machine\nSuggestions', detail: 'Right shortlist for\noutput & budget' },
+  { number: '02', title: 'Consultancy', detail: 'Technical guidance\nbefore commitment' },
+  { number: '03', title: 'Sourcing', detail: 'Best-fit brands\n& machine options' },
+  { number: '04', title: 'Planning', detail: 'Growth-ready line\n& floor planning' },
+  { number: '05', title: 'Installation', detail: 'Setup that gets\nproduction-ready fast' },
+  { number: '06', title: 'Deployment', detail: 'Smooth rollout\ninto your workflow' },
+  { number: '07', title: 'After-Sales', detail: 'Follow-up, spares\n& continuity' },
+  { number: '08', title: 'Technical\nSupport', detail: 'Machine-side help\nwhen it matters' },
 ];
 
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
 const ServicesSection = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState('General Inquiry');
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [ringRot, setRingRot] = useState(0);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) setRevealed(true);
+    }, { threshold: 0.1 });
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (!sectionRef.current) return;
+        const rect = sectionRef.current.getBoundingClientRect();
+        const raw = (window.innerHeight - rect.top) / (window.innerHeight + rect.height * 0.35);
+        const mix = clamp(raw, 0, 1);
+        setActiveIndex(clamp(Math.round(mix * (serviceSteps.length - 1)), 0, serviceSteps.length - 1));
+        setRingRot(mix * 30);
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  // SVG constants — all in SVG coordinate space, no HTML overflow possible
+  const CX = 400;
+  const CY = 400;
+  const RING_R = 256;
+  const LABEL_R = 326;
 
   return (
-    <>
-      <section ref={containerRef} className="relative py-16 sm:py-20 md:py-24 bg-background overflow-hidden">
-        {/* Top divider */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+    <section
+      ref={sectionRef}
+      style={{
+        background: '#060A10',
+        padding: '120px 0 112px',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* ambient blobs */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        background: 'radial-gradient(circle at 18% 22%, rgba(59,130,246,0.09) 0%, transparent 30%), radial-gradient(circle at 80% 16%, rgba(59,130,246,0.07) 0%, transparent 25%)',
+      }} />
 
-        {/* Ambient glow */}
-        <motion.div
-          className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-primary/4 blur-[120px] pointer-events-none"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-
-        <div className="relative z-10 px-6 sm:px-8 md:px-12 lg:px-20">
-          <div className="max-w-7xl mx-auto">
+      <div style={{ maxWidth: 1320, margin: '0 auto', padding: '0 56px', position: 'relative' }}
+        className="max-md:!px-6"
+      >
+        {/* ── Main: caption (left) + orbital (right) ── */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 48, alignItems: 'center',
+        }}
+          className="max-lg:!grid-cols-1 max-lg:!gap-10"
+        >
+          {/* ── LEFT: caption + step list ── */}
+          <div style={{
+            opacity: revealed ? 1 : 0, transform: revealed ? 'none' : 'translateY(20px)',
+            transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1)',
+          }}>
             {/* Header */}
-            <ScrollReveal animation="fadeUp" className="text-center mb-12 sm:mb-16">
-              <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-4">
-                <span className="w-8 h-px bg-primary" />
-                Services
-                <span className="w-8 h-px bg-primary" />
-              </span>
-              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight mb-4">
-                What we <span className="text-primary italic">do.</span>
-              </h2>
-              <p className="text-muted-foreground text-base sm:text-lg max-w-lg mx-auto">
-                Core capabilities driving success for over two decades.
-              </p>
-            </ScrollReveal>
-
-            {/* Mobile Horizontal Scroll */}
-            <div 
-              ref={scrollRef}
-              className="md:hidden -mx-6 px-6 overflow-x-auto scrollbar-hide"
-              style={{ scrollSnapType: 'x mandatory' }}
-            >
-              <div className="flex gap-4 pb-4" style={{ width: 'max-content' }}>
-                {services.map((service, index) => (
-                  <ScrollReveal key={service.title} animation="fadeUp" delay={index * 0.1}>
-                    <div
-                      onClick={() => {
-                        setSelectedService(service.title);
-                        setIsModalOpen(true);
-                      }}
-                      className={`flex-shrink-0 w-[260px] sm:w-[280px] cursor-pointer transition-all duration-500 overflow-hidden ${
-                        service.highlight 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-card border border-border'
-                      }`}
-                      style={{ scrollSnapAlign: 'start' }}
-                    >
-                      <div className="relative p-5 h-[230px] flex flex-col">
-                        <span className={`text-[10px] uppercase tracking-[0.15em] mb-3 block ${
-                          service.highlight ? 'text-primary-foreground/50' : 'text-muted-foreground'
-                        }`}>
-                          0{index + 1}
-                        </span>
-
-                        <h3 className={`font-serif text-xl sm:text-2xl mb-2 ${
-                          service.highlight ? 'text-primary-foreground' : 'text-foreground'
-                        }`}>
-                          {service.title}
-                        </h3>
-                        
-                        <p className={`text-sm leading-relaxed mb-auto ${
-                          service.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                        }`}>
-                          {service.description}
-                        </p>
-
-                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mt-4 self-start ${
-                          service.highlight 
-                            ? 'bg-primary-foreground/10 text-primary-foreground' 
-                            : 'bg-secondary text-foreground'
-                        }`}>
-                          <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-                          {service.stats}
-                        </div>
-                      </div>
-                    </div>
-                  </ScrollReveal>
-                ))}
-              </div>
+            <div style={{
+              fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
+              color: '#3B82F6', marginBottom: 18,
+              display: 'flex', alignItems: 'center', gap: 12, fontWeight: 700,
+            }}>
+              <div style={{ width: 32, height: 1, background: '#3B82F6' }} />
+              What We Do
             </div>
-
-            {/* Desktop Grid */}
-            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {services.map((service, index) => {
-                const isHovered = hoveredIndex === index;
-                
-                return (
-                  <ScrollReveal key={service.title} animation="fadeUp" delay={index * 0.1}>
-                    <div
-                      onMouseEnter={() => setHoveredIndex(index)}
-                      onMouseLeave={() => setHoveredIndex(null)}
-                      onClick={() => {
-                        setSelectedService(service.title);
-                        setIsModalOpen(true);
-                      }}
-                      className={`group relative cursor-pointer overflow-hidden transition-all duration-500 ${
-                        service.highlight 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-card border border-border hover:border-primary/30'
-                      }`}
-                    >
-                      <div className="relative p-6 h-[290px] flex flex-col">
-                        {/* Hover gradient overlay */}
-                        {!service.highlight && (
-                          <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                        )}
-
-                        <span className={`text-[10px] uppercase tracking-[0.15em] mb-4 block relative ${
-                          service.highlight ? 'text-primary-foreground/50' : 'text-muted-foreground'
-                        }`}>
-                          0{index + 1}
-                        </span>
-
-                        {service.highlight && (
-                          <div className="absolute top-4 right-4">
-                            <Sparkles className="w-4 h-4 text-primary-foreground/40" />
-                          </div>
-                        )}
-
-                        <h3 className={`font-serif text-xl md:text-2xl mb-3 relative ${
-                          service.highlight ? 'text-primary-foreground' : 'text-foreground group-hover:text-primary'
-                        } transition-colors duration-300`}>
-                          {service.title}
-                        </h3>
-                        
-                        <p className={`text-sm leading-relaxed mb-auto relative ${
-                          service.highlight ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                        }`}>
-                          {service.description}
-                        </p>
-
-                        <div className="flex items-center justify-between mt-6 relative">
-                          <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
-                            service.highlight 
-                              ? 'bg-primary-foreground/10 text-primary-foreground' 
-                              : 'bg-secondary text-foreground'
-                          }`}>
-                            <span className="w-1.5 h-1.5 rounded-full bg-current opacity-60" />
-                            {service.stats}
-                          </div>
-                          
-                          <motion.div 
-                            className={`${service.highlight ? 'text-primary-foreground' : 'text-primary'}`}
-                            animate={isHovered ? { x: 3 } : { x: 0 }}
-                          >
-                            <ArrowRight className="w-4 h-4" />
-                          </motion.div>
-                        </div>
-
-                        {/* Bottom accent line */}
-                        {!service.highlight && (
-                          <motion.div
-                            className="absolute bottom-0 left-0 h-0.5 bg-primary"
-                            initial={{ width: 0 }}
-                            animate={{ width: isHovered ? '100%' : 0 }}
-                            transition={{ duration: 0.3 }}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  </ScrollReveal>
-                );
-              })}
+            <h2 style={{
+              fontSize: 'clamp(38px,4.8vw,72px)', fontWeight: 800, lineHeight: 0.94,
+              color: '#fff', margin: '0 0 20px',
+            }}>
+              Eight steps.<br />
+              <span style={{ color: '#60A5FA', fontWeight: 600 }}>One complete flow.</span>
+            </h2>
+            <p style={{
+              fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.85, marginBottom: 28, maxWidth: 420,
+            }}>
+              From first shortlist to long-term support — one team builds the full machinery cycle around your production floor.
+            </p>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <Link to="/contact" className="btn-primary">
+                Contact Sales <span style={{ fontSize: 15 }}>→</span>
+              </Link>
+              <Link to="/about" className="btn-outline">About Us</Link>
             </div>
           </div>
-        </div>
-      </section>
 
-      <InquiryModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        serviceType={selectedService}
-      />
-    </>
+          {/* ── RIGHT: Orbital SVG — all labels live INSIDE the SVG ── */}
+          <div style={{
+            position: 'relative',
+            opacity: revealed ? 1 : 0,
+            transform: revealed ? 'none' : 'translateY(28px)',
+            transition: 'all 1.1s cubic-bezier(0.16,1,0.3,1) 0.1s',
+          }}>
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1', maxWidth: 560, margin: '0 auto' }}>
+              <svg
+                viewBox="0 0 800 800"
+                style={{ width: '100%', height: '100%', overflow: 'visible' }}
+              >
+                <defs>
+                  <radialGradient id="svc-core" cx="50%" cy="44%" r="58%">
+                    <stop offset="0%" stopColor="rgba(59,130,246,0.18)" />
+                    <stop offset="60%" stopColor="rgba(10,15,24,0.98)" />
+                    <stop offset="100%" stopColor="rgba(6,10,16,1)" />
+                  </radialGradient>
+                  <filter id="svc-glow">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                  <filter id="svc-glow-sm">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                  </filter>
+                  <linearGradient id="svc-ring" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(59,130,246,0.5)" />
+                    <stop offset="50%" stopColor="rgba(255,255,255,0.12)" />
+                    <stop offset="100%" stopColor="rgba(59,130,246,0.22)" />
+                  </linearGradient>
+                </defs>
+
+                {/* Rotating outer rings */}
+                <g style={{ transformOrigin: `${CX}px ${CY}px`, transform: `rotate(${ringRot}deg)`, transition: 'transform 0.2s ease-out' }}>
+                  <circle cx={CX} cy={CY} r={RING_R + 52} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+                  <circle cx={CX} cy={CY} r={RING_R} fill="none" stroke="url(#svc-ring)" strokeWidth="2" strokeDasharray="12 15" />
+                  <circle cx={CX} cy={CY} r={RING_R - 40} fill="none" stroke="rgba(59,130,246,0.1)" strokeWidth="1" strokeDasharray="2 12" />
+                </g>
+
+                {/* Core circle */}
+                <circle cx={CX} cy={CY} r={164} fill="url(#svc-core)" stroke="rgba(59,130,246,0.18)" strokeWidth="1.2" />
+                <circle cx={CX} cy={CY} r={176} fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+
+                {/* Steps: dots + SVG text labels */}
+                {serviceSteps.map((step, i) => {
+                  const angleDeg = -90 + i * 45;
+                  const rad = angleDeg * (Math.PI / 180);
+                  const cos = Math.cos(rad);
+                  const sin = Math.sin(rad);
+
+                  // Dot on ring
+                  const dx = CX + cos * RING_R;
+                  const dy = CY + sin * RING_R;
+
+                  // Label anchor position (further out from ring)
+                  const lx = CX + cos * LABEL_R;
+                  const ly = CY + sin * LABEL_R;
+
+                  // Text anchor based on horizontal quadrant
+                  const anchor: string = cos > 0.3 ? 'start' : cos < -0.3 ? 'end' : 'middle';
+
+                  // Count total text lines for this step
+                  const titleLines = step.title.split('\n');
+                  const detailLines = step.detail.split('\n');
+                  const totalTextHeight = titleLines.length * 13 + 4 + detailLines.length * 11;
+
+                  // Smooth vertical offset: lerp from "text below anchor" (top of ring)
+                  // to "text above anchor" (bottom of ring), passing through "centered" at sides.
+                  // sin ranges from -1 (top) to +1 (bottom)
+                  // At sin=-1 (top):    offset = 6         → text hangs below anchor
+                  // At sin= 0 (sides):  offset = -height/2 → text centered on anchor
+                  // At sin=+1 (bottom): offset = -height+2 → text sits above anchor
+                  const t = (sin + 1) / 2; // 0 at top, 0.5 at sides, 1 at bottom
+                  const blockOffsetY = 6 - t * (totalTextHeight + 4);
+
+                  const isActive = i === activeIndex;
+
+                  return (
+                    <g key={step.number}>
+                      {/* Active pulse ring */}
+                      {isActive && (
+                        <circle cx={dx} cy={dy} r={24} fill="none" stroke="rgba(96,165,250,0.18)" strokeWidth="1">
+                          <animate attributeName="r" values="18;28;18" dur="2s" repeatCount="indefinite" />
+                          <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite" />
+                        </circle>
+                      )}
+
+                      {/* Dot bubble */}
+                      <motion.circle
+                        cx={dx} cy={dy}
+                        r={isActive ? 18 : 13}
+                        fill={isActive ? 'rgba(12,22,40,0.98)' : 'rgba(8,14,24,0.92)'}
+                        stroke={isActive ? 'rgba(96,165,250,0.7)' : 'rgba(59,130,246,0.3)'}
+                        strokeWidth={isActive ? 1.5 : 1}
+                        filter={isActive ? 'url(#svc-glow-sm)' : undefined}
+                        animate={{ r: isActive ? 18 : 13 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+                      />
+
+                      {/* Number inside dot */}
+                      <text
+                        x={dx} y={dy + 3.5}
+                        textAnchor="middle"
+                        fill={isActive ? '#93C5FD' : 'rgba(96,165,250,0.6)'}
+                        fontSize="9"
+                        fontWeight="800"
+                        letterSpacing="0.1"
+                        fontFamily="'DM Sans', sans-serif"
+                        style={{ userSelect: 'none', pointerEvents: 'none', transition: 'fill 0.3s' }}
+                      >
+                        {step.number}
+                      </text>
+
+                      {/* Connector line from dot toward label */}
+                      <line
+                        x1={dx + cos * 20} y1={dy + sin * 20}
+                        x2={lx - cos * 16} y2={ly - sin * 16}
+                        stroke={isActive ? 'rgba(96,165,250,0.35)' : 'rgba(255,255,255,0.08)'}
+                        strokeWidth="0.7"
+                        style={{ transition: 'stroke 0.3s' }}
+                      />
+
+                      {/* Title text */}
+                      {titleLines.map((line, li) => (
+                        <text
+                          key={`t${li}`}
+                          x={lx}
+                          y={ly + blockOffsetY + li * 13}
+                          textAnchor={anchor}
+                          fill={isActive ? '#fff' : 'rgba(255,255,255,0.72)'}
+                          fontSize="11.5"
+                          fontWeight="700"
+                          fontFamily="'DM Sans', sans-serif"
+                          style={{ userSelect: 'none', pointerEvents: 'none', transition: 'fill 0.3s' }}
+                        >
+                          {line}
+                        </text>
+                      ))}
+
+                      {/* Detail text */}
+                      {detailLines.map((line, li) => (
+                        <text
+                          key={`d${li}`}
+                          x={lx}
+                          y={ly + blockOffsetY + titleLines.length * 13 + 4 + li * 11}
+                          textAnchor={anchor}
+                          fill={isActive ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.28)'}
+                          fontSize="9.5"
+                          fontFamily="'DM Sans', sans-serif"
+                          style={{ userSelect: 'none', pointerEvents: 'none', transition: 'fill 0.3s' }}
+                        >
+                          {line}
+                        </text>
+                      ))}
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Sai logo — HTML overlay centered */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: revealed ? 1 : 0, scale: revealed ? 1 : 0.85 }}
+                transition={{ duration: 1.1, delay: 0.2 }}
+                style={{
+                  position: 'absolute',
+                  left: '50%', top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '26%', aspectRatio: '1/1',
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle at 50% 38%, rgba(59,130,246,0.22) 0%, rgba(10,15,24,0.98) 65%)',
+                  border: '1px solid rgba(59,130,246,0.2)',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 28px 72px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.08)',
+                  zIndex: 2, padding: 16, textAlign: 'center',
+                }}
+              >
+                <img src={saiLogo} alt="Sai Enterprises" style={{ width: '80%', objectFit: 'contain', marginBottom: 8 }} />
+                <div style={{
+                  fontSize: 7.5, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase',
+                  color: 'rgba(96,165,250,0.7)',
+                }}>
+                  End-to-End
+                </div>
+              </motion.div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
   );
 };
 

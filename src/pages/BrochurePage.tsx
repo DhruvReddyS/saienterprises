@@ -1,124 +1,131 @@
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ScrollProgress from '@/components/ScrollProgress';
 import PageTransition from '@/components/PageTransition';
+import BrochureViewer from '@/components/brochure/BrochureViewer';
 import brochurePdf from '@/assets/Sai Enterprises-2026.pdf';
 import { productCategories } from '@/data/products';
-import { Link } from 'react-router-dom';
-import { getAllMachineImages } from '@/data/machineAssets';
+import { useEffect, useState } from 'react';
 
 const BrochurePage = () => {
-  const brochureImages = getAllMachineImages();
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => { setTimeout(() => setRevealed(true), 80); }, []);
 
   return (
     <PageTransition>
-      <ScrollProgress />
       <Header />
 
-      <main className="bg-gradient-to-b from-primary/[0.08] via-background to-background">
-        <section className="pt-24 sm:pt-28 lg:pt-32 pb-10 px-5 sm:px-8 md:px-14 lg:px-20 xl:px-24">
-          <div className="max-w-7xl mx-auto">
-            <motion.span
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-primary font-semibold mb-5"
-            >
-              <span className="w-8 h-px bg-primary" />
-              E-Brochure
-              <span className="w-8 h-px bg-primary" />
-            </motion.span>
+      {/* Hero header */}
+      <div style={{
+        background: '#060A10', padding: '140px 64px 72px',
+        position: 'relative', overflow: 'hidden',
+      }} className="max-md:!px-7 max-md:!pt-28 max-md:!pb-12">
+        <div style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: 'radial-gradient(circle at 70% 40%, rgba(59,130,246,0.08) 0%, transparent 60%)',
+          pointerEvents: 'none',
+        }} />
 
-            <motion.h1
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.06 }}
-              className="font-serif text-[2.2rem] sm:text-[2.8rem] lg:text-[3.3rem] leading-[0.95] text-foreground mb-4"
-            >
-              Sai Enterprises Full Catalogue
-            </motion.h1>
+        <div style={{
+          maxWidth: 1300, margin: '0 auto',
+          opacity: revealed ? 1 : 0, transform: revealed ? 'none' : 'translateY(20px)',
+          transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1)',
+        }}>
+          <div style={{
+            fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em',
+            textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16,
+          }}>
+            E-Brochure 2026
+          </div>
+          <h1 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(44px,6vw,80px)', fontWeight: 700,
+            lineHeight: 0.9, letterSpacing: '-0.02em',
+            color: '#fff', marginBottom: 24,
+          }}>
+            Full Catalogue<br />
+            <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.6)' }}>
+              — Page by Page
+            </span>
+          </h1>
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif", fontSize: 14,
+            color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, maxWidth: 560, marginBottom: 32,
+          }}>
+            Browse every machine in our portfolio — flip through categories, search by name,
+            and jump directly to the machine you need.
+          </p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-sm sm:text-base text-muted-foreground max-w-3xl mb-6"
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
+            <a
+              href={brochurePdf}
+              download="Sai-Enterprises-Catalogue-2026.pdf"
+              style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em',
+                textTransform: 'uppercase', fontWeight: 600,
+                padding: '12px 28px', background: '#3B82F6',
+                border: 'none', color: '#fff', cursor: 'pointer',
+                textDecoration: 'none', display: 'inline-block',
+                transition: 'opacity 0.2s',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.85'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
             >
-              View the complete brochure in full-screen style and jump directly into category pages for faster machine discovery.
-            </motion.p>
+              Download PDF
+            </a>
+            <Link
+              to="/contact"
+              style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em',
+                textTransform: 'uppercase', fontWeight: 600,
+                padding: '12px 28px', background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.7)',
+                textDecoration: 'none', display: 'inline-block',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#3B82F6'; el.style.color = '#3B82F6'; }}
+              onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.18)'; el.style.color = 'rgba(255,255,255,0.7)'; }}
+            >
+              Request Quote
+            </Link>
+          </div>
+        </div>
+      </div>
 
-            <div className="flex flex-wrap gap-3">
-              <a
-                href={brochurePdf}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground hover:bg-primary/90 transition-colors"
+      {/* Brochure viewer */}
+      <BrochureViewer />
+
+      {/* Category quick links */}
+      <div style={{ background: '#F0F4FF', padding: '64px 64px' }} className="max-md:!px-7 max-md:!py-12">
+        <div style={{ maxWidth: 1300, margin: '0 auto' }}>
+          <div style={{
+            fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.28em',
+            textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16,
+          }}>
+            Explore by Category
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {productCategories.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/machinery/${cat.slug}`}
+                style={{
+                  fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.16em',
+                  textTransform: 'uppercase', fontWeight: 600,
+                  padding: '10px 20px',
+                  border: '1px solid rgba(0,0,0,0.12)', color: '#060A10',
+                  background: '#fff', textDecoration: 'none',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#3B82F6'; el.style.color = '#3B82F6'; }}
+                onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(0,0,0,0.12)'; el.style.color = '#060A10'; }}
               >
-                Open Full Brochure
-              </a>
-              <a
-                href={brochurePdf}
-                download="Sai-Enterprises-Catalogue-2026.pdf"
-                className="inline-flex items-center rounded-full border border-border bg-background px-6 py-3 text-xs font-semibold uppercase tracking-[0.14em] text-foreground hover:border-primary/30 hover:text-primary transition-colors"
-              >
-                Download PDF
-              </a>
-            </div>
+                {cat.name}
+              </Link>
+            ))}
           </div>
-        </section>
-
-        <section className="px-5 sm:px-8 md:px-14 lg:px-20 xl:px-24 pb-8">
-          <div className="max-w-7xl mx-auto rounded-2xl overflow-hidden border border-border bg-background shadow-[0_20px_70px_-45px_rgba(19,72,160,0.35)]">
-            <iframe
-              src={brochurePdf}
-              title="Sai Enterprises E-Brochure"
-              className="w-full h-[72vh] sm:h-[78vh] lg:h-[82vh]"
-            />
-          </div>
-        </section>
-
-        <section className="px-5 sm:px-8 md:px-14 lg:px-20 xl:px-24 pb-16">
-          <div className="max-w-7xl mx-auto">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-3">Explore By Category</p>
-            <div className="flex flex-wrap gap-2.5">
-              {productCategories.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/machinery/${category.slug}`}
-                  className="rounded-full border border-border bg-background px-4 py-2 text-xs uppercase tracking-[0.14em] text-foreground hover:border-primary/30 hover:text-primary transition-colors"
-                >
-                  {category.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="px-5 sm:px-8 md:px-14 lg:px-20 xl:px-24 pb-20">
-          <div className="max-w-7xl mx-auto">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-3">Machine Image Archive</p>
-            <h2 className="font-serif text-[1.9rem] sm:text-[2.3rem] text-foreground leading-[0.98] mb-4">
-              All brochure machine visuals in one place.
-            </h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              This archive includes all machine images from the brochure assets for quick visual browsing.
-            </p>
-            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {brochureImages.map((image) => (
-                <div key={`${image.folder}-${image.name}-${image.src}`} className="rounded-2xl border border-border bg-background overflow-hidden">
-                  <div className="aspect-[4/3] bg-secondary/20">
-                    <img src={image.src} alt={image.name} className="w-full h-full object-cover" loading="lazy" />
-                  </div>
-                  <div className="p-3">
-                    <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-1">{image.folder}</p>
-                    <p className="text-sm text-foreground line-clamp-2">{image.name.replace(/-/g, ' ')}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
+        </div>
+      </div>
 
       <Footer />
     </PageTransition>
