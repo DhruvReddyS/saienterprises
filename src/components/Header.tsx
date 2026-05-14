@@ -87,8 +87,8 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Desktop nav — tablet+ */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }} className="hidden min-[768px]:flex">
+          {/* Desktop nav — 960px+ only */}
+          <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }} className="hidden min-[960px]:!flex">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
@@ -129,9 +129,9 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* Mobile burger — below 768px only */}
+          {/* Mobile burger — tablet 768-959px only; <768px uses bottom nav */}
           <button
-            className="min-[768px]:!hidden"
+            className="max-[767px]:!hidden min-[960px]:!hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{
               background: 'none', border: 'none',
@@ -150,9 +150,9 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile full-screen menu */}
+      {/* Mobile full-screen menu — tablet 768-959px only */}
       <div
-        className="min-[768px]:hidden"
+        className="max-[767px]:!hidden min-[960px]:!hidden"
         style={{
           position: 'fixed', inset: 0, zIndex: 190,
           background: 'linear-gradient(160deg, #060A10 0%, #091525 50%, #060A10 100%)',

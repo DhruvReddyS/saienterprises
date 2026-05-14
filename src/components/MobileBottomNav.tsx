@@ -66,7 +66,7 @@ const MobileBottomNav = () => {
 
   return (
     <nav
-      className="min-[768px]:hidden"
+      className="min-[768px]:!hidden flex"
       style={{
         position: 'fixed',
         bottom: 0,
@@ -77,7 +77,6 @@ const MobileBottomNav = () => {
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         borderTop: '1px solid rgba(255,255,255,0.06)',
-        display: 'flex',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
