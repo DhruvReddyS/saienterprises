@@ -188,7 +188,7 @@ const ChatbotWidget = () => {
       `}</style>
 
       {/* Floating button */}
-      <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 500 }}>
+      <div id="chatbot-anchor" style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 500 }}>
         <AnimatePresence>
           {open && (
             <motion.div

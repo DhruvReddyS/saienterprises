@@ -541,4 +541,17 @@ img:not([loading]) {
   footer {
     padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
   }
+
+  /* Chatbot: raise above bottom nav */
+  #chatbot-anchor {
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 14px !important;
+  }
+
+  /* Social zone: smaller on mobile, shifted up */
+  #social-zone {
+    top: 18% !important;
+    transform: translateY(-50%) scale(0.72) !important;
+    transform-origin: right center !important;
+  }
 }
