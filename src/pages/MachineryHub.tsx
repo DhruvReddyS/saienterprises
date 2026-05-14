@@ -106,7 +106,7 @@ const MachineryHub = () => {
         background: '#060A10', padding: '140px 64px 72px',
         position: 'relative', overflow: 'hidden', minHeight: '68vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-      }} className="max-lg:!px-10 max-lg:!pt-32 max-md:!px-6 max-md:!pt-28 max-md:min-h-0 max-[767px]:!pt-8">
+      }} className="max-lg:!px-10 max-lg:!pt-32 max-md:!px-6 max-md:!pt-28 max-md:!min-h-0 max-[767px]:!pt-10 max-[767px]:!pb-8 max-[767px]:!px-4">
         {/* Background image */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <img
@@ -197,8 +197,10 @@ const MachineryHub = () => {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
         position: 'sticky', top: 72, zIndex: 100,
         padding: '0 64px',
-      }} className="max-md:!px-5 sticky-filter-bar">
-        <div style={{ overflowX: 'auto', display: 'flex', alignItems: 'center', gap: 0 }}>
+      }} className="max-md:!px-4 sticky-filter-bar">
+
+        {/* Desktop: horizontal tab row */}
+        <div className="hidden min-[768px]:flex" style={{ overflowX: 'auto', alignItems: 'center', gap: 0 }}>
           {ALL_CATS.map((cat) => {
             const accent = cat.id !== 'all' ? (CATEGORY_COLORS[cat.id] ?? '#3B82F6') : '#3B82F6';
             const isActive = filter === cat.id;
@@ -224,6 +226,38 @@ const MachineryHub = () => {
                   background: isActive ? `${accent}22` : 'rgba(255,255,255,0.06)',
                   color: isActive ? accent : 'rgba(255,255,255,0.28)',
                   transition: 'all 0.2s',
+                }}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Mobile: wrapped pill grid */}
+        <div className="min-[768px]:hidden" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '12px 0' }}>
+          {ALL_CATS.map((cat) => {
+            const accent = cat.id !== 'all' ? (CATEGORY_COLORS[cat.id] ?? '#3B82F6') : '#3B82F6';
+            const isActive = filter === cat.id;
+            const count = cat.id === 'all' ? allMachines.length : (machineCountByCat[cat.id] ?? 0);
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setFilter(cat.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700,
+                  border: `1px solid ${isActive ? accent : 'rgba(255,255,255,0.12)'}`,
+                  background: isActive ? `${accent}20` : 'rgba(255,255,255,0.04)',
+                  color: isActive ? '#fff' : 'rgba(255,255,255,0.5)',
+                  padding: '7px 12px', borderRadius: 4, cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {cat.label}
+                <span style={{
+                  fontSize: 9, fontWeight: 800,
+                  color: isActive ? accent : 'rgba(255,255,255,0.28)',
                 }}>
                   {count}
                 </span>
@@ -308,7 +342,7 @@ const MachineGrid = ({ machines, onSelect }: {
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: 16,
   }}
-    className="machine-grid max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-md:!grid-cols-2 max-sm:!grid-cols-1"
+    className="machine-grid max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-md:!grid-cols-2 max-[767px]:!grid-cols-2 max-[480px]:!grid-cols-1 max-[767px]:!gap-3"
   >
     {machines.map((m) => (
       <MachineCard key={m.id} m={m} onSelect={onSelect} />
@@ -393,7 +427,7 @@ const MachineCard = ({
       </div>
 
       {/* Info */}
-      <div style={{ padding: '16px 18px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ padding: '12px 14px 16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         {/* Category tag */}
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 5, width: 'fit-content',
@@ -409,7 +443,7 @@ const MachineCard = ({
 
         {/* Machine name */}
         <div style={{
-          fontSize: 16, fontWeight: 700, color: '#060A10', lineHeight: 1.25,
+          fontSize: 'clamp(13px,3.5vw,16px)', fontWeight: 700, color: '#060A10', lineHeight: 1.25,
           marginBottom: 8, letterSpacing: '-0.01em',
           fontFamily: "'DM Sans', sans-serif",
         }}>
