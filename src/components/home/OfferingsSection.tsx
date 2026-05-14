@@ -1,148 +1,356 @@
-import { useState, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
-import { productCategories } from '@/data/products';
-import ScrollReveal from '@/components/ScrollReveal';
+import { getMachineImage } from '@/data/machineAssets';
+
+/* ── Best machine images per category ── */
+const PRE_PRESS_IMGS = [
+  getMachineImage(['pre press'], ['ctp']),
+  getMachineImage(['pre press'], ['ctcp']),
+  getMachineImage(['pre press'], ['plate processor']),
+];
+const PRESS_IMGS = [
+  getMachineImage(['press'], ['heidelberg 01']),
+  getMachineImage(['press'], ['komori']),
+  getMachineImage(['press'], ['mini offset']),
+];
+const POST_PRESS_IMGS = [
+  getMachineImage(['sai', 'hpm'], ['hpm cutting machine']),
+  getMachineImage(['post press'], ['perfect binder']),
+  getMachineImage(['post press'], ['thermal lamination']),
+];
+const CORRUGATION_IMGS = [
+  getMachineImage(['corrugation'], ['double profile paper corrugation']),
+  getMachineImage(['corrugation'], ['fully automatic flute laminator']),
+  getMachineImage(['corrugation'], ['thin blade slitter scorer']),
+];
+const ALLIED_IMGS = [
+  getMachineImage(['allied'], ['kanefusa']),
+  getMachineImage(['allied'], ['rigid box thermal tape']),
+  getMachineImage(['allied'], ['numbering']),
+];
+
+const CATS = [
+  {
+    id: 'pre-press', name: 'Pre-Press', slug: 'pre-press',
+    desc: 'Plate imaging, exposure & processing',
+    machines: ['Screen / Plate Exposure Machine', 'Fully Automatic CTCP', 'CTP System', 'Plate Processor', 'Plate Backing Oven'],
+    imgs: PRE_PRESS_IMGS,
+  },
+  {
+    id: 'press', name: 'Press', slug: 'press',
+    desc: 'Offset & card-processing machinery',
+    machines: ['Mini Offset 16×22"', 'Web Offset Printing Machine', 'Variable-Data Printing Machine', 'Auto Cards Matching Machine'],
+    imgs: PRESS_IMGS,
+  },
+  {
+    id: 'post-press', name: 'Post-Press', slug: 'post-press',
+    desc: 'Cutting, lamination, binding & finishing',
+    machines: ['HPM Programmable Paper Cutter', 'Three Knife Trimmer', 'Perfect Binder', 'Thermal Laminator', 'UV Aqua Coater'],
+    imgs: POST_PRESS_IMGS,
+  },
+  {
+    id: 'corrugation', name: 'Corrugation', slug: 'corrugation',
+    desc: 'Corrugation, laminating, cutting & handling',
+    machines: ['Fully Automatic Flute Laminator', 'Double Profile Paper Corrugation', 'Thin Blade Slitter Scorer', 'Four Bar Rotary Cutting'],
+    imgs: CORRUGATION_IMGS,
+  },
+  {
+    id: 'allied', name: 'Allied / Consumables', slug: 'allied',
+    desc: 'Allied accessories & consumables',
+    machines: ['Rigid Box', 'Thermal Tape', 'Numbering', 'Jelly Glue', 'Kanefusa Knives (Japanese)'],
+    imgs: ALLIED_IMGS,
+  },
+];
+
+/* Img panel: dark bg + contain for PNGs, pure cover for JPGs */
+const ImgPanel = ({ src, alt, style }: { src?: string; alt: string; style?: React.CSSProperties }) => {
+  const isJpg = src?.match(/\.(jpg|jpeg)$/i);
+  return (
+    <div style={{ position: 'relative', overflow: 'hidden', ...style }}>
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: isJpg
+          ? '#080D16'
+          : 'radial-gradient(circle at 50% 55%, rgba(59,130,246,0.09) 0%, #080D16 70%)',
+      }} />
+      {src && (
+        <img
+          src={src} alt={alt} loading="eager" decoding="async"
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: isJpg ? 'cover' : 'contain',
+            objectPosition: 'center',
+            padding: isJpg ? 0 : 16,
+            transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1)',
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+/* ── Mobile card image collage: main + 2 thumbs ── */
+const MobileCollage = ({ imgs, name }: { imgs: (string | undefined)[]; name: string }) => (
+  <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gridTemplateRows: '1fr 1fr', gap: 3, marginBottom: 24, aspectRatio: '16/9', minHeight: 180 }}>
+    <ImgPanel src={imgs[0]} alt={name} style={{ gridRow: '1 / 3' }} />
+    <ImgPanel src={imgs[1]} alt={name} />
+    <ImgPanel src={imgs[2]} alt={name} />
+  </div>
+);
+
+/* ── Desktop image collage panel ── renders only the active category ── */
+const DesktopCollage = ({ imgs, name, fadeKey }: { imgs: (string | undefined)[]; name: string; fadeKey: number }) => (
+  <div
+    key={fadeKey}
+    style={{
+      position: 'absolute', inset: 0,
+      display: 'grid', gridTemplateColumns: '1.45fr 1fr', gridTemplateRows: '1fr 1fr',
+      gap: 3,
+      animation: 'offerings-fade-in 0.45s ease forwards',
+    }}
+  >
+    <ImgPanel src={imgs[0]} alt={name} style={{ gridColumn: 1, gridRow: '1 / 3' }} />
+    <ImgPanel src={imgs[1]} alt={name} style={{ gridColumn: 2, gridRow: 1 }} />
+    <ImgPanel src={imgs[2]} alt={name} style={{ gridColumn: 2, gridRow: 2 }} />
+    {/* Edge gradient blending into text panel */}
+    <div style={{
+      position: 'absolute', left: 0, top: 0, bottom: 0, width: 72,
+      background: 'linear-gradient(to right, #060A10 0%, transparent 100%)',
+      pointerEvents: 'none', zIndex: 2,
+    }} />
+  </div>
+);
 
 const OfferingsSection = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [curIdx, setCurIdx] = useState(0);
+  const [displayIdx, setDisplayIdx] = useState(0);
+  const [prog, setProg] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  const updateIdx = useCallback((newIdx: number) => {
+    if (newIdx === curIdx) return;
+    setCurIdx(newIdx);
+    if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+    fadeTimerRef.current = setTimeout(() => setDisplayIdx(newIdx), 80);
+  }, [curIdx]);
+
+  useEffect(() => {
+    if (isMobile) return;
+    let rafId = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const sec = sectionRef.current;
+        if (!sec) return;
+        const rect = sec.getBoundingClientRect();
+        const secH = sec.offsetHeight;
+        const vh = window.innerHeight;
+        const p = Math.max(0, Math.min(1, -rect.top / (secH - vh)));
+        setProg(p);
+        const idx = Math.min(CATS.length - 1, Math.floor(p * CATS.length));
+        updateIdx(idx);
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(rafId);
+      if (fadeTimerRef.current) clearTimeout(fadeTimerRef.current);
+    };
+  }, [isMobile, updateIdx]);
+
+  const cat = CATS[curIdx];
+  const displayCat = CATS[displayIdx];
+
+  if (isMobile) {
+    return (
+      <section style={{ background: '#060A10' }}>
+        {CATS.map((c, i) => (
+          <div key={c.id} style={{
+            padding: '52px 20px',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+          }}>
+            <div style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.28)', marginBottom: 18,
+            }}>
+              0{i + 1} / 05
+            </div>
+
+            {/* Multi-image collage */}
+            <MobileCollage imgs={c.imgs} name={c.name} />
+
+            <div style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(44px,10vw,72px)', fontWeight: 700, lineHeight: 0.88,
+              color: '#fff', letterSpacing: '-0.03em', marginBottom: 14,
+            }}>
+              {c.name}
+            </div>
+            <div style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#3B82F6',
+              marginBottom: 14,
+            }}>
+              {c.desc}
+            </div>
+            {c.machines.slice(0, 3).map((m) => (
+              <div key={m} style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.32)', marginBottom: 6,
+              }}>
+                — {m}
+              </div>
+            ))}
+            <Link
+              to={`/machinery/${c.slug}`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                marginTop: 24, padding: '11px 22px',
+                background: '#3B82F6', color: '#fff',
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase',
+                textDecoration: 'none', transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
+            >
+              View Category <span style={{ fontSize: 14 }}>→</span>
+            </Link>
+          </div>
+        ))}
+      </section>
+    );
+  }
 
   return (
-    <section ref={containerRef} className="relative py-16 sm:py-20 md:py-24 bg-foreground overflow-hidden">
-      {/* Subtle ambient glow */}
-      <motion.div 
-        className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/10 blur-[100px] pointer-events-none"
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.1, 0.15, 0.1]
-        }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-
-      <div className="relative z-10 px-6 sm:px-8 md:px-12 lg:px-20">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <ScrollReveal animation="fadeUp" className="text-center mb-10 sm:mb-14">
-            <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-4">
-              <span className="w-8 h-px bg-primary" />
-              Machinery
-              <span className="w-8 h-px bg-primary" />
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-background leading-tight">
-              Complete print<br />
-              <span className="text-primary">workflow</span> coverage.
-            </h2>
-          </ScrollReveal>
-
-          {/* Category Cards Grid - Equal height cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-            {productCategories.map((category, index) => {
-              const isActive = activeIndex === index;
-              
-              return (
-                <ScrollReveal key={category.id} animation="fadeUp" delay={index * 0.1}>
-                  <Link
-                    to={`/machinery/${category.slug}`}
-                    className={`group relative block h-full transition-all duration-500 overflow-hidden ${
-                      isActive 
-                        ? 'bg-primary' 
-                        : 'bg-background/5 hover:bg-background/10 border border-background/10'
-                    }`}
-                    onMouseEnter={() => setActiveIndex(index)}
-                  >
-                    {/* Fixed height container with flex */}
-                    <div className="p-4 sm:p-5 md:p-6 min-h-[240px] sm:min-h-[260px] md:min-h-[280px] flex flex-col relative">
-                      {category.heroImage && (
-                        <>
-                          <img
-                            src={category.heroImage}
-                            alt={category.name}
-                            className="absolute inset-0 w-full h-full object-cover opacity-20 transition-transform duration-700 group-hover:scale-105"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/55 to-foreground/35" />
-                        </>
-                      )}
-
-                      {/* Large Number */}
-                      <span className={`absolute top-3 right-3 sm:top-4 sm:right-4 text-5xl sm:text-6xl md:text-7xl font-serif transition-colors duration-300 ${
-                        isActive ? 'text-primary-foreground/10' : 'text-background/5'
-                      }`}>
-                        0{index + 1}
-                      </span>
-
-                      {/* Content */}
-                      <div className="relative z-10 flex flex-col h-full pt-10 sm:pt-12 md:pt-14">
-                        <h3 className={`font-serif text-xl sm:text-2xl md:text-3xl mb-2 sm:mb-3 transition-colors duration-300 ${
-                          isActive ? 'text-primary-foreground' : 'text-background'
-                        }`}>
-                          {category.name}
-                        </h3>
-                        
-                        <p className={`text-xs sm:text-sm leading-relaxed mb-auto line-clamp-3 transition-colors duration-300 ${
-                          isActive ? 'text-primary-foreground/70' : 'text-background/50'
-                        }`}>
-                          {category.description}
-                        </p>
-
-                        {/* Products count */}
-                        <div className={`flex items-center justify-between pt-3 sm:pt-4 mt-4 border-t transition-colors duration-300 ${
-                          isActive ? 'border-primary-foreground/20' : 'border-background/10'
-                        }`}>
-                          <span className={`text-[10px] sm:text-xs uppercase tracking-wider transition-colors duration-300 ${
-                            isActive ? 'text-primary-foreground/60' : 'text-background/40'
-                          }`}>
-                            {category.products.length} Products
-                          </span>
-                          
-                          <motion.div 
-                            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                              isActive 
-                                ? 'bg-primary-foreground text-primary' 
-                                : 'bg-background/10 text-background/50 group-hover:bg-primary group-hover:text-primary-foreground'
-                            }`}
-                            whileHover={{ scale: 1.1 }}
-                          >
-                            <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                          </motion.div>
-                        </div>
-                      </div>
-
-                      {/* Bottom accent line */}
-                      <motion.div
-                        className={`absolute bottom-0 left-0 h-1 transition-all duration-500 ${
-                          isActive ? 'bg-primary-foreground/20' : 'bg-primary'
-                        }`}
-                        initial={{ width: 0 }}
-                        animate={{ width: isActive ? '100%' : '0%' }}
-                        whileHover={{ width: '100%' }}
-                      />
-                    </div>
-                  </Link>
-                </ScrollReveal>
-              );
-            })}
+    <div ref={sectionRef} style={{ height: `${CATS.length * 100}vh`, position: 'relative' }}>
+      <style>{`
+        @keyframes offerings-fade-in {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+      `}</style>
+      <div style={{
+        position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
+        display: 'grid', gridTemplateColumns: '48% 52%',
+        background: '#060A10',
+      }}>
+        {/* LEFT: typography */}
+        <div style={{
+          position: 'relative', display: 'flex', flexDirection: 'column',
+          justifyContent: 'flex-end', padding: '80px 56px 72px 56px', zIndex: 2,
+        }}>
+          {/* vertical timeline bar */}
+          <div style={{
+            position: 'absolute', left: 32, top: 80, bottom: 80,
+            width: 1, background: 'rgba(255,255,255,0.07)',
+          }}>
+            <div style={{
+              position: 'absolute', top: 0, left: 0, width: '100%',
+              background: '#3B82F6',
+              height: `${prog * 100}%`,
+              transition: 'height 0.15s linear',
+            }} />
           </div>
 
-          {/* View All Link */}
-          <ScrollReveal animation="fadeUp" delay={0.4} className="text-center mt-8 sm:mt-12">
-            <Link
-              to="/machinery"
-              className="inline-flex items-center gap-3 text-primary hover:text-primary/80 transition-colors"
-            >
-              <span className="text-sm font-medium tracking-wide">Explore all machinery</span>
-              <motion.div
-                className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center"
-                whileHover={{ x: 5 }}
-              >
-                <ArrowUpRight className="w-4 h-4" />
-              </motion.div>
-            </Link>
-          </ScrollReveal>
+          <div style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.28)', marginBottom: 20,
+          }}>
+            0{displayIdx + 1} / 05
+          </div>
+
+          <div style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(54px,9vw,120px)',
+            fontWeight: 700, lineHeight: 0.88,
+            color: '#fff', letterSpacing: '-0.03em',
+            transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.16,1,0.3,1)',
+          }}>
+            {displayCat.name}
+          </div>
+
+          <div style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase',
+            color: '#3B82F6', marginTop: 20,
+          }}>
+            {displayCat.desc}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 20 }}>
+            {displayCat.machines.slice(0, 3).map((m) => (
+              <div key={m} style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.32)',
+              }}>
+                — {m}
+              </div>
+            ))}
+          </div>
+
+          <Link
+            to={`/machinery/${displayCat.slug}`}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              marginTop: 28, padding: '13px 28px',
+              background: '#3B82F6', color: '#fff',
+              fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase',
+              textDecoration: 'none', transition: 'background 0.2s',
+              boxShadow: '0 8px 28px rgba(59,130,246,0.28)',
+            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
+          >
+            View Category <span style={{ fontSize: 14 }}>→</span>
+          </Link>
+        </div>
+
+        {/* RIGHT: multi-image collage */}
+        <div style={{ position: 'relative', overflow: 'hidden', height: '100%' }}>
+          <DesktopCollage
+            key={displayIdx}
+            imgs={displayCat.imgs}
+            name={displayCat.name}
+            fadeKey={displayIdx}
+          />
+
+          {/* Index label top right */}
+          <div style={{
+            position: 'absolute', top: 28, right: 32, zIndex: 10,
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 11, letterSpacing: '0.24em', textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.3)',
+          }}>
+            0{displayIdx + 1} / 05
+          </div>
+
+          {/* Thin divider lines between images — purely decorative */}
+          <div style={{
+            position: 'absolute', top: 0, bottom: 0, zIndex: 5, pointerEvents: 'none',
+            left: 'calc(58.7% + 1px)', width: 1, background: 'rgba(6,10,16,0.8)',
+          }} />
+          <div style={{
+            position: 'absolute', left: 'calc(58.7%)', right: 0, zIndex: 5, pointerEvents: 'none',
+            top: '50%', height: 1, background: 'rgba(6,10,16,0.8)',
+          }} />
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 

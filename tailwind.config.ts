@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -108,6 +109,53 @@ export default {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "scan": {
+          "0%": { top: "0px" },
+          "25%": { top: "56px" },
+          "50%": { top: "0px" },
+          "75%": { top: "56px" },
+          "100%": { top: "0px" },
+        },
+        "cut": {
+          "0%": { clipPath: "inset(0 0 0 0)" },
+          "25%": { clipPath: "inset(100% 0 0 0)" },
+          "50%": { clipPath: "inset(0 0 100% 0)" },
+          "75%": { clipPath: "inset(0 0 0 0)" },
+          "100%": { clipPath: "inset(0 0 0 0)" },
+        },
+        "footer-marquee": {
+          "from": { transform: "translateX(0)" },
+          "to": { transform: "translateX(-50%)" },
+        },
+        "footer-breathe": {
+          "0%": { transform: "translate(-50%,-50%) scale(1)", opacity: "0.5" },
+          "100%": { transform: "translate(-50%,-50%) scale(1.12)", opacity: "0.9" },
+        },
+        "heartbeat": {
+          "0%,100%": { transform: "scale(1)" },
+          "20%,50%": { transform: "scale(1.25)" },
+          "35%": { transform: "scale(1)" },
+        },
+        "testimonial-scroll": {
+          "from": { transform: "translateY(0)" },
+          "to": { transform: "translateY(-50%)" },
+        },
+        "marquee-vertical": {
+          "from": { transform: "translateY(0)" },
+          "to": { transform: "translateY(-100%)" },
+        },
+        "border-beam": {
+          "100%": { "offset-distance": "100%" },
+        },
+        "shimmer-slide": {
+          "to": { transform: "translate(calc(100cqw - 100%), 0)" },
+        },
+        "spin-around": {
+          "0%": { transform: "translateZ(0) rotate(0)" },
+          "15%,35%": { transform: "translateZ(0) rotate(90deg)" },
+          "65%,85%": { transform: "translateZ(0) rotate(270deg)" },
+          "100%": { transform: "translateZ(0) rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -118,8 +166,18 @@ export default {
         "slide-in-left": "slide-in-left 0.5s ease-out forwards",
         "slide-in-right": "slide-in-right 0.5s ease-out forwards",
         "count-up": "count-up 0.4s ease-out forwards",
+        "scan": "scan 2.2s cubic-bezier(0.175,0.885,0.32,1.275) infinite",
+        "cut": "cut 2.2s cubic-bezier(0.175,0.885,0.32,1.275) infinite",
+        "footer-marquee": "footer-marquee 38s linear infinite",
+        "footer-breathe": "footer-breathe 7s ease-in-out infinite alternate",
+        "heartbeat": "heartbeat 2s ease-in-out infinite",
+        "testimonial-scroll": "testimonial-scroll 20s linear infinite",
+        "marquee-vertical": "marquee-vertical var(--duration, 20s) linear infinite",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
+        "shimmer-slide": "shimmer-slide var(--speed) ease-in-out infinite alternate",
+        "spin-around": "spin-around calc(var(--speed)*2) infinite linear",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

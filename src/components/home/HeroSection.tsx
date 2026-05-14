@@ -1,322 +1,408 @@
-import { useRef, useMemo } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, ChevronDown } from 'lucide-react';
-import heroImage from '@/assets/hero-industrial.jpg';
-import hpmMachine from '@/assets/hpm-machine.png';
-import hpmLogo from '@/assets/hpm-logo.png';
-import yearsBadge from '@/assets/24-years-badge.png';
+import heroImage from '@/assets/hero-printing.jpg';
 import largestSellingBadge from '@/assets/largest-selling-badge.png';
+import badge24 from '@/assets/24-years-badge.png';
+import hpmLogo from '@/assets/hpm-logo.png';
+import BrandImage from '@/components/BrandImage';
 
-/* ── Floating grid dots ── */
-const GridOverlay = () => (
-  <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden opacity-[0.07]">
-    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <pattern id="hero-grid" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="hsl(var(--background))" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#hero-grid)" />
-    </svg>
-  </div>
+const IcoGlobe = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
 );
 
-/* ── Floating particles ── */
-const Particles = () => {
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 14 }, (_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: 2 + Math.random() * 3,
-        dur: 14 + Math.random() * 20,
-        delay: Math.random() * -20,
-      })),
-    []
-  );
+const IcoMachines = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="7" width="18" height="10" rx="2" />
+    <path d="M7 7V4h10v3M8 17v3M16 17v3" />
+  </svg>
+);
 
-  return (
-    <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-primary/20"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-          animate={{ y: [0, -30, 0], opacity: [0.1, 0.4, 0.1] }}
-          transition={{ duration: p.dur, repeat: Infinity, delay: p.delay, ease: 'easeInOut' }}
-        />
-      ))}
-    </div>
-  );
-};
+const IcoUsers = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
 
-/* ── Trust badges data ── */
-const badges = [
-  { src: hpmLogo, alt: 'HPM Sole Agent India', label: 'HPM Agent' },
-  { src: largestSellingBadge, alt: "India's largest selling paper cutter", label: '#1 Selling' },
-  { src: yearsBadge, alt: '24 years of excellence', label: '24+ Years' },
-];
+const IcoPin = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 21s-6-5.33-6-11a6 6 0 1 1 12 0c0 5.67-6 11-6 11z" />
+    <circle cx="12" cy="10" r="2.5" />
+  </svg>
+);
 
-const heroFacts = [
-  { value: '5000+', label: 'Machines Supplied' },
-  { value: '24+', label: 'Years Experience' },
-  { value: 'Pan India', label: 'Sales + Service Reach' },
+const stampItems: { badge: ReactNode; title: string; subtitle: string; accent: string }[] = [
+  {
+    badge: <img src={badge24} alt="24 Years" loading="lazy" decoding="async" style={{ width: 48, height: 48, objectFit: 'contain' }} />,
+    title: '24 Years',
+    subtitle: '24+ Years in Industry',
+    accent: '#3B82F6',
+  },
+  {
+    badge: <IcoMachines />,
+    title: '4000+ Machines',
+    subtitle: 'Machines Placed',
+    accent: '#60A5FA',
+  },
+  {
+    badge: <IcoUsers />,
+    title: '2000+ Clients',
+    subtitle: 'Clients Served',
+    accent: '#38BDF8',
+  },
+  {
+    badge: <img src={largestSellingBadge} alt="Largest Selling" loading="lazy" decoding="async" style={{ width: 48, height: 48, objectFit: 'contain' }} />,
+    title: 'Largest Selling',
+    subtitle: "India's Largest Paper Cutter Distributor",
+    accent: '#FACC15',
+  },
+  {
+    badge: <IcoGlobe />,
+    title: 'Global Clients',
+    subtitle: '15+ Countries',
+    accent: '#22C55E',
+  },
+  {
+    badge: <BrandImage src={hpmLogo} alt="HPM" style={{ height: 28, objectFit: 'contain' }} />,
+    title: 'HPM',
+    subtitle: 'Sole Agent in India',
+    accent: '#EF4444',
+  },
+  {
+    badge: <IcoPin />,
+    title: 'Est. 2000',
+    subtitle: 'Hyderabad, India',
+    accent: '#A78BFA',
+  },
 ];
 
 const HeroSection = () => {
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  });
+  const [revealed, setRevealed] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [parallaxY, setParallaxY] = useState(0);
 
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const contentY = useTransform(scrollYProgress, [0, 0.5], [0, -60]);
-  // Delayed parallax — badges stay fully visible longer
-  const machineY = useTransform(scrollYProgress, [0.4, 1], [0, 40]);
+  useEffect(() => {
+    const timer = setTimeout(() => setRevealed(true), 120);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    let rafId = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (!sectionRef.current) return;
+        const rect = sectionRef.current.getBoundingClientRect();
+        setParallaxY(-rect.top * 0.25);
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(rafId); };
+  }, []);
 
   return (
     <section
-      id="hero"
-      ref={containerRef}
-      className="relative min-h-screen min-h-[100dvh] overflow-hidden bg-foreground"
+      ref={sectionRef}
+      style={{
+        height: '100dvh', minHeight: 760,
+        background: '#060A10',
+        display: 'grid',
+        gridTemplateColumns: '55% 45%',
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+      className="max-[1024px]:!grid-cols-1 max-[767px]:!min-h-0 max-[767px]:!h-auto"
     >
-      {/* BG image + overlays */}
-      <motion.div className="absolute inset-0" style={{ scale: imageScale }}>
-        <img src={heroImage} alt="Industrial printing facility" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-foreground/80" />
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/50 via-foreground/70 to-foreground" />
-      </motion.div>
-
-      <GridOverlay />
-      <Particles />
-
-      {/* Ambient glows */}
-      <motion.div
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-primary/8 blur-[120px] pointer-events-none z-[3]"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.8, 0.5] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.div
-        className="absolute bottom-0 left-1/4 w-[400px] h-[300px] rounded-full bg-primary/5 blur-[80px] pointer-events-none z-[3]"
-        animate={{ x: [0, 40, 0], opacity: [0.3, 0.6, 0.3] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <div className="absolute top-1/2 right-0 w-[300px] h-[400px] rounded-full bg-accent/4 blur-[100px] pointer-events-none z-[3]" />
-
-      {/* Content */}
-      <motion.div
-        className="relative z-10 min-h-screen min-h-[100dvh] flex flex-col"
-        style={{ opacity: contentOpacity, y: contentY }}
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          padding: '124px 64px 168px',
+        }}
+        className="max-lg:!px-8 max-lg:!py-28 max-md:!px-6 max-md:!py-24 max-[767px]:!pt-24 max-[767px]:!pb-40 max-[767px]:!px-5"
       >
-        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center px-5 sm:px-8 lg:px-16 xl:px-24 pt-24 sm:pt-28 pb-16 sm:pb-8 gap-8 lg:gap-14 xl:gap-20">
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 1,
+            pointerEvents: 'none',
+            backgroundImage: 'radial-gradient(circle, rgba(59,130,246,0.04) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        />
 
-          {/* Left: Copy */}
-          <div className="flex-1 max-w-2xl text-center lg:text-left">
-            {/* HPM pill */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="inline-flex items-center gap-3 rounded-full border border-background/15 bg-background/[0.07] backdrop-blur-sm px-4 py-2 mb-5 sm:mb-7"
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '40%',
+            width: 500,
+            height: 400,
+            transform: 'translate(-50%,-50%)',
+            background: 'radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 65%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+            animation: 'hglow 8s ease-in-out infinite',
+          }}
+        />
+
+        <div style={{ position: 'relative', zIndex: 3 }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              marginBottom: 44,
+              opacity: revealed ? 1 : 0,
+              transform: revealed ? 'none' : 'translateY(12px)',
+              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1)',
+            }}
+          >
+            <div style={{ width: 36, height: 1, background: '#3B82F6' }} />
+            <span
+              style={{
+                fontSize: 10,
+                letterSpacing: '0.34em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.42)',
+                fontWeight: 600,
+              }}
             >
-              <img src={hpmLogo} alt="HPM" className="h-5 sm:h-6 w-auto" />
-              <span className="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] text-background/70">
-                Sole HPM Agent in India
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 36 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="font-serif text-background text-[clamp(2rem,7vw,5.8rem)] leading-[0.96] tracking-[-0.03em] mb-4 sm:mb-6"
-            >
-              <span className="block text-primary italic font-semibold">#1 in India.</span>
-              The Largest Paper Cutter
-              <span className="block">Distribution House.</span>
-            </motion.h1>
-
-            {/* Subline */}
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-background/55 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0 mb-7 sm:mb-9"
-            >
-              India’s largest HPM paper cutter distribution house, with 24+ years of machinery supply
-              and service support across graphic and corrugation workflows.
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.52 }}
-              className="flex flex-col sm:flex-row items-center lg:items-start gap-3"
-            >
-              <Link
-                to="/machinery"
-                className="group inline-flex items-center justify-center gap-2.5 bg-primary text-primary-foreground px-7 sm:px-8 py-3.5 rounded-sm text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
-              >
-                Explore Machinery
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center gap-2.5 border border-background/20 bg-background/[0.06] text-background/85 px-7 sm:px-8 py-3.5 rounded-sm text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] transition-all duration-300 hover:bg-background/12 hover:text-background"
-              >
-                Request Quote
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.62 }}
-              className="mt-6 grid w-full max-w-xl grid-cols-3 gap-2.5 sm:gap-3"
-            >
-              {heroFacts.map((fact) => (
-                <div
-                  key={fact.label}
-                  className="rounded-2xl border border-background/12 bg-background/[0.06] px-3 py-3 text-center backdrop-blur-sm"
-                >
-                  <p className="text-sm font-semibold text-background sm:text-base">
-                    {fact.value}
-                  </p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-background/55 sm:text-[11px]">
-                    {fact.label}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
-
-            {/* Mobile Machine + Trust Badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.65 }}
-              className="flex lg:hidden flex-col items-center gap-6 mt-8"
-            >
-              {/* Machine image on mobile — gentle float */}
-              <div className="relative w-full max-w-[220px] sm:max-w-[270px]">
-                <motion.div
-                  className="absolute inset-0 -m-8 bg-primary/15 rounded-full blur-[60px] pointer-events-none"
-                  animate={{ scale: [1, 1.15, 1], opacity: [0.4, 0.7, 0.4] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                />
-                <motion.img
-                  src={hpmMachine}
-                  alt="HPM Paper Cutting Machine"
-                  className="relative w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1, y: [0, -10, 0] }}
-                  transition={{
-                    opacity: { duration: 0.8, delay: 0.7 },
-                    scale: { duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] },
-                    y: { duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 },
-                  }}
-                />
-              </div>
-
-              {/* Trust badges */}
-              <div className="flex items-center justify-center gap-3">
-                {badges.map((badge, i) => (
-                  <motion.div
-                    key={badge.alt}
-                    className="w-[68px] h-[68px] sm:w-[82px] sm:h-[82px] flex items-center justify-center rounded-lg bg-background/[0.08] border border-background/15 backdrop-blur-sm p-2"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.9 + i * 0.1 }}
-                  >
-                    <img src={badge.src} alt={badge.alt} className="w-full h-full object-contain" />
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+              Est. 2000 · Hyderabad, India
+            </span>
           </div>
 
-          {/* Right: Machine + Trust Badges (desktop only) */}
-          <motion.div
-            className="hidden lg:flex flex-1 max-w-md xl:max-w-lg flex-col items-center justify-center gap-8"
-            style={{ y: machineY }}
-          >
-            {/* Glow behind machine — breathing */}
-            <div className="relative">
-              <motion.div
-                className="absolute inset-0 -m-12 bg-primary/12 rounded-full blur-[80px] pointer-events-none"
-                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              <motion.img
-                src={hpmMachine}
-                alt="HPM Paper Cutting Machine"
-                className="relative w-full max-w-[380px] xl:max-w-[440px] h-auto drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
-                initial={{ opacity: 0, scale: 0.92, y: 30 }}
-                animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
-                transition={{
-                  opacity: { duration: 1, delay: 0.45 },
-                  scale: { duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] },
-                  y: { duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 },
-                }}
-              />
-            </div>
-
-            {/* 3 Trust badges */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.65 }}
-              className="grid grid-cols-3 gap-3.5 w-full max-w-sm"
-            >
-              {badges.map((badge, i) => (
-                <motion.div
-                  key={badge.alt}
-                  className="aspect-square flex flex-col items-center justify-center rounded-lg bg-background/[0.08] border border-background/15 backdrop-blur-sm shadow-lg p-3 xl:p-4 group cursor-default"
-                  initial={{ opacity: 0, scale: 0.85, y: 14 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.72 + i * 0.12 }}
-                  whileHover={{ scale: 1.08, y: -6, borderColor: 'hsl(var(--primary) / 0.5)' }}
+          <h1 style={{ marginBottom: 30 }}>
+            {['GRAPHIC', 'MACHINERY', 'SUPPLIERS.'].map((word) => (
+              <span key={word} className="ml" style={{ display: 'block' }}>
+                <span
+                  className="ml-inner"
+                  style={{
+                    display: 'block',
+                    fontSize: 'clamp(38px,8.5vw,116px)',
+                    fontWeight: 800,
+                    lineHeight: 0.9,
+                    letterSpacing: '-0.06em',
+                    color: word === 'SUPPLIERS.' ? undefined : '#fff',
+                  }}
                 >
-                  <img
-                    src={badge.src}
-                    alt={badge.alt}
-                    className="w-full h-full object-contain"
-                  />
-                </motion.div>
-              ))}
-            </motion.div>
+                  {word === 'SUPPLIERS.' ? (
+                    <>
+                      <span style={{ color: '#fff' }}>SUPPLIERS</span>
+                      <span style={{ color: '#3B82F6' }}>.</span>
+                    </>
+                  ) : (
+                    word
+                  )}
+                </span>
+              </span>
+            ))}
+          </h1>
 
-            {/* Caption */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.9 }}
-              className="text-background/35 text-[10px] uppercase tracking-[0.22em] text-center"
+          <p
+            style={{
+              fontSize: 15,
+              fontWeight: 400,
+              color: 'rgba(255,255,255,0.56)',
+              lineHeight: 1.75,
+              maxWidth: 420,
+              marginBottom: 48,
+              opacity: revealed ? 1 : 0,
+              transform: revealed ? 'none' : 'translateY(16px)',
+              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.24s',
+            }}
+          >
+            India&apos;s trusted name in graphic machinery since 2000, spanning pre-press, post-press,
+            corrugation, and allied finishing systems for growing print floors.
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 20,
+              marginBottom: 24,
+              flexWrap: 'wrap',
+              opacity: revealed ? 1 : 0,
+              transform: revealed ? 'none' : 'translateY(16px)',
+              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.32s',
+            }}
+          >
+            <Link
+              to="/machinery"
+              className="btn-primary"
+              style={{
+                fontSize: 11,
+                minWidth: 220,
+                justifyContent: 'center',
+                boxShadow: '0 18px 44px rgba(59,130,246,0.28)',
+              }}
             >
-              HPM Programmable Paper Cutter · German Engineered
-            </motion.p>
-          </motion.div>
+              Explore Machinery <span style={{ fontSize: 16 }}>→</span>
+            </Link>
+            <Link
+              to="/contact"
+              className="cta-blue"
+              style={{
+                padding: '14px 0 12px',
+                borderBottom: '1px solid rgba(59,130,246,0.55)',
+                color: '#93C5FD',
+              }}
+            >
+              Get a Quote <span className="arr">→</span>
+            </Link>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Scroll indicator */}
-      <motion.button
-        onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-        className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-background/35 hover:text-background/60 transition-colors"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
+      <div style={{ position: 'relative', overflow: 'hidden' }} className="max-[900px]:hidden">
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            clipPath: 'polygon(13% 0%, 100% 0%, 100% 100%, 0% 100%)',
+          }}
+        >
+          <img
+            src={heroImage}
+            alt="Graphic printing facility"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            style={{
+              width: '100%',
+              height: '120%',
+              objectFit: 'cover',
+              transform: `scale(1.05) translateY(${parallaxY * 0.3}px)`,
+              transition: 'transform 0.05s linear',
+              willChange: 'transform',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(to left, transparent 60%, #060A10 100%), linear-gradient(to bottom, transparent 70%, rgba(6,10,16,0.5) 100%)',
+            }}
+          />
+        </div>
+
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 4, overflow: 'hidden' }}>
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="diag-glow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="transparent" />
+                <stop offset="42%" stopColor="rgba(59,130,246,0.55)" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+            </defs>
+            <line x1="13%" y1="0" x2="0%" y2="100%" stroke="url(#diag-glow)" strokeWidth="1.2" />
+          </svg>
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 5,
+          overflow: 'hidden',
+          background: 'linear-gradient(180deg, rgba(8,12,18,0.92) 0%, rgba(5,9,14,0.98) 100%)',
+          backdropFilter: 'blur(12px)',
+          borderTop: '1px solid rgba(59,130,246,0.14)',
+          padding: '16px 0',
+          paddingBottom: 'clamp(16px, calc(16px + env(safe-area-inset-bottom, 0px)), 80px)',
+          opacity: revealed ? 1 : 0,
+          transition: 'opacity 0.6s 0.9s',
+        }}
       >
-        <span className="text-[10px] uppercase tracking-[0.24em]">Scroll</span>
-        <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 1.8, repeat: Infinity }}>
-          <ChevronDown className="w-4 h-4" />
-        </motion.div>
-      </motion.button>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            animation: 'ticker-scroll 42s linear infinite',
+            width: 'max-content',
+            gap: 18,
+          }}
+        >
+          {[...stampItems, ...stampItems].map((item, i) => (
+            <div
+              key={`stamp-${i < stampItems.length ? 'a' : 'b'}-${i % stampItems.length}`}
+              style={{
+                minWidth: 'clamp(200px, 28vw, 312px)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 14,
+                padding: '18px 22px',
+                whiteSpace: 'nowrap',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 30px ${item.accent}14`,
+              }}
+            >
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: item.accent,
+                    background: `${item.accent}12`,
+                    border: `1px solid ${item.accent}22`,
+                  }}
+                >
+                  {item.badge}
+                </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 800,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: item.accent,
+                  }}
+                >
+                  {item.title}
+                </span>
+                <span style={{ fontSize: 16, color: 'rgba(255,255,255,0.9)', fontWeight: 700 }}>
+                  {item.subtitle}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        .ml-inner {
+          display: block;
+          transform: translateY(108%);
+          transition: transform 1s cubic-bezier(0.16,1,0.3,1);
+        }
+        ${revealed ? `
+          .ml:nth-child(1) .ml-inner { transform: translateY(0); transition-delay: 0s; }
+          .ml:nth-child(2) .ml-inner { transform: translateY(0); transition-delay: 0.06s; }
+          .ml:nth-child(3) .ml-inner { transform: translateY(0); transition-delay: 0.12s; }
+        ` : ''}
+        @keyframes ticker-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </section>
   );
 };

@@ -1,247 +1,286 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowUpRight, MapPin, Phone, Mail } from 'lucide-react';
-import { companyInfo, productCategories } from '@/data/products';
-import saiLogoCmyk from '@/assets/sai-logo-cmyk.png';
-import eCatalogueQr from '@/assets/e-catalogue-qr.png';
+import { motion, AnimatePresence } from 'framer-motion';
+import { productCategories } from '@/data/products';
+import saiLogo from '@/assets/sai-logo-cmyk.png';
 
-const Footer = () => {
-  const currentYear = new Date().getFullYear();
+const IcoPhone = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.95a16 16 0 0 0 6.29 6.29l1.41-1.41a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+  </svg>
+);
+
+const IcoMail = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+  </svg>
+);
+
+const IcoChevron = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="9 18 15 12 9 6"/>
+  </svg>
+);
+
+const navLinks = [
+  { label: 'Home', to: '/' },
+  { label: 'Machinery', to: '/machinery' },
+  { label: 'About Sai Enterprises', to: '/about' },
+  { label: 'Partners', to: '/partners' },
+  { label: 'E-Brochure', to: '/brochure' },
+  { label: 'Contact Us', to: '/contact' },
+];
+
+/* ── Accordion section for mobile ── */
+const AccordionSection = ({ title, children }: { title: string; children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
 
   return (
-    <footer className="relative bg-foreground text-background overflow-hidden">
-      <motion.div
-        className="absolute top-0 right-1/4 w-[500px] h-[300px] rounded-full bg-primary/6 blur-[120px] pointer-events-none"
-        animate={{ x: [0, 50, 0], opacity: [0.2, 0.4, 0.2] }}
-        transition={{ duration: 12, repeat: Infinity }}
-      />
+    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 0', background: 'none', border: 'none', cursor: 'pointer',
+          color: '#fff',
+        }}
+      >
+        <span style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, fontFamily: "'DM Sans', sans-serif" }}>
+          {title}
+        </span>
+        <motion.span
+          animate={{ rotate: open ? 90 : 0 }}
+          transition={{ duration: 0.22 }}
+          style={{ color: 'rgba(255,255,255,0.3)' }}
+        >
+          <IcoChevron />
+        </motion.span>
+      </button>
 
-      <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-      <div className="relative z-10 px-5 sm:px-8 md:px-12 lg:px-20">
-        <div className="py-14 sm:py-18 md:py-20 border-b border-background/10">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.15fr_0.85fr] gap-10 lg:gap-14">
-            <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-              <div>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-11 h-11 flex-shrink-0">
-                    <img src={saiLogoCmyk} alt="Sai Enterprises" className="w-full h-full object-contain" />
-                  </div>
-                  <div>
-                    <span className="font-serif text-lg text-background block">Sai Enterprises</span>
-                    <span className="text-[9px] uppercase tracking-[0.15em] text-primary">Graphic Machinery Suppliers</span>
-                  </div>
-                </div>
-
-                <p className="text-background/50 text-sm leading-relaxed max-w-sm mb-6">
-                  Complete machinery solutions for pre-press, press, post-press, corrugation and specialty converting workflows.
-                </p>
-
-                <div className="mb-6 flex flex-wrap gap-2 sm:hidden">
-                  <span className="rounded-full border border-background/10 bg-background/[0.05] px-3 py-1.5 text-[11px] font-medium text-background/70">
-                    Hyderabad HQ
-                  </span>
-                  <span className="rounded-full border border-background/10 bg-background/[0.05] px-3 py-1.5 text-[11px] font-medium text-background/70">
-                    Nairobi Office
-                  </span>
-                  <span className="rounded-full border border-background/10 bg-background/[0.05] px-3 py-1.5 text-[11px] font-medium text-background/70">
-                    Pan-India Machinery Support
-                  </span>
-                </div>
-
-                <div className="space-y-3 text-sm">
-                  <a href={`tel:${companyInfo.phones[0].replace(/\s/g, '')}`} className="flex items-center gap-3 text-background/60 hover:text-background transition-colors">
-                    <Phone className="w-4 h-4 text-primary" />
-                    {companyInfo.phones[0]}
-                  </a>
-                  <a href={`mailto:${companyInfo.emails[0]}`} className="flex items-center gap-3 text-background/60 hover:text-background transition-colors break-all">
-                    <Mail className="w-4 h-4 text-primary" />
-                    {companyInfo.emails[0]}
-                  </a>
-                  <div className="flex items-start gap-3 text-background/60">
-                    <MapPin className="w-4 h-4 text-primary mt-0.5" />
-                    <span>Hyderabad HQ · New Delhi · Pune · Vijayawada · Nairobi</span>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-2 gap-3 sm:hidden">
-                  <Link
-                    to="/machinery"
-                    className="rounded-2xl bg-primary px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground"
-                  >
-                    Explore Machinery
-                  </Link>
-                  <Link
-                    to="/brochure"
-                    className="rounded-2xl border border-background/10 bg-background/[0.05] px-4 py-3 text-center text-xs font-semibold uppercase tracking-[0.14em] text-background/85"
-                  >
-                    Open Brochure
-                  </Link>
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-background/10 bg-background/[0.04] p-5 sm:p-6">
-                <p className="text-[10px] uppercase tracking-[0.2em] text-primary mb-4">Machinery Access</p>
-                <div className="grid gap-2.5 sm:hidden">
-                  {productCategories.map((category) => (
-                    <Link
-                      key={category.id}
-                      to={`/machinery/${category.slug}`}
-                      className="flex items-center justify-between rounded-2xl border border-background/10 bg-background/[0.03] px-4 py-3 text-sm text-background/78 transition-colors hover:border-primary/30 hover:text-background"
-                    >
-                      <span className="font-medium">{category.name}</span>
-                      <span className="rounded-full bg-background/[0.08] px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-background/45">
-                        {category.products.length}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-                <div className="hidden gap-3 sm:grid sm:grid-cols-2">
-                  {productCategories.map((category) => (
-                    <Link
-                      key={category.id}
-                      to={`/machinery/${category.slug}`}
-                      className="group overflow-hidden rounded-2xl border border-background/10 bg-background/[0.03] hover:border-primary/30 transition-colors"
-                    >
-                      <div className="aspect-[16/10] overflow-hidden">
-                        <img
-                          src={category.heroImage}
-                          alt={category.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </div>
-                      <div className="p-3">
-                        <div className="flex items-center justify-between gap-3 mb-1">
-                          <span className="font-serif text-lg text-background">{category.name}</span>
-                          <span className="text-[10px] uppercase tracking-[0.14em] text-background/35">
-                            {category.products.length}
-                          </span>
-                        </div>
-                        <p className="text-xs leading-relaxed text-background/45 line-clamp-2">
-                          {category.description}
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ paddingBottom: 16 }}>
+              {children}
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
-            <div className="rounded-3xl border border-background/10 bg-background/[0.04] p-6 sm:p-7 flex flex-col">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-8">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-primary mb-3">Catalogue & Contact</p>
-                  <h3 className="font-serif text-3xl leading-tight mb-3">
-                    Make machinery discovery easier for your buyers.
-                  </h3>
-                  <p className="text-sm text-background/55 leading-relaxed max-w-md">
-                    Direct visitors into the right machine category, then move them into a quote request without friction.
-                  </p>
-                </div>
+const Footer = () => (
+  <footer style={{ background: '#040810', color: '#fff', overflow: 'hidden', position: 'relative' }}>
+    {/* Top ambient line */}
+    <div style={{
+      position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+      width: 600, height: 1, background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent)',
+      pointerEvents: 'none',
+    }} />
 
-                <motion.div whileHover={{ scale: 1.04 }} className="hidden bg-background rounded-2xl p-3 shadow-lg w-fit sm:block">
-                  <img src={eCatalogueQr} alt="Scan for complete E-Catalogue" className="w-28 h-28 object-contain" />
-                </motion.div>
-              </div>
-
-              <div className="mb-6 rounded-2xl border border-background/10 bg-background/[0.03] p-4 sm:hidden">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-primary mb-2">Mobile Friendly</p>
-                <p className="text-sm text-background/60 leading-relaxed">
-                  Open the e-brochure directly or jump into machinery categories without scanning a QR code.
-                </p>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                <Link
-                  to="/machinery"
-                  className="group rounded-2xl bg-primary px-5 py-4 text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-primary-foreground/70 mb-1">Browse</p>
-                      <p className="font-serif text-2xl">All Machinery</p>
-                    </div>
-                    <ArrowUpRight className="w-5 h-5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
-                  </div>
-                </Link>
-
-                <Link
-                  to="/contact"
-                  className="group rounded-2xl border border-background/10 bg-background/[0.03] px-5 py-4 hover:border-primary/30 transition-colors"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-background/35 mb-1">Action</p>
-                      <p className="font-serif text-2xl text-background">Request Quote</p>
-                    </div>
-                    <ArrowUpRight className="w-5 h-5 text-background/60 group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
-                  </div>
-                </Link>
-              </div>
-
-              <div className="grid sm:grid-cols-3 gap-6 text-sm">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-background/25 mb-3">Navigate</p>
-                  <div className="space-y-2">
-                    <Link to="/" className="block text-background/55 hover:text-background transition-colors">Home</Link>
-                    <Link to="/about" className="block text-background/55 hover:text-background transition-colors">About</Link>
-                    <Link to="/machinery" className="block text-background/55 hover:text-background transition-colors">Machinery</Link>
-                    <Link to="/brochure" className="block text-background/55 hover:text-background transition-colors">E-Brochure</Link>
-                    <Link to="/partners" className="block text-background/55 hover:text-background transition-colors">Partners</Link>
-                    <Link to="/contact" className="block text-background/55 hover:text-background transition-colors">Contact</Link>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-background/25 mb-3">Machinery</p>
-                  <div className="space-y-2">
-                    {productCategories.map((category) => (
-                      <Link
-                        key={category.id}
-                        to={`/machinery/${category.slug}`}
-                        className="block text-background/55 hover:text-background transition-colors"
-                      >
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.18em] text-background/25 mb-3">Reach Us</p>
-                  <div className="space-y-2 text-background/55">
-                    {companyInfo.phones.map((phone) => (
-                      <a key={phone} href={`tel:${phone.replace(/\s/g, '')}`} className="block hover:text-background transition-colors">
-                        {phone}
-                      </a>
-                    ))}
-                    {companyInfo.emails.map((email) => (
-                      <a key={email} href={`mailto:${email}`} className="block break-all hover:text-background transition-colors">
-                        {email}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
+    {/* ── DESKTOP LAYOUT ── */}
+    <div className="hidden min-[900px]:block" style={{ maxWidth: 1300, margin: '0 auto', padding: '72px 56px 0' }}>
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1.6fr 1fr 1fr', gap: 56,
+        paddingBottom: 52, borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}>
+        {/* Brand */}
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 40, objectFit: 'contain', flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', lineHeight: 1.1, letterSpacing: '-0.01em' }}>Sai Enterprises</div>
+              <div style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginTop: 3 }}>Graphic Machinery · Est. 2000</div>
             </div>
+          </div>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, maxWidth: 320, marginBottom: 28 }}>
+            India's trusted graphic machinery supplier since 2000. Pre-press to post-press, corrugation, and allied finishing — delivered end-to-end.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
+            {[
+              { Icon: IcoPhone, label: '+91 931 217 5513', href: 'tel:+919312175513' },
+              { Icon: IcoPhone, label: '+91 939 767 8950', href: 'tel:+919397678950' },
+              { Icon: IcoMail, label: 'msrao@saienterprises.info', href: 'mailto:msrao@saienterprises.info' },
+              { Icon: IcoMail, label: 'venkat@saienterprises.info', href: 'mailto:venkat@saienterprises.info' },
+            ].map((c, i) => (
+              <a key={i} href={c.href} style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 12.5, color: 'rgba(255,255,255,0.42)', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#60A5FA'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.42)'; }}
+              >
+                <span style={{ color: 'rgba(255,255,255,0.22)', flexShrink: 0 }}><c.Icon /></span>
+                {c.label}
+              </a>
+            ))}
+          </div>
+          <div style={{ marginTop: 22, paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 7 }}>Offices</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>Hyderabad · Delhi · Pune · Vijayawada · Nairobi</div>
           </div>
         </div>
 
-        <div className="py-6 flex flex-col items-start gap-3 text-left sm:flex-row sm:justify-between sm:items-center">
-          <p className="text-xs text-background/25">
-            © {currentYear} {companyInfo.name}
-          </p>
-          <div className="flex flex-wrap items-center gap-3 text-[10px] uppercase tracking-[0.15em] text-background/25">
-            <span>India</span>
-            <span className="w-3 h-px bg-background/15" />
-            <span>Kenya</span>
-            <span className="w-3 h-px bg-background/15" />
-            <span>Graphic Machinery</span>
+        {/* Navigate */}
+        <div>
+          <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>Navigate</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {navLinks.map((l) => (
+              <Link key={l.to} to={l.to} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'; }}
+              >
+                <span style={{ color: 'rgba(255,255,255,0.15)', flexShrink: 0 }}><IcoChevron /></span>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Machinery */}
+        <div>
+          <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>Machinery</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {productCategories.map((cat) => (
+              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'; }}
+              >
+                <span style={{ color: 'rgba(255,255,255,0.15)', flexShrink: 0 }}><IcoChevron /></span>
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+          <div style={{ marginTop: 28, padding: '18px 20px', background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)' }}>
+            <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 5, fontWeight: 700 }}>Exclusive Partnership</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>HPM Sole Agent<br />in India</div>
+            <Link to="/partners" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 10, fontSize: 10, color: '#60A5FA', textDecoration: 'none', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
+              Learn More →
+            </Link>
           </div>
         </div>
       </div>
-    </footer>
-  );
-};
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0 24px', flexWrap: 'wrap', gap: 12 }}>
+        <span style={{ fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.15)' }}>© 2026 Sai Enterprises · All rights reserved · Hyderabad, India</span>
+        <span style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.12)' }}>HPM · Graphic Machinery · Est. 2000</span>
+      </div>
+    </div>
+
+    {/* ── MOBILE LAYOUT ── */}
+    <div className="min-[900px]:hidden" style={{ padding: '48px 20px 24px' }}>
+      {/* Brand block */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 36, objectFit: 'contain', flexShrink: 0 }} />
+        <div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', lineHeight: 1.1 }}>Sai Enterprises</div>
+          <div style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginTop: 3 }}>Graphic Machinery · Est. 2000</div>
+        </div>
+      </div>
+
+      {/* Tagline */}
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.36)', lineHeight: 1.75, marginBottom: 20 }}>
+        India's trusted graphic machinery supplier. Pre-press to corrugation — end-to-end by one team.
+      </p>
+
+      {/* Quick contact grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+        {[
+          { Icon: IcoPhone, label: '+91 931 217 5513', href: 'tel:+919312175513' },
+          { Icon: IcoPhone, label: '+91 939 767 8950', href: 'tel:+919397678950' },
+        ].map((c, i) => (
+          <a key={i} href={c.href} style={{
+            display: 'flex', alignItems: 'center', gap: 8, fontSize: 12,
+            color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+            padding: '10px 12px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: 8,
+          }}>
+            <span style={{ color: '#3B82F6', flexShrink: 0 }}><c.Icon /></span>
+            {c.label}
+          </a>
+        ))}
+        {[
+          { Icon: IcoMail, label: 'msrao@saienterprises.info', href: 'mailto:msrao@saienterprises.info' },
+          { Icon: IcoMail, label: 'venkat@saienterprises.info', href: 'mailto:venkat@saienterprises.info' },
+        ].map((c, i) => (
+          <a key={i} href={c.href} style={{
+            display: 'flex', alignItems: 'center', gap: 8, fontSize: 11,
+            color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+            padding: '10px 12px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: 8,
+            overflow: 'hidden',
+          }}>
+            <span style={{ color: '#3B82F6', flexShrink: 0 }}><c.Icon /></span>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.label}</span>
+          </a>
+        ))}
+      </div>
+
+      {/* Offices */}
+      <div style={{ marginBottom: 20, padding: '12px 14px', background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 8 }}>
+        <div style={{ fontSize: 8.5, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 6, fontWeight: 700 }}>Our Offices</div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>Hyderabad · Delhi · Pune · Vijayawada · Nairobi</div>
+      </div>
+
+      {/* HPM badge */}
+      <div style={{ marginBottom: 4, padding: '16px', background: 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.05))', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 4, fontWeight: 700 }}>Exclusive Partnership</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>HPM Sole Agent in India</div>
+        </div>
+        <Link to="/partners" style={{ fontSize: 10, color: '#60A5FA', textDecoration: 'none', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0, paddingLeft: 12 }}>
+          View →
+        </Link>
+      </div>
+
+      {/* Accordion sections */}
+      <div style={{ marginTop: 4 }}>
+        <AccordionSection title="Navigate">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {navLinks.map((l) => (
+              <Link key={l.to} to={l.to} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, color: 'rgba(255,255,255,0.5)', textDecoration: 'none', padding: '9px 4px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                <span style={{ color: '#3B82F6', flexShrink: 0 }}><IcoChevron /></span>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection title="Machinery">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, paddingTop: 4 }}>
+            {productCategories.map((cat) => (
+              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{
+                fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                padding: '10px 12px', background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8,
+                display: 'flex', alignItems: 'center', gap: 6,
+              }}>
+                <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B82F6', flexShrink: 0 }} />
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </AccordionSection>
+      </div>
+
+      {/* Bottom */}
+      <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+        <div style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.12)', lineHeight: 1.8 }}>
+          © 2026 Sai Enterprises · All rights reserved<br />
+          HPM · Graphic Machinery · Est. 2000 · Hyderabad, India
+        </div>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;

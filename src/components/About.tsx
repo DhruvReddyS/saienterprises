@@ -2,7 +2,8 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { MapPin, Briefcase, Wrench, Users, HeartHandshake, Building2, Globe, ChevronRight } from 'lucide-react';
 import { companyInfo } from '@/data/products';
-import saiLogo from '@/assets/sai-logo.png';
+import saiLogo from '@/assets/sai-logo-cmyk.png';
+import BrandImage from '@/components/BrandImage';
 
 const timelineEvents = [
   { year: '2000', title: 'Foundation', description: 'Established in Hyderabad with a vision for excellence', icon: Building2 },
@@ -39,7 +40,7 @@ const About = () => {
         style={{ opacity: logoOpacity }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
       >
-        <img src={saiLogo} alt="" className="w-[600px] h-auto grayscale" />
+        <BrandImage src={saiLogo} alt="" className="w-[600px] h-auto grayscale" style={{ opacity: 0.18 }} />
       </motion.div>
 
       {/* Blueprint Pattern */}

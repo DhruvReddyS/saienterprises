@@ -1,49 +1,44 @@
+import { useEffect } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
-import SectionNav from '@/components/SectionNav';
 import HeroSection from '@/components/home/HeroSection';
-import BrochureHighlightsSection from '@/components/home/BrochureHighlightsSection';
-import AboutSection from '@/components/home/AboutSection';
 import OfferingsSection from '@/components/home/OfferingsSection';
 import ServicesSection from '@/components/home/ServicesSection';
 import BrandPartnersSection from '@/components/home/BrandPartnersSection';
 import GlobalPresenceSection from '@/components/home/GlobalPresenceSection';
-import TestimonialsSection from '@/components/home/TestimonialsSection';
 import WhySaiSection from '@/components/home/WhySaiSection';
-import ContactSection from '@/components/home/ContactSection';
-
-const sections = [
-  { id: 'about', label: 'About' },
-  { id: 'offerings', label: 'Offerings' },
-  { id: 'services', label: 'Services' },
-  { id: 'partners', label: 'Partners' },
-  { id: 'presence', label: 'Presence' },
-  { id: 'testimonials', label: 'Testimonials' },
-  { id: 'why-us', label: 'Why Us' },
-  { id: 'contact', label: 'Contact' },
-];
+import ClientsSection from '@/components/home/ClientsSection';
+import TestimonialsSection from '@/components/home/TestimonialsSection';
+import CTAWithVerticalMarquee from '@/components/ui/cta-with-text-marquee';
+import { setPageMeta } from '@/lib/seo';
 
 const Index = () => {
+  useEffect(() => {
+    setPageMeta(
+      'Sai Enterprises | Graphic Machinery Suppliers — India & East Africa',
+      'Sai Enterprises — premium graphic machinery suppliers since 2000. HPM sole agent in India. 5000+ machines sold across India, Kenya and East Africa.',
+      'https://saienterprises.in/',
+    );
+  }, []);
+
   return (
     <PageTransition>
       <Header />
-      <SectionNav sections={sections} />
-      
+
       <main>
         <HeroSection />
-        <BrochureHighlightsSection />
-        <div id="about"><AboutSection /></div>
-        <div id="offerings"><OfferingsSection /></div>
-        <div id="services"><ServicesSection /></div>
-        <div id="partners"><BrandPartnersSection /></div>
-        <div id="presence"><GlobalPresenceSection /></div>
-        <div id="testimonials"><TestimonialsSection /></div>
-        <div id="why-us"><WhySaiSection /></div>
-        <div id="contact"><ContactSection /></div>
+        <OfferingsSection />
+        <ServicesSection />
+        <BrandPartnersSection />
+        <GlobalPresenceSection />
+        <WhySaiSection />
+        <ClientsSection />
+        <TestimonialsSection />
+        <CTAWithVerticalMarquee />
       </main>
 
-      <Footer />
+      <CinematicFooter />
     </PageTransition>
   );
 };

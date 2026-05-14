@@ -1,7 +1,8 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { ChevronDown, ArrowRight, MapPin, Shield, Settings, Calendar } from 'lucide-react';
-import saiLogo from '@/assets/sai-logo.png';
+import saiLogo from '@/assets/sai-logo-cmyk.png';
+import BrandImage from '@/components/BrandImage';
 
 const trustChips = [
   { icon: Calendar, label: '24+ Years', sublabel: 'Industry Excellence' },
@@ -170,12 +171,10 @@ const Hero = () => {
         >
           {/* Logo */}
           <motion.div variants={itemVariants} className="mb-8">
-            <motion.img
+            <BrandImage
               src={saiLogo}
               alt="Sai Enterprises"
               className="h-20 md:h-28 lg:h-32 mx-auto"
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: 'spring', stiffness: 300 }}
             />
           </motion.div>
 

@@ -2,14 +2,22 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Package, Layers, Printer, Scissors } from 'lucide-react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import { productCategories } from '@/data/products';
+import { GlowCard } from '@/components/ui/spotlight-card';
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   'pre-press': Layers,
   'press': Printer,
   'post-press': Scissors,
   'corrugation': Package,
+};
+
+const categoryGlow: Record<string, 'blue' | 'purple' | 'green' | 'orange'> = {
+  'pre-press': 'purple',
+  press: 'blue',
+  'post-press': 'blue',
+  corrugation: 'green',
 };
 
 const ProductCategory = () => {
@@ -29,12 +37,13 @@ const ProductCategory = () => {
             </Link>
           </div>
         </main>
-        <Footer />
+        <CinematicFooter />
       </div>
     );
   }
 
   const Icon = categoryIcons[category.id] || Package;
+  const glowColor = categoryGlow[category.id] || 'blue';
 
   // Group products by category
   const subcategories = category.products.reduce((acc, product) => {
@@ -105,52 +114,58 @@ const ProductCategory = () => {
                       viewport={{ once: true }}
                       transition={{ duration: 0.4, delay: prodIndex * 0.05 }}
                     >
-                      <Link
-                        to={`/machinery/${category.slug}/${product.id}`}
-                        className="block h-full p-5 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 group"
+                      <GlowCard
+                        glowColor={glowColor}
+                        customSize
+                        className="h-full w-full rounded-[22px] border-white/70 bg-white/88 p-0 shadow-[0_20px_40px_-28px_rgba(15,23,42,0.24)] backdrop-blur-[12px]"
                       >
-                        <div className="aspect-[4/3] rounded-lg bg-secondary/50 mb-4 overflow-hidden">
-                          {product.image ? (
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Package className="w-12 h-12 text-muted-foreground/30 group-hover:scale-110 transition-transform duration-300" />
-                            </div>
-                          )}
-                        </div>
-
-                        <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
-                          {product.name}
-                        </h3>
-
-                        {product.description && (
-                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                            {product.description}
-                          </p>
-                        )}
-
-                        {product.sizes && product.sizes.length > 0 && (
-                          <div className="flex flex-wrap gap-1">
-                            {product.sizes.slice(0, 3).map((size) => (
-                              <span
-                                key={size}
-                                className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded"
-                              >
-                                {size}
-                              </span>
-                            ))}
-                            {product.sizes.length > 3 && (
-                              <span className="px-2 py-0.5 text-muted-foreground text-xs">
-                                +{product.sizes.length - 3}
-                              </span>
+                        <Link
+                          to={`/machinery/${category.slug}?preview=${product.id}`}
+                          className="group block h-full p-5 transition-all duration-300"
+                        >
+                          <div className="mb-4 aspect-[4/3] overflow-hidden rounded-lg bg-secondary/50">
+                            {product.image ? (
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center">
+                                <Package className="h-12 w-12 text-muted-foreground/30 transition-transform duration-300 group-hover:scale-110" />
+                              </div>
                             )}
                           </div>
-                        )}
-                      </Link>
+
+                          <h3 className="mb-2 font-semibold text-foreground transition-colors group-hover:text-primary">
+                            {product.name}
+                          </h3>
+
+                          {product.description && (
+                            <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
+                              {product.description}
+                            </p>
+                          )}
+
+                          {product.sizes && product.sizes.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {product.sizes.slice(0, 3).map((size) => (
+                                <span
+                                  key={size}
+                                  className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs text-primary"
+                                >
+                                  {size}
+                                </span>
+                              ))}
+                              {product.sizes.length > 3 && (
+                                <span className="px-2 py-0.5 text-xs text-muted-foreground">
+                                  +{product.sizes.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </Link>
+                      </GlowCard>
                     </motion.div>
                   ))}
                 </div>
@@ -184,7 +199,7 @@ const ProductCategory = () => {
           </div>
         </section>
       </main>
-      <Footer />
+      <CinematicFooter />
     </div>
   );
 };
