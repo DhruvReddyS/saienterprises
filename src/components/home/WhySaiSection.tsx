@@ -253,7 +253,7 @@ const WhySaiSection = () => {
       }} />
 
       <div ref={reveal.ref} style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }}
-        className="max-md:!px-6"
+        className="max-md:!px-6 max-[767px]:!px-4"
       >
         {/* Header */}
         <div style={{

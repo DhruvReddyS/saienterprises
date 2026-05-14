@@ -493,8 +493,8 @@ const PartnersPage = () => {
       </div>
 
       {/* ── HISTORY TIMELINE — white/light ── */}
-      <div style={{ background: '#F8FAFC', borderTop: '1px solid rgba(0,0,0,0.06)', padding: '100px 0' }}>
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7">
+      <div style={{ background: '#F8FAFC', borderTop: '1px solid rgba(0,0,0,0.06)', padding: 'clamp(48px,8vw,100px) 0' }}>
+        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7 max-[767px]:!px-4">
           <div style={{ marginBottom: 60 }}>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
@@ -580,7 +580,7 @@ const PartnersPage = () => {
 
       {/* ── HPM MACHINE RANGE — filtered grid ── */}
       <div style={{ background: '#060A10', padding: '100px 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7">
+        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7 max-[767px]:!px-4">
           <div style={{ marginBottom: 48 }}>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
@@ -640,7 +640,7 @@ const PartnersPage = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'rgba(255,255,255,0.05)' }}
-              className="max-lg:!grid-cols-2 max-sm:!grid-cols-1"
+              className="max-lg:!grid-cols-2 max-[767px]:!grid-cols-1 max-sm:!grid-cols-1"
             >
               {filteredProducts.map((p, i) => (
                 <ProductCard key={p.name} p={p} i={i} />
@@ -660,7 +660,7 @@ const PartnersPage = () => {
           pointerEvents: 'none', filter: 'blur(40px)',
         }} />
 
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px', position: 'relative' }} className="max-md:!px-7">
+        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px', position: 'relative' }} className="max-md:!px-7 max-[767px]:!px-4">
           {/* Section header */}
           <div style={{
             display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
@@ -704,7 +704,7 @@ const PartnersPage = () => {
             opacity: saiHpmReveal.on ? 1 : 0, transform: saiHpmReveal.on ? 'none' : 'translateY(24px)',
             transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s',
           }}
-            className="max-lg:!grid-cols-2 max-sm:!grid-cols-1"
+            className="max-lg:!grid-cols-2 max-[767px]:!grid-cols-2 max-sm:!grid-cols-1"
           >
             {whySai.map((w, wi) => (
               <WhySaiCard key={w.num} w={w} wi={wi} />
@@ -715,7 +715,7 @@ const PartnersPage = () => {
 
       {/* ── BROCHURE CTA ── */}
       <div style={{ background: '#060A10', padding: '80px 64px', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}
-        className="max-md:!px-7"
+        className="max-md:!px-7 max-[767px]:!px-4"
       >
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(28px,3.5vw,44px)', fontWeight: 300, color: '#fff', lineHeight: 1.1, marginBottom: 36 }}>

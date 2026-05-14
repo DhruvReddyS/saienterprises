@@ -533,6 +533,12 @@ img:not([loading]) {
   }
 }
 
+/* ── GLOBAL MOBILE RESET ── */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 /* ── MOBILE BOTTOM NAV: pad page content ── */
 @media (max-width: 767px) {
   #root > div > div:first-child {
@@ -542,9 +548,8 @@ img:not([loading]) {
     padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  /* Sticky filter bar: no header on mobile so stick to top 0 */
-  [style*="top: 72"][style*="sticky"],
-  [style*="top:72"][style*="sticky"] {
+  /* Sticky filter bar: no header so stick to top 0 */
+  .sticky-filter-bar {
     top: 0 !important;
   }
 
@@ -559,5 +564,44 @@ img:not([loading]) {
     top: 50% !important;
     transform: translateY(-50%) scale(0.72) !important;
     transform-origin: right center !important;
+  }
+
+  /* ── SECTION ALIGNMENT ── */
+
+  /* Ensure all section content containers are contained */
+  section, main > div {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Offerings mobile cards: tighter vertical spacing */
+  .offerings-mobile-card {
+    padding: 36px 20px !important;
+  }
+
+  /* BrandPartners divider: tighter margin on mobile */
+  .brand-divider {
+    margin-bottom: 40px !important;
+  }
+
+  /* Reduce section heading size on very small screens */
+  h1, h2 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Machine grid: 1 column on all phones */
+  .machine-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Partners offices grid: 2 cols */
+  .offices-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* About stats: 2 cols */
+  .about-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }

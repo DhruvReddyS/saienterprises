@@ -345,9 +345,9 @@ const MachineryCategory = () => {
       <ScrollProgress />
       <Header />
       
-      <main className="bg-background">
+      <main className="bg-background overflow-x-hidden">
         {/* Hero */}
-        <section ref={heroRef} className="relative min-h-[44vh] flex items-center justify-center border-b border-border/60 bg-[radial-gradient(circle_at_top_left,rgba(210,160,78,0.12),transparent_24%),linear-gradient(180deg,rgba(15,23,42,0.04),rgba(15,23,42,0))] overflow-hidden">
+        <section ref={heroRef} className="relative min-h-[44vh] max-[767px]:min-h-0 flex items-center justify-center border-b border-border/60 bg-[radial-gradient(circle_at_top_left,rgba(210,160,78,0.12),transparent_24%),linear-gradient(180deg,rgba(15,23,42,0.04),rgba(15,23,42,0))] overflow-hidden">
           {category.heroImage && (
             <div className="absolute inset-0 pointer-events-none">
               <img

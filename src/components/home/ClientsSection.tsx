@@ -144,7 +144,7 @@ const ClientsSection = () => {
       }} />
 
       {/* Header */}
-      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative', marginBottom: 56 }} className="max-md:!px-6">
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative', marginBottom: 56 }} className="max-md:!px-6 max-[767px]:!px-4">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 22 }}
@@ -238,7 +238,7 @@ const ClientsSection = () => {
       `}</style>
 
       {/* Footer stat bar */}
-      <div style={{ maxWidth: 1300, margin: '56px auto 0', padding: '0 56px' }} className="max-md:!px-6">
+      <div style={{ maxWidth: 1300, margin: '56px auto 0', padding: '0 56px' }} className="max-md:!px-6 max-[767px]:!px-4">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 14 }}

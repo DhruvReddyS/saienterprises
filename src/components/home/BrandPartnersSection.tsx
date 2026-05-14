@@ -33,10 +33,10 @@ const BrandPartnersSection = () => {
 
   return (
     <section style={{ background: '#F0F4FF', padding: 'clamp(64px,8vw,120px) 0', overflow: 'hidden' }}>
-      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7">
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7 max-[767px]:!px-4">
 
         {/* Divider with line-draw */}
-        <div ref={dividerRef} style={{ display: 'flex', alignItems: 'center', marginBottom: 80 }}>
+        <div ref={dividerRef} className="brand-divider" style={{ display: 'flex', alignItems: 'center', marginBottom: 80 }}>
           <div style={{
             height: 1, flex: 1, background: '#0D1421', opacity: 0.12,
             transform: revealed ? 'scaleX(1)' : 'scaleX(0)',

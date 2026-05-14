@@ -74,7 +74,7 @@ const GlobalPresenceSection = () => {
         pointerEvents: 'none',
       }} />
 
-      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-6">
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-6 max-[767px]:!px-4">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 24 }}

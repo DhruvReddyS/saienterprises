@@ -84,7 +84,7 @@ const OfferingsSection = () => {
     return (
       <section style={{ background: '#060A10' }}>
         {CATS.map((c, i) => (
-          <div key={c.id} style={{
+          <div key={c.id} className="offerings-mobile-card" style={{
             padding: '60px 28px',
             borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}>

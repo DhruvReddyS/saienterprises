@@ -188,7 +188,7 @@ export const CinematicFooter = () => {
           position: 'relative',
           zIndex: 2,
         }}
-        className="max-[900px]:!grid-cols-1 max-[900px]:!gap-10 max-md:!px-6"
+        className="max-[900px]:!grid-cols-1 max-[900px]:!gap-10 max-md:!px-6 max-[767px]:!px-4"
       >
         {/* Col 1 — Brand */}
         <motion.div variants={fadeUp}>
@@ -342,7 +342,7 @@ export const CinematicFooter = () => {
           marginTop: 40,
           position: 'relative', zIndex: 2,
         }}
-        className="max-md:!px-6"
+        className="max-md:!px-6 max-[767px]:!px-4"
       >
         <span style={{ fontSize: 8, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.14)' }}>
           © 2026 Sai Enterprises · Hyderabad, India

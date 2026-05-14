@@ -29,6 +29,7 @@ const BrochurePage = () => {
           maxWidth: 1300, margin: '0 auto',
           opacity: revealed ? 1 : 0, transform: revealed ? 'none' : 'translateY(20px)',
           transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1)',
+          overflowX: 'hidden',
         }}>
           <div style={{
             fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em',

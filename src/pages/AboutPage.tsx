@@ -107,7 +107,7 @@ const StatsRow = () => {
       display: 'grid', gridTemplateColumns: 'repeat(4,1fr)',
       gap: 12, marginTop: 72,
     }}
-      className="max-lg:!grid-cols-2 max-sm:!grid-cols-2"
+      className="about-stats-grid max-lg:!grid-cols-2 max-sm:!grid-cols-2"
     >
       {stats.map((s, i) => (
         <div key={s.label} style={{
@@ -485,7 +485,7 @@ const AboutPage = () => {
       {/* ── TIMELINE — WHITE/LIGHT ── */}
       <div style={{ background: '#F8FAFC', padding: '100px 0 60px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }}
-          className="max-md:!px-7"
+          className="max-md:!px-7 max-[767px]:!px-4"
         >
           <div style={{ marginBottom: 64 }}>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -501,7 +501,7 @@ const AboutPage = () => {
             </h2>
           </div>
 
-          <div style={{ paddingLeft: 100 }} className="max-sm:!pl-0">
+          <div style={{ paddingLeft: 100 }} className="max-sm:!pl-0 max-[767px]:!pl-0">
             {timeline.map((ch, i) => (
               <TimelineItem key={ch.year} ch={ch} i={i} />
             ))}
@@ -512,7 +512,7 @@ const AboutPage = () => {
       {/* ── FOUNDERS — WHITE/LIGHT ── */}
       <div ref={foundersReveal.ref} style={{ background: '#fff', padding: '80px 0 100px', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }}
-          className="max-md:!px-7"
+          className="max-md:!px-7 max-[767px]:!px-4"
         >
           <div style={{ marginBottom: 52 }}>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -537,7 +537,7 @@ const AboutPage = () => {
       {/* ── WORLD MAP — dark ── */}
       <div style={{ background: '#060A10', padding: '100px 0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }}
-          className="max-md:!px-7"
+          className="max-md:!px-7 max-[767px]:!px-4"
         >
           <div style={{ marginBottom: 56 }}>
             <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>

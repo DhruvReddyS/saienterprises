@@ -196,9 +196,8 @@ const MachineryHub = () => {
         background: '#0A1220',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
         position: 'sticky', top: 72, zIndex: 100,
-        /* on mobile header is hidden so stick to top */
         padding: '0 64px',
-      }} className="max-md:!px-5">
+      }} className="max-md:!px-5 sticky-filter-bar">
         <div style={{ overflowX: 'auto', display: 'flex', alignItems: 'center', gap: 0 }}>
           {ALL_CATS.map((cat) => {
             const accent = cat.id !== 'all' ? (CATEGORY_COLORS[cat.id] ?? '#3B82F6') : '#3B82F6';
@@ -235,7 +234,7 @@ const MachineryHub = () => {
       </div>
 
       {/* Machine grid */}
-      <div style={{ background: '#F4F7FF', padding: '48px 48px 80px', position: 'relative' }} className="max-md:!px-5 max-md:!py-8">
+      <div style={{ background: '#F4F7FF', padding: '48px 48px 80px', position: 'relative' }} className="max-md:!px-5 max-md:!py-8 max-[767px]:!px-4 max-[767px]:!py-6">
         {/* Subtle grid bg */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -309,7 +308,7 @@ const MachineGrid = ({ machines, onSelect }: {
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: 16,
   }}
-    className="max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-md:!grid-cols-2 max-sm:!grid-cols-1"
+    className="machine-grid max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-md:!grid-cols-2 max-sm:!grid-cols-1"
   >
     {machines.map((m) => (
       <MachineCard key={m.id} m={m} onSelect={onSelect} />
