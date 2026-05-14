@@ -26,7 +26,7 @@ const BrandPartnersSection = () => {
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setRevealed(true); obs.disconnect(); }
-    }, { threshold: 0.3 });
+    }, { threshold: 0.06 });
     if (dividerRef.current) obs.observe(dividerRef.current);
     return () => obs.disconnect();
   }, []);

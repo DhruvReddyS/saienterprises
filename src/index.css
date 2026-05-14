@@ -532,3 +532,13 @@ img:not([loading]) {
     animation-play-state: paused !important;
   }
 }
+
+/* ── MOBILE BOTTOM NAV: pad page content ── */
+@media (max-width: 767px) {
+  #root > div > div:first-child {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+  footer {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}

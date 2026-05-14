@@ -118,7 +118,7 @@ const GlobalPresenceSection = () => {
               gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
               gap: 12,
             }}
-              className="max-sm:!grid-cols-1"
+              className="max-sm:!grid-cols-3 max-[400px]:!grid-cols-3"
             >
               {[
                 { value: `${totalCities}`, label: 'India cities' },
@@ -259,11 +259,11 @@ const GlobalPresenceSection = () => {
             </div>
 
             <div style={{
-              minHeight: 'clamp(320px, 45vw, 580px)',
+              minHeight: 'clamp(260px, 42vw, 580px)',
               border: '1px solid rgba(255,255,255,0.08)',
               background: 'linear-gradient(180deg, rgba(7,12,22,0.72), rgba(7,12,22,0.44))',
               padding: '16px 16px 10px',
-            }}>
+            }} className="max-[767px]:!min-h-[260px]">
               <IndiaPresenceMap selectedCityId={selectedId} onSelectCity={setSelectedId} />
             </div>
           </div>
@@ -276,7 +276,9 @@ const GlobalPresenceSection = () => {
             background: 'linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02))',
             backdropFilter: 'blur(14px)',
             padding: 20,
-          }}>
+            maxHeight: 'clamp(400px, 60vw, 9999px)',
+            overflowY: 'auto',
+          }} className="max-[767px]:!max-h-[380px]">
             <div style={{
               background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}30`,
               padding: '20px 20px 18px', position: 'relative', overflow: 'hidden',

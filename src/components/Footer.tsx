@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { productCategories } from '@/data/products';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
 
@@ -21,54 +23,87 @@ const IcoChevron = () => (
   </svg>
 );
 
+const navLinks = [
+  { label: 'Home', to: '/' },
+  { label: 'Machinery', to: '/machinery' },
+  { label: 'About Sai Enterprises', to: '/about' },
+  { label: 'Partners', to: '/partners' },
+  { label: 'E-Brochure', to: '/brochure' },
+  { label: 'Contact Us', to: '/contact' },
+];
+
+/* ── Accordion section for mobile ── */
+const AccordionSection = ({ title, children }: { title: string; children: React.ReactNode }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '16px 0', background: 'none', border: 'none', cursor: 'pointer',
+          color: '#fff',
+        }}
+      >
+        <span style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, fontFamily: "'DM Sans', sans-serif" }}>
+          {title}
+        </span>
+        <motion.span
+          animate={{ rotate: open ? 90 : 0 }}
+          transition={{ duration: 0.22 }}
+          style={{ color: 'rgba(255,255,255,0.3)' }}
+        >
+          <IcoChevron />
+        </motion.span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div style={{ paddingBottom: 16 }}>
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Footer = () => (
   <footer style={{ background: '#040810', color: '#fff', overflow: 'hidden', position: 'relative' }}>
-    {/* Top ambient glow */}
+    {/* Top ambient line */}
     <div style={{
       position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
       width: 600, height: 1, background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent)',
       pointerEvents: 'none',
     }} />
 
-    {/* Main content */}
-    <div style={{ maxWidth: 1300, margin: '0 auto', padding: '72px 56px 0' }} className="max-md:!px-6">
+    {/* ── DESKTOP LAYOUT ── */}
+    <div className="hidden min-[900px]:block" style={{ maxWidth: 1300, margin: '0 auto', padding: '72px 56px 0' }}>
       <div style={{
         display: 'grid', gridTemplateColumns: '1.6fr 1fr 1fr', gap: 56,
         paddingBottom: 52, borderBottom: '1px solid rgba(255,255,255,0.06)',
-      }} className="max-[900px]:!grid-cols-1 max-[900px]:!gap-10">
-
-        {/* Brand column */}
+      }}>
+        {/* Brand */}
         <div>
-          {/* Logo block */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28,
-            paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)',
-          }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28, paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
             <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 40, objectFit: 'contain', flexShrink: 0 }} />
             <div>
-              <div style={{
-                fontSize: 16, fontWeight: 700, color: '#fff', lineHeight: 1.1,
-                letterSpacing: '-0.01em',
-              }}>
-                Sai Enterprises
-              </div>
-              <div style={{
-                fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.32)', marginTop: 3,
-              }}>
-                Graphic Machinery · Est. 2000
-              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', lineHeight: 1.1, letterSpacing: '-0.01em' }}>Sai Enterprises</div>
+              <div style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', marginTop: 3 }}>Graphic Machinery · Est. 2000</div>
             </div>
           </div>
-
-          <p style={{
-            fontSize: 13, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85,
-            maxWidth: 320, marginBottom: 28,
-          }}>
-            India's trusted graphic machinery supplier since 2000. Pre-press to post-press, corrugation, and allied finishing workflows — delivered end-to-end by one team.
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, maxWidth: 320, marginBottom: 28 }}>
+            India's trusted graphic machinery supplier since 2000. Pre-press to post-press, corrugation, and allied finishing — delivered end-to-end.
           </p>
-
-          {/* Contact */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
             {[
               { Icon: IcoPhone, label: '+91 931 217 5513', href: 'tel:+919312175513' },
@@ -76,11 +111,7 @@ const Footer = () => (
               { Icon: IcoMail, label: 'msrao@saienterprises.info', href: 'mailto:msrao@saienterprises.info' },
               { Icon: IcoMail, label: 'venkat@saienterprises.info', href: 'mailto:venkat@saienterprises.info' },
             ].map((c, i) => (
-              <a key={i} href={c.href} style={{
-                display: 'flex', alignItems: 'center', gap: 9,
-                fontSize: 12.5, color: 'rgba(255,255,255,0.42)', textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
+              <a key={i} href={c.href} style={{ display: 'flex', alignItems: 'center', gap: 9, fontSize: 12.5, color: 'rgba(255,255,255,0.42)', textDecoration: 'none', transition: 'color 0.2s' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#60A5FA'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.42)'; }}
               >
@@ -89,37 +120,18 @@ const Footer = () => (
               </a>
             ))}
           </div>
-
-          {/* Offices */}
           <div style={{ marginTop: 22, paddingTop: 18, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 7 }}>
-              Offices
-            </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>
-              Hyderabad · Delhi · Pune · Vijayawada · Nairobi
-            </div>
+            <div style={{ fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 7 }}>Offices</div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>Hyderabad · Delhi · Pune · Vijayawada · Nairobi</div>
           </div>
         </div>
 
         {/* Navigate */}
         <div>
-          <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>
-            Navigate
-          </div>
+          <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>Navigate</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {[
-              { label: 'Home', to: '/' },
-              { label: 'Machinery', to: '/machinery' },
-              { label: 'About Sai Enterprises', to: '/about' },
-              { label: 'Partners', to: '/partners' },
-              { label: 'E-Brochure', to: '/brochure' },
-              { label: 'Contact Us', to: '/contact' },
-            ].map((l) => (
-              <Link key={l.to} to={l.to} style={{
-                display: 'flex', alignItems: 'center', gap: 7,
-                fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
+            {navLinks.map((l) => (
+              <Link key={l.to} to={l.to} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'; }}
               >
@@ -132,16 +144,10 @@ const Footer = () => (
 
         {/* Machinery */}
         <div>
-          <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>
-            Machinery
-          </div>
+          <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>Machinery</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {productCategories.map((cat) => (
-              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{
-                display: 'flex', alignItems: 'center', gap: 7,
-                fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
+              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'; }}
               >
@@ -150,36 +156,128 @@ const Footer = () => (
               </Link>
             ))}
           </div>
-
           <div style={{ marginTop: 28, padding: '18px 20px', background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)' }}>
-            <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 5, fontWeight: 700 }}>
-              Exclusive Partnership
-            </div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>
-              HPM Sole Agent<br />in India
-            </div>
-            <Link to="/partners" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 5,
-              marginTop: 10, fontSize: 10, color: '#60A5FA', textDecoration: 'none',
-              letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600,
-            }}>
+            <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 5, fontWeight: 700 }}>Exclusive Partnership</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>HPM Sole Agent<br />in India</div>
+            <Link to="/partners" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 10, fontSize: 10, color: '#60A5FA', textDecoration: 'none', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
               Learn More →
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '20px 0 24px', flexWrap: 'wrap', gap: 12,
-      }}>
-        <span style={{ fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.15)' }}>
-          © 2026 Sai Enterprises · All rights reserved · Hyderabad, India
-        </span>
-        <span style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.12)' }}>
-          HPM · Graphic Machinery · Est. 2000
-        </span>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0 24px', flexWrap: 'wrap', gap: 12 }}>
+        <span style={{ fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.15)' }}>© 2026 Sai Enterprises · All rights reserved · Hyderabad, India</span>
+        <span style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.12)' }}>HPM · Graphic Machinery · Est. 2000</span>
+      </div>
+    </div>
+
+    {/* ── MOBILE LAYOUT ── */}
+    <div className="min-[900px]:hidden" style={{ padding: '48px 20px 24px' }}>
+      {/* Brand block */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 36, objectFit: 'contain', flexShrink: 0 }} />
+        <div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', lineHeight: 1.1 }}>Sai Enterprises</div>
+          <div style={{ fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginTop: 3 }}>Graphic Machinery · Est. 2000</div>
+        </div>
+      </div>
+
+      {/* Tagline */}
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.36)', lineHeight: 1.75, marginBottom: 20 }}>
+        India's trusted graphic machinery supplier. Pre-press to corrugation — end-to-end by one team.
+      </p>
+
+      {/* Quick contact grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+        {[
+          { Icon: IcoPhone, label: '+91 931 217 5513', href: 'tel:+919312175513' },
+          { Icon: IcoPhone, label: '+91 939 767 8950', href: 'tel:+919397678950' },
+        ].map((c, i) => (
+          <a key={i} href={c.href} style={{
+            display: 'flex', alignItems: 'center', gap: 8, fontSize: 12,
+            color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+            padding: '10px 12px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: 8,
+          }}>
+            <span style={{ color: '#3B82F6', flexShrink: 0 }}><c.Icon /></span>
+            {c.label}
+          </a>
+        ))}
+        {[
+          { Icon: IcoMail, label: 'msrao@saienterprises.info', href: 'mailto:msrao@saienterprises.info' },
+          { Icon: IcoMail, label: 'venkat@saienterprises.info', href: 'mailto:venkat@saienterprises.info' },
+        ].map((c, i) => (
+          <a key={i} href={c.href} style={{
+            display: 'flex', alignItems: 'center', gap: 8, fontSize: 11,
+            color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+            padding: '10px 12px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: 8,
+            overflow: 'hidden',
+          }}>
+            <span style={{ color: '#3B82F6', flexShrink: 0 }}><c.Icon /></span>
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.label}</span>
+          </a>
+        ))}
+      </div>
+
+      {/* Offices */}
+      <div style={{ marginBottom: 20, padding: '12px 14px', background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: 8 }}>
+        <div style={{ fontSize: 8.5, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 6, fontWeight: 700 }}>Our Offices</div>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>Hyderabad · Delhi · Pune · Vijayawada · Nairobi</div>
+      </div>
+
+      {/* HPM badge */}
+      <div style={{ marginBottom: 4, padding: '16px', background: 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.05))', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 4, fontWeight: 700 }}>Exclusive Partnership</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>HPM Sole Agent in India</div>
+        </div>
+        <Link to="/partners" style={{ fontSize: 10, color: '#60A5FA', textDecoration: 'none', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0, paddingLeft: 12 }}>
+          View →
+        </Link>
+      </div>
+
+      {/* Accordion sections */}
+      <div style={{ marginTop: 4 }}>
+        <AccordionSection title="Navigate">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {navLinks.map((l) => (
+              <Link key={l.to} to={l.to} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13.5, color: 'rgba(255,255,255,0.5)', textDecoration: 'none', padding: '9px 4px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                <span style={{ color: '#3B82F6', flexShrink: 0 }}><IcoChevron /></span>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </AccordionSection>
+
+        <AccordionSection title="Machinery">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, paddingTop: 4 }}>
+            {productCategories.map((cat) => (
+              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{
+                fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                padding: '10px 12px', background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8,
+                display: 'flex', alignItems: 'center', gap: 6,
+              }}>
+                <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#3B82F6', flexShrink: 0 }} />
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </AccordionSection>
+      </div>
+
+      {/* Bottom */}
+      <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+        <div style={{ fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.12)', lineHeight: 1.8 }}>
+          © 2026 Sai Enterprises · All rights reserved<br />
+          HPM · Graphic Machinery · Est. 2000 · Hyderabad, India
+        </div>
       </div>
     </div>
   </footer>

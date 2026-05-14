@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TestimonialsColumn, type Testimonial } from '@/components/ui/testimonials-columns';
 
 const testimonials: Testimonial[] = [
@@ -81,6 +81,189 @@ const col1 = testimonials.slice(0, 3);
 const col2 = testimonials.slice(3, 6);
 const col3 = testimonials.slice(6, 9);
 
+/* ── Mobile card ── */
+const MobileCard = ({ t, isActive }: { t: Testimonial; isActive: boolean }) => (
+  <motion.div
+    animate={{ scale: isActive ? 1 : 0.92, opacity: isActive ? 1 : 0.45 }}
+    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    style={{
+      background: 'linear-gradient(135deg, #0D1B2E 0%, #111C2E 60%, #0A1628 100%)',
+      border: '1px solid rgba(59,130,246,0.2)',
+      borderRadius: 20,
+      padding: '28px 24px 24px',
+      position: 'relative',
+      overflow: 'hidden',
+      boxShadow: isActive
+        ? '0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(59,130,246,0.12), inset 0 1px 0 rgba(255,255,255,0.04)'
+        : '0 8px 24px rgba(0,0,0,0.3)',
+    }}
+  >
+    {/* Top accent */}
+    <div style={{
+      position: 'absolute', top: 0, left: 0, right: 0, height: 2,
+      background: 'linear-gradient(90deg, #3B82F6 0%, #60A5FA 50%, transparent 100%)',
+    }} />
+
+    {/* Quote watermark */}
+    <div style={{
+      position: 'absolute', top: 8, right: 16,
+      fontSize: 80, lineHeight: 1,
+      fontFamily: 'Georgia, serif',
+      color: 'rgba(59,130,246,0.1)',
+      userSelect: 'none', pointerEvents: 'none',
+    }}>"</div>
+
+    {/* Stars */}
+    <div style={{ display: 'flex', gap: 4, marginBottom: 20 }}>
+      {[1,2,3,4,5].map((s) => (
+        <svg key={s} width="14" height="14" viewBox="0 0 24 24" fill={s <= t.rating ? '#FACC15' : 'rgba(255,255,255,0.08)'} stroke="none">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      ))}
+    </div>
+
+    <p style={{
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: 15, lineHeight: 1.75,
+      color: 'rgba(255,255,255,0.82)',
+      marginBottom: 24, fontStyle: 'italic', position: 'relative',
+      minHeight: 80,
+    }}>
+      "{t.text}"
+    </p>
+
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      paddingTop: 18, borderTop: '1px solid rgba(59,130,246,0.12)',
+    }}>
+      <div style={{
+        width: 44, height: 44, borderRadius: '50%',
+        background: 'linear-gradient(135deg, #1E3A5F, #0D2035)',
+        border: '2px solid rgba(59,130,246,0.3)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+      }}>
+        <span style={{ fontSize: 16, fontWeight: 700, color: '#60A5FA' }}>
+          {t.name.charAt(0)}
+        </span>
+      </div>
+      <div>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 3 }}>
+          {t.name}
+        </div>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.38)', letterSpacing: '0.01em' }}>
+          {t.role} · {t.company}
+        </div>
+        {t.city && (
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 4,
+            marginTop: 5, fontSize: 9, letterSpacing: '0.16em',
+            textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700,
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            {t.city}
+          </div>
+        )}
+      </div>
+    </div>
+  </motion.div>
+);
+
+/* ── Mobile carousel ── */
+const MobileCarousel = ({ items }: { items: Testimonial[] }) => {
+  const [current, setCurrent] = useState(0);
+  const [dragStart, setDragStart] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval>>();
+
+  const next = () => setCurrent((c) => (c + 1) % items.length);
+  const prev = () => setCurrent((c) => (c - 1 + items.length) % items.length);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(next, 5000);
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const resetTimer = () => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(next, 5000);
+  };
+
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* Cards */}
+      <div
+        style={{ overflow: 'hidden', padding: '0 0 8px' }}
+        onTouchStart={(e) => setDragStart(e.touches[0].clientX)}
+        onTouchEnd={(e) => {
+          const delta = dragStart - e.changedTouches[0].clientX;
+          if (Math.abs(delta) > 40) {
+            delta > 0 ? next() : prev();
+            resetTimer();
+          }
+        }}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -40, scale: 0.95 }}
+            transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <MobileCard t={items[current]} isActive={true} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Dot indicators */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginTop: 20 }}>
+        {items.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => { setCurrent(i); resetTimer(); }}
+            style={{
+              width: i === current ? 22 : 6,
+              height: 6,
+              borderRadius: 3,
+              background: i === current ? '#3B82F6' : 'rgba(255,255,255,0.15)',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Prev / Next arrows */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 16 }}>
+        {[
+          { fn: prev, d: 'M15 18l-6-6 6-6' },
+          { fn: next, d: 'M9 18l6-6-6-6' },
+        ].map((btn, i) => (
+          <button
+            key={i}
+            onClick={() => { btn.fn(); resetTimer(); }}
+            style={{
+              width: 40, height: 40, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              color: 'rgba(255,255,255,0.6)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d={btn.d}/>
+            </svg>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const TestimonialsSection = () => {
   const ref = useRef<HTMLElement>(null);
   const [revealed, setRevealed] = useState(false);
@@ -88,7 +271,7 @@ const TestimonialsSection = () => {
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setRevealed(true); obs.disconnect(); }
-    }, { threshold: 0.08 });
+    }, { threshold: 0.06 });
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
@@ -109,7 +292,6 @@ const TestimonialsSection = () => {
         `,
         backgroundSize: '48px 48px',
       }} />
-      {/* Radial blue glow */}
       <div style={{
         position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)',
         width: '70%', height: 500,
@@ -117,13 +299,13 @@ const TestimonialsSection = () => {
         pointerEvents: 'none',
       }} />
 
-      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-6">
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-5">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 24 }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          style={{ textAlign: 'center', marginBottom: 64 }}
+          style={{ textAlign: 'center', marginBottom: 56 }}
         >
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 10,
@@ -149,17 +331,17 @@ const TestimonialsSection = () => {
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 15, color: 'rgba(255,255,255,0.44)', lineHeight: 1.8, maxWidth: 520, margin: '0 auto',
           }}>
-            From Hyderabad to Nairobi, offset presses to corrugation lines — hear from the clients who rely on Sai Enterprises every day.
+            From Hyderabad to Nairobi — hear from clients who rely on Sai Enterprises every day.
           </p>
         </motion.div>
 
-        {/* Scrolling columns */}
+        {/* Desktop: 3-column scroll */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: revealed ? 1 : 0 }}
           transition={{ duration: 1, delay: 0.2 }}
+          className="hidden min-[768px]:grid"
           style={{
-            display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: 20,
             maxHeight: 680,
@@ -167,13 +349,21 @@ const TestimonialsSection = () => {
             maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)',
             WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)',
           }}
-          className="max-lg:!grid-cols-2 max-sm:!grid-cols-1"
         >
           <TestimonialsColumn testimonials={col1} duration={18} startDark={false} />
-          <TestimonialsColumn testimonials={col2} duration={22} startDark={true} className="max-sm:hidden" />
+          <TestimonialsColumn testimonials={col2} duration={22} startDark={true} />
           <TestimonialsColumn testimonials={col3} duration={20} startDark={false} className="max-lg:hidden" />
         </motion.div>
 
+        {/* Mobile: swipe carousel */}
+        <motion.div
+          className="min-[768px]:hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 20 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+        >
+          <MobileCarousel items={testimonials} />
+        </motion.div>
       </div>
     </section>
   );

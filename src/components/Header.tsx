@@ -155,59 +155,96 @@ const Header = () => {
         className="min-[768px]:hidden"
         style={{
           position: 'fixed', inset: 0, zIndex: 190,
-          background: '#060A10',
+          background: 'linear-gradient(160deg, #060A10 0%, #091525 50%, #060A10 100%)',
           transform: mobileOpen ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.45s cubic-bezier(0.16,1,0.3,1)',
+          transition: 'transform 0.42s cubic-bezier(0.16,1,0.3,1)',
           overflowY: 'auto',
-          paddingTop: 88,
+          paddingTop: 80,
+          paddingBottom: 'calc(80px + env(safe-area-inset-bottom, 0px))',
         }}
       >
-        <div style={{ padding: '0 28px 48px' }}>
-          {/* Logo in mobile menu */}
-          <div style={{ marginBottom: 40, paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
+        {/* Ambient glow */}
+        <div style={{ position: 'absolute', top: '20%', right: '-10%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+        <div style={{ padding: '0 28px' }}>
+          {/* Logo */}
+          <div style={{ marginBottom: 36, paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
             <BrandImage src={saiLogo} alt="Sai Enterprises" style={{ height: 32 }} />
             <div>
               <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 700, color: '#fff' }}>Sai Enterprises</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>Graphic Machinery</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>Graphic Machinery · Est. 2000</div>
             </div>
           </div>
 
+          {/* Nav links with stagger */}
           {navLinks.map((link, i) => (
-            <Link
+            <div
               key={link.to}
-              to={link.to}
               style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 'clamp(32px,7vw,48px)', fontWeight: 700, color: isActive(link.to) ? '#3B82F6' : '#fff',
-                textDecoration: 'none', padding: '12px 0',
-                borderBottom: '1px solid rgba(255,255,255,0.05)',
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                transition: 'color 0.2s',
-                animationDelay: `${i * 0.05}s`,
+                transform: mobileOpen ? 'translateX(0)' : 'translateX(32px)',
+                opacity: mobileOpen ? 1 : 0,
+                transition: `all 0.5s cubic-bezier(0.16,1,0.3,1) ${0.06 + i * 0.06}s`,
               }}
             >
-              {link.label}
-              <span style={{ fontSize: 20, color: '#3B82F6', opacity: isActive(link.to) ? 1 : 0.4 }}>→</span>
-            </Link>
+              <Link
+                to={link.to}
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontSize: 'clamp(30px,7vw,46px)', fontWeight: 700,
+                  color: isActive(link.to) ? '#3B82F6' : '#fff',
+                  textDecoration: 'none', padding: '11px 0',
+                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                }}
+              >
+                <span>
+                  {isActive(link.to) && (
+                    <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#3B82F6', marginRight: 10, verticalAlign: 'middle' }} />
+                  )}
+                  {link.label}
+                </span>
+                <span style={{ fontSize: 18, color: isActive(link.to) ? '#3B82F6' : 'rgba(255,255,255,0.2)' }}>→</span>
+              </Link>
+            </div>
           ))}
 
-          <div style={{ marginTop: 36, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {/* CTA & contact */}
+          <div style={{
+            marginTop: 32,
+            transform: mobileOpen ? 'translateY(0)' : 'translateY(20px)',
+            opacity: mobileOpen ? 1 : 0,
+            transition: 'all 0.5s cubic-bezier(0.16,1,0.3,1) 0.46s',
+          }}>
             <Link to="/contact" style={{
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: 11, letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 700,
-              color: '#fff', textDecoration: 'none', background: '#3B82F6',
-              padding: '14px 24px', display: 'block', textAlign: 'center',
+              fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
+              color: '#fff', textDecoration: 'none',
+              background: 'linear-gradient(135deg, #2563EB, #3B82F6)',
+              padding: '15px 24px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8,
+              borderRadius: 10,
+              boxShadow: '0 8px 24px rgba(59,130,246,0.25)',
             }}>
               Get a Quote →
             </Link>
 
-            {/* Contact info in mobile */}
-            <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <a href="tel:+919312175513" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>
-                +91 931 217 5513
+            <div style={{ marginTop: 20, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <a href="tel:+919312175513" style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8,
+                textAlign: 'center',
+              }}>
+                📞 Call India
               </a>
-              <a href="mailto:msrao@saienterprises.info" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}>
-                msrao@saienterprises.info
+              <a href="mailto:msrao@saienterprises.info" style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8,
+                textAlign: 'center',
+              }}>
+                ✉️ Email Us
               </a>
             </div>
           </div>
