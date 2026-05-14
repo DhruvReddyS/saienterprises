@@ -167,7 +167,7 @@ export default function BookViewer() {
       <div style={{
         background: '#060A10', minHeight: '100dvh',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        padding: '24px 0 80px', position: 'relative',
+        padding: '24px 0 calc(140px + env(safe-area-inset-bottom, 0px))', position: 'relative',
       }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
@@ -190,13 +190,13 @@ export default function BookViewer() {
           </div>
         </div>
 
-        {/* Controls */}
+        {/* Controls — sits above the site's mobile bottom nav bar */}
         <div style={{
-          position: 'fixed', bottom: 0, left: 0, right: 0,
+          position: 'fixed', bottom: 'calc(60px + env(safe-area-inset-bottom, 0px))', left: 0, right: 0,
           background: 'rgba(6,10,16,0.96)', backdropFilter: 'blur(12px)',
           borderTop: '1px solid rgba(255,255,255,0.07)',
           padding: '14px 24px', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', zIndex: 100,
+          justifyContent: 'space-between', zIndex: 205,
         }}>
           <button onClick={mobileGoBwd} disabled={mobilePage === 0} style={{
             background: 'none', border: '1px solid rgba(255,255,255,0.12)',

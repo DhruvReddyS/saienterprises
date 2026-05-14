@@ -30,7 +30,6 @@ const CLIENTS: Client[] = [
   { name: 'Any Graphics',           city: 'Greater Noida', initials: 'AG',  color: '#4ADE80', logo: logoAnyGraphics },
   { name: 'Hi-Tech Print Systems',  city: 'Hyderabad',     initials: 'HT',  color: '#60A5FA', logo: logoHitech     },
   { name: 'VS Hitech Secure Print', city: 'Hyderabad',     initials: 'VS',  color: '#67E8F9', logo: logoVSHitech    },
-  { name: 'HPPL',                   city: 'Chennai',       initials: 'HP',  color: '#93C5FD' },
   { name: 'CDC Printers',           city: 'Ahmedabad',     initials: 'CDC', color: '#C4B5FD', logo: logoCDC         },
   { name: 'Vikas Printers',         city: 'Nasik',         initials: 'VP',  color: '#FCA5A5', logo: logoVikas       },
   { name: 'National & Printers',    city: 'Kolkata',       initials: 'NAP', color: '#FCD34D', logo: logoNAP         },
@@ -237,36 +236,6 @@ const ClientsSection = () => {
         }
       `}</style>
 
-      {/* Footer stat bar */}
-      <div style={{ maxWidth: 1300, margin: '56px auto 0', padding: '0 56px' }} className="max-md:!px-6 max-[767px]:!px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 14 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap',
-            padding: '18px 24px',
-            background: 'rgba(255,255,255,0.025)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            borderRadius: 12,
-          }}
-        >
-          {[
-            { val: '12+', label: 'Marquee Clients' },
-            { val: '8+',  label: 'Cities' },
-            { val: '24+', label: 'Years of Trust' },
-          ].map((s, i) => (
-            <div key={s.label} style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
-              {i > 0 && <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.07)', marginRight: 20 }} />}
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 34, fontWeight: 700, color: '#3B82F6' }}>{s.val}</span>
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', fontWeight: 600 }}>{s.label}</span>
-            </div>
-          ))}
-          <div style={{ flex: 1, minWidth: 180, fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.22)', lineHeight: 1.6 }}>
-            Packaging · Commercial Offset · Security Printing · Web Offset
-          </div>
-        </motion.div>
-      </div>
     </section>
   );
 };

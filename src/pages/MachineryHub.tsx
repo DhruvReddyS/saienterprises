@@ -191,7 +191,7 @@ const MachineryHub = () => {
       </div>
 
       {/* ── MACHINE GRID ── */}
-      <div style={{ background: '#F4F7FF', padding: 'clamp(20px,3vw,48px) clamp(16px,5vw,48px) clamp(48px,6vw,80px)' }}>
+      <div style={{ background: '#F4F7FF', padding: 'clamp(20px,3vw,48px) clamp(16px,5vw,48px) clamp(48px,6vw,80px)' }} className="max-[767px]:!pb-24">
         <div style={{ maxWidth: 1400, margin: '0 auto' }}>
 
           {/* Result bar */}

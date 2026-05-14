@@ -12,6 +12,10 @@ import saiLogo from '@/assets/sai-logo-cmyk.png';
 import largestSellingBadge from '@/assets/largest-selling-badge.png';
 import { getMachineImage } from '@/data/machineAssets';
 import BrandImage from '@/components/BrandImage';
+import PlugConnectedIcon from '@/components/ui/icons/plug-connected-icon';
+import WrenchIcon from '@/components/ui/icons/wrench-icon';
+import PackageIcon from '@/components/ui/icons/package-icon';
+import RulerIcon from '@/components/ui/icons/ruler-icon';
 
 /* ── helpers ── */
 function useReveal(threshold = 0.12) {
@@ -25,6 +29,23 @@ function useReveal(threshold = 0.12) {
     return () => obs.disconnect();
   }, [threshold]);
   return { ref, on };
+}
+
+function useCounter(target: number, started: boolean) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!started) return;
+    let frame = 0;
+    const total = 70;
+    const timer = setInterval(() => {
+      frame++;
+      const eased = 1 - Math.pow(1 - frame / total, 3);
+      setVal(Math.round(target * eased));
+      if (frame >= total) clearInterval(timer);
+    }, 18);
+    return () => clearInterval(timer);
+  }, [started, target]);
+  return val;
 }
 
 /* ── data ── */
@@ -154,6 +175,100 @@ const whySai = [
   { num: '04', title: 'Right-sizing consultation', desc: 'HPM models span 66 cm to 115 cm. Sai helps select the right cutter for production volume, sheet size, and budget without overselling.' },
 ];
 
+const WHY_SAI_ICONS = [PlugConnectedIcon, WrenchIcon, PackageIcon, RulerIcon];
+const WHY_SAI_ACCENTS = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'];
+
+/* ── Why Sai Card ── */
+const WhySaiCard = ({ w, wi, on }: { w: typeof whySai[0]; wi: number; on: boolean }) => {
+  const [hov, setHov] = useState(false);
+  const Icon = WHY_SAI_ICONS[wi];
+  const accent = WHY_SAI_ACCENTS[wi];
+  const iconRef = useRef<{ startAnimation: () => void; stopAnimation: () => void }>(null);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      animate={on ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay: wi * 0.12, ease: [0.16, 1, 0.3, 1] }}
+      onMouseEnter={() => { setHov(true); iconRef.current?.startAnimation(); }}
+      onMouseLeave={() => { setHov(false); iconRef.current?.stopAnimation(); }}
+      style={{
+        background: hov ? '#FFFFFF' : '#F0F4FF',
+        border: `1px solid ${hov ? `${accent}35` : 'rgba(0,0,0,0.07)'}`,
+        padding: 'clamp(28px,4vw,48px)',
+        display: 'flex', flexDirection: 'column', gap: 20,
+        cursor: 'default', position: 'relative', overflow: 'hidden',
+        transition: 'background 0.4s ease, border-color 0.4s ease',
+        boxShadow: hov ? `0 12px 40px rgba(0,0,0,0.08), 0 0 0 1px ${accent}20` : '0 2px 12px rgba(0,0,0,0.04)',
+      }}
+    >
+      {/* Ghost number watermark */}
+      <div style={{
+        position: 'absolute', top: -16, right: 20,
+        fontFamily: "'Cormorant Garamond', serif",
+        fontSize: 120, fontWeight: 700, lineHeight: 1,
+        color: 'transparent',
+        WebkitTextStroke: `1px ${accent}22`,
+        userSelect: 'none', pointerEvents: 'none',
+      }}>
+        {w.num}
+      </div>
+
+      {/* Accent line top */}
+      <motion.div
+        animate={hov ? { scaleX: 1 } : { scaleX: 0 }}
+        initial={{ scaleX: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: 2,
+          background: `linear-gradient(to right, ${accent}, transparent)`,
+          transformOrigin: 'left',
+        }}
+      />
+
+      {/* Icon */}
+      <div style={{
+        width: 52, height: 52, borderRadius: 12,
+        background: `${accent}12`,
+        border: `1px solid ${accent}28`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 0.3s, border-color 0.3s',
+      }}>
+        <Icon
+          ref={iconRef}
+          size={24}
+          color={accent}
+          strokeWidth={1.8}
+        />
+      </div>
+
+      {/* Content */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, position: 'relative' }}>
+        <div style={{
+          fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 700,
+          color: '#060A10', lineHeight: 1.3, letterSpacing: '-0.01em',
+        }}>
+          {w.title}
+        </div>
+        <p style={{
+          fontFamily: "'DM Sans', sans-serif", fontSize: 13.5,
+          color: 'rgba(6,10,16,0.52)', lineHeight: 1.8, margin: 0,
+        }}>
+          {w.desc}
+        </p>
+      </div>
+
+      {/* Bottom accent tag */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: accent, boxShadow: `0 0 8px ${accent}80` }} />
+        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase', color: accent, fontWeight: 700 }}>
+          {['Authorized Dealer', 'Full Support', 'Stock Ready', 'Free Sizing'][wi]}
+        </span>
+      </div>
+    </motion.div>
+  );
+};
+
 const partnerProof = [
   { val: 'Since 2000', label: 'Exclusive India Agent' },
   { val: "India's #1", label: 'Paper Cutter Distributor' },
@@ -244,50 +359,6 @@ const ProductCard = ({ p, i }: { p: typeof hpmProducts[0]; i: number }) => {
   );
 };
 
-/* ── Why Sai card ── */
-const WhySaiCard = ({ w, wi }: { w: typeof whySai[0]; wi: number }) => {
-  const [hov, setHov] = useState(false);
-  return (
-    <div
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
-      style={{
-        padding: '40px 32px 36px',
-        background: hov ? 'rgba(59,130,246,0.06)' : '#060A10',
-        border: `1px solid ${hov ? 'rgba(59,130,246,0.2)' : 'rgba(255,255,255,0.06)'}`,
-        position: 'relative', overflow: 'hidden',
-        transition: 'all 0.35s cubic-bezier(0.16,1,0.3,1)',
-        cursor: 'default',
-      }}
-    >
-      {/* Left accent bar */}
-      <div style={{
-        position: 'absolute', left: 0, top: 0, bottom: 0, width: 2,
-        background: hov ? '#3B82F6' : 'rgba(59,130,246,0.15)',
-        transition: 'background 0.3s',
-      }} />
-      {hov && <BorderBeam colorFrom="#3B82F6" colorTo="#60A5FA" duration={5} delay={wi * 0.5} borderWidth={1} size={160} />}
-
-      {/* Number */}
-      <div style={{
-        fontFamily: "'Cormorant Garamond', serif",
-        fontSize: 52, fontWeight: 700,
-        color: '#3B82F6',
-        opacity: hov ? 0.2 : 0.1, lineHeight: 1, marginBottom: 20,
-        letterSpacing: '-0.03em', transition: 'opacity 0.3s',
-        userSelect: 'none',
-      }}>
-        {w.num}
-      </div>
-      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 12, lineHeight: 1.3 }}>
-        {w.title}
-      </div>
-      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'rgba(255,255,255,0.42)', lineHeight: 1.8, margin: 0 }}>
-        {w.desc}
-      </p>
-    </div>
-  );
-};
 
 const HPM_CATS = ['All', 'Paper Cutters', 'Handling', 'Finishing'] as const;
 type HpmCat = typeof HPM_CATS[number];
@@ -297,6 +368,10 @@ const PartnersPage = () => {
   const [activeHistoryIdx, setActiveHistoryIdx] = useState(0);
   const [activeCat, setActiveCat] = useState<HpmCat>('All');
   const saiHpmReveal = useReveal(0.12);
+  const [proofOn, setProofOn] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setProofOn(true), 700); return () => clearTimeout(t); }, []);
+  const pCount90 = useCounter(90, proofOn);
+  const pCount490 = useCounter(490, proofOn);
 
   useEffect(() => {
     setPageMeta(
@@ -315,176 +390,242 @@ const PartnersPage = () => {
 
       {/* ── HERO ── */}
       <div style={{
-        background: '#060A10', paddingTop: 0, paddingBottom: 0,
-        position: 'relative', overflow: 'hidden', minHeight: '100dvh',
-        display: 'flex', flexDirection: 'column',
+        background: '#060A10', position: 'relative', overflow: 'hidden',
+        minHeight: '100dvh', display: 'flex', flexDirection: 'column',
       }}>
-        {/* Dot-grid */}
+        {/* Fine grid */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'radial-gradient(circle, rgba(59,130,246,0.055) 1px, transparent 1px)',
-          backgroundSize: '44px 44px',
+          backgroundImage: 'radial-gradient(circle, rgba(59,130,246,0.04) 1px, transparent 1px)',
+          backgroundSize: '36px 36px',
         }} />
 
-        {/* Left glow */}
+        {/* Centre radial glow */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, bottom: 0, width: '55%',
-          background: 'radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.1) 0%, transparent 60%)',
-          pointerEvents: 'none',
+          position: 'absolute', top: '38%', left: '50%', transform: 'translate(-50%,-50%)',
+          width: '80vw', height: '60vw', maxWidth: 1100, maxHeight: 700,
+          background: 'radial-gradient(ellipse, rgba(59,130,246,0.09) 0%, transparent 65%)',
+          pointerEvents: 'none', filter: 'blur(60px)',
         }} />
 
-        {/* Thin horizontal accent line */}
+        {/* Ghost "HPM" watermark — right-bleed */}
+        <motion.div
+          initial={{ opacity: 0, x: 80 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            position: 'absolute', right: '-4%', top: '50%', transform: 'translateY(-52%)',
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(200px,28vw,440px)', fontWeight: 700, fontStyle: 'italic',
+            color: 'transparent',
+            WebkitTextStroke: '1px rgba(59,130,246,0.11)',
+            pointerEvents: 'none', zIndex: 1,
+            letterSpacing: '-0.04em', lineHeight: 1,
+            userSelect: 'none',
+          }}
+        >HPM</motion.div>
+
+        {/* Top accent line */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: 1,
-          background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.6) 40%, transparent)',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.55) 45%, transparent 100%)',
           pointerEvents: 'none',
         }} />
 
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-          <div style={{ maxWidth: 1300, margin: '0 auto', padding: '160px 64px 100px', width: '100%', position: 'relative', zIndex: 2 }}
-            className="max-lg:!px-10 max-lg:!pt-36 max-md:!px-6 max-md:!pt-28 max-md:!pb-12 max-[767px]:!pt-8"
+        {/* Main content */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
+          <div style={{ maxWidth: 1300, margin: '0 auto', width: '100%', padding: '160px 80px 60px' }}
+            className="max-lg:!px-10 max-lg:!pt-36 max-md:!px-6 max-md:!pt-28 max-[767px]:!pt-10 max-[767px]:!px-5"
           >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 72, alignItems: 'center' }}
-              className="max-lg:!grid-cols-1 max-lg:!gap-16"
+            {/* Eyebrow — HPM logo + tag */}
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 40, flexWrap: 'wrap' }}
             >
-              {/* Left */}
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  style={{ marginBottom: 32 }}
-                >
-                  <BrandImage src={hpmLogo} alt="HPM" style={{ height: 40 }} />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.08 }}
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 32,
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, letterSpacing: '0.3em',
-                    textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700,
-                  }}
-                >
-                  <div style={{ width: 24, height: 1, background: '#3B82F6' }} />
-                  Exclusive India Partner · Since 2000
-                </motion.div>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 36 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.1, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: 'clamp(50px,7vw,100px)', fontWeight: 600,
-                    lineHeight: 0.9, letterSpacing: '-0.03em',
-                    color: '#fff', margin: 0,
-                  }}
-                >
-                  The only HPM<br />
-                  <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.38)' }}>source</span>{' '}
-                  in India.
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.9, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                  style={{
-                    marginTop: 36, fontFamily: "'DM Sans', sans-serif",
-                    fontSize: 14, fontWeight: 300,
-                    color: 'rgba(255,255,255,0.42)', lineHeight: 1.85, maxWidth: 460,
-                  }}
-                >
-                  Selection, import, installation, spares, and service — Sai is the sole authorised HPM path for every Indian print and packaging floor.
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  style={{ marginTop: 44, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}
-                >
-                  <Link to="/contact?ref=hpm" style={{
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
-                    padding: '13px 28px', background: '#3B82F6', color: '#fff',
-                    textDecoration: 'none', transition: 'background 0.2s',
-                  }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
-                  >
-                    Enquire About HPM →
-                  </Link>
-                  <img src={largestSellingBadge} alt="India's Largest Paper Cutter Distributor" loading="lazy" decoding="async" style={{ height: 40, objectFit: 'contain' }} />
-                </motion.div>
+              <BrandImage src={hpmLogo} alt="HPM" style={{ height: 36, filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
+              <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.12)' }} />
+              <div style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.32em',
+                textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700,
+                display: 'flex', alignItems: 'center', gap: 8,
+              }}>
+                <span style={{ display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: '#3B82F6' }} />
+                Exclusive India Partner Since 2000
               </div>
+            </motion.div>
 
-              {/* Right — stats + identity panel */}
-              <motion.div
-                initial={{ opacity: 0, x: 32 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                style={{ display: 'flex', flexDirection: 'column', gap: 2 }}
-              >
-                {partnerProof.map((s, i) => (
-                  <div
-                    key={s.label}
+            {/* Headline + badge — side by side */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 32, marginBottom: 40 }}
+              className="max-lg:!flex-col max-lg:!gap-6"
+            >
+              {/* Staggered headline */}
+              <div style={{ flex: '1 1 auto' }}>
+                {[
+                  { text: 'The only authorized', size: 'clamp(22px,4.2vw,62px)', weight: 300, color: 'rgba(255,255,255,0.38)', italic: true, delay: 0.08 },
+                  { text: 'HPM source', size: 'clamp(42px,8.5vw,130px)', weight: 700, color: '#fff', italic: false, delay: 0.16 },
+                  { text: 'in India.', size: 'clamp(32px,6.5vw,98px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.24 },
+                ].map((line) => (
+                  <motion.div
+                    key={line.text}
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 1.1, delay: line.delay, ease: [0.16, 1, 0.3, 1] }}
                     style={{
-                      padding: '28px 32px',
-                      background: i === 0 ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                      border: `1px solid ${i === 0 ? 'rgba(59,130,246,0.28)' : 'rgba(255,255,255,0.06)'}`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                      gap: 16, position: 'relative', overflow: 'hidden',
+                      fontFamily: "'Cormorant Garamond', serif",
+                      fontSize: line.size, fontWeight: line.weight, color: line.color,
+                      fontStyle: line.italic ? 'italic' : 'normal',
+                      lineHeight: 1.0, letterSpacing: '-0.03em', display: 'block',
                     }}
                   >
-                    <div style={{
-                      position: 'absolute', left: 0, top: 0, bottom: 0, width: 2,
-                      background: i === 0 ? '#3B82F6' : 'rgba(255,255,255,0.07)',
-                    }} />
-                    <div style={{
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: 'clamp(26px,3vw,40px)', fontWeight: 700,
-                      color: i === 0 ? '#fff' : '#60A5FA', lineHeight: 1, letterSpacing: '-0.02em',
-                    }}>
-                      {s.val}
-                    </div>
-                    <div style={{
-                      fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.22em',
-                      textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)', fontWeight: 700,
-                      textAlign: 'right',
-                    }}>
-                      {s.label}
-                    </div>
-                    {i === 0 && <BorderBeam colorFrom="#3B82F6" colorTo="#60A5FA" duration={6} borderWidth={1} size={160} />}
-                  </div>
+                    {line.text}
+                  </motion.div>
                 ))}
+              </div>
 
-                {/* Tags row */}
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', padding: '20px 0 0' }}>
-                  {[
-                    { label: 'Exclusive India Agent', color: '#3B82F6' },
-                    { label: 'Since 2000', color: '#FACC15' },
-                    { label: 'Genuine Spares', color: '#10B981' },
-                    { label: 'India Service', color: '#6366F1' },
-                  ].map((b) => (
-                    <div key={b.label} style={{
-                      fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.2em', textTransform: 'uppercase',
-                      padding: '6px 14px',
-                      border: `1px solid ${b.color}40`,
-                      color: b.color, background: `${b.color}0D`,
-                    }}>
-                      {b.label}
-                    </div>
-                  ))}
-                </div>
+              {/* Large badge — right of title */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                style={{ flexShrink: 0, display: 'flex', alignItems: 'center', paddingTop: 8 }}
+              >
+                <img
+                  src={largestSellingBadge}
+                  alt="India's Largest Paper Cutter Distributor"
+                  loading="lazy" decoding="async"
+                  style={{ height: 'clamp(100px,12vw,160px)', width: 'auto', objectFit: 'contain', opacity: 0.92 }}
+                />
               </motion.div>
             </div>
+
+            {/* Sub copy + CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.34, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: 'flex', alignItems: 'center', gap: 32, flexWrap: 'wrap', marginBottom: 80 }}
+              className="max-[767px]:!mb-10"
+            >
+              <p style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 300,
+                color: 'rgba(255,255,255,0.4)', lineHeight: 1.85,
+                maxWidth: 420, margin: 0,
+              }}>
+                Selection, import, installation, spares, and service — Sai is the sole authorised HPM path for every Indian print floor.
+              </p>
+              <Link to="/contact?ref=hpm" style={{
+                fontFamily: "'DM Sans', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
+                padding: '13px 30px', background: '#3B82F6', color: '#fff',
+                textDecoration: 'none', transition: 'background 0.2s', flexShrink: 0,
+              }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
+              >
+                Enquire About HPM →
+              </Link>
+            </motion.div>
+
+            {/* Proof strip — 4 highlighted cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.44, ease: [0.16, 1, 0.3, 1] }}
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}
+              className="max-[767px]:!grid-cols-2"
+            >
+              {[
+                { primary: 'Since', primary2: '2000', label: 'Exclusive India Agent', accent: '#3B82F6', ghost: '2000', isText: true },
+                { primary: "India's", primary2: '#1', label: 'Paper Cutter Distributor', accent: '#FACC15', ghost: '#1', isText: true },
+                { primary: null, counter: pCount90, suffix: '%', label: 'Fully Automatic Cutter Share', accent: '#10B981', ghost: '90%', isText: false },
+                { primary: null, counter: pCount490, suffix: '+', label: 'HPM Cutters Placed', accent: '#6366F1', ghost: '490', isText: false },
+              ].map((s, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: 'clamp(18px,2.5vw,28px) clamp(14px,2vw,24px)',
+                    background: `${s.accent}0A`,
+                    border: `1px solid ${s.accent}22`,
+                    position: 'relative', overflow: 'hidden',
+                  }}
+                >
+                  {/* Top accent bar — animated */}
+                  <motion.div
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: proofOn ? 1 : 0 }}
+                    transition={{ duration: 1.1, delay: 0.8 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                    style={{
+                      position: 'absolute', top: 0, left: 0, right: 0, height: 2,
+                      background: `linear-gradient(90deg, ${s.accent}, ${s.accent}50, transparent)`,
+                      transformOrigin: 'left',
+                    }}
+                  />
+                  {/* Ghost value — watermark */}
+                  <div style={{
+                    position: 'absolute', bottom: -10, right: -4,
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: 'clamp(52px,8vw,100px)', fontWeight: 700,
+                    color: 'transparent', WebkitTextStroke: `1px ${s.accent}18`,
+                    lineHeight: 1, letterSpacing: '-0.03em',
+                    pointerEvents: 'none', userSelect: 'none', zIndex: 0,
+                    opacity: proofOn ? 1 : 0, transition: 'opacity 1.2s ease 0.5s',
+                  }}>{s.ghost}</div>
+
+                  {/* Primary value */}
+                  <div style={{ position: 'relative', zIndex: 1 }}>
+                    {s.isText ? (
+                      <div style={{ lineHeight: 1, marginBottom: 8 }}>
+                        <div style={{
+                          fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em',
+                          textTransform: 'uppercase', color: `${s.accent}CC`, fontWeight: 700, marginBottom: 3,
+                        }}>{s.primary}</div>
+                        <div style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 'clamp(30px,4vw,52px)', fontWeight: 700,
+                          color: '#fff', letterSpacing: '-0.03em', lineHeight: 1,
+                          textShadow: `0 0 32px ${s.accent}55`,
+                        }}>{s.primary2}</div>
+                      </div>
+                    ) : (
+                      <div style={{ lineHeight: 1, marginBottom: 8, display: 'inline-flex', alignItems: 'baseline', gap: 2 }}>
+                        <span style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 'clamp(36px,5vw,62px)', fontWeight: 700,
+                          color: '#fff', letterSpacing: '-0.04em',
+                          textShadow: `0 0 40px ${s.accent}65, 0 0 8px ${s.accent}35`,
+                        }}>{s.counter}</span>
+                        <span style={{
+                          fontFamily: "'Cormorant Garamond', serif",
+                          fontSize: 'clamp(20px,2.8vw,34px)', fontWeight: 600,
+                          color: s.accent, textShadow: `0 0 18px ${s.accent}80`,
+                        }}>{s.suffix}</span>
+                      </div>
+                    )}
+                    {/* Underline */}
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: proofOn ? 1 : 0 }}
+                      transition={{ duration: 0.8, delay: 1.0 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                      style={{
+                        height: 1.5, width: '55%', marginBottom: 10,
+                        background: `linear-gradient(90deg, ${s.accent}90, transparent)`,
+                        transformOrigin: 'left',
+                      }}
+                    />
+                    <div style={{
+                      fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.22em',
+                      textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)', fontWeight: 700,
+                    }}>{s.label}</div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+
           </div>
         </div>
 
-        {/* Bottom edge fade */}
+        {/* Bottom fade */}
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
           background: 'linear-gradient(to bottom, transparent, #060A10)',
@@ -650,64 +791,51 @@ const PartnersPage = () => {
         </div>
       </div>
 
-      {/* ── WHY SAI FOR HPM — dark, modern ── */}
-      <div ref={saiHpmReveal.ref} style={{ background: '#060A10', padding: '100px 0', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
-        {/* Subtle center glow */}
-        <div style={{
-          position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
-          width: 800, height: 400,
-          background: 'radial-gradient(ellipse, rgba(59,130,246,0.08) 0%, transparent 65%)',
-          pointerEvents: 'none', filter: 'blur(40px)',
-        }} />
+      {/* ── WHY SAI FOR HPM — light theme cards ── */}
+      <div ref={saiHpmReveal.ref} style={{ background: '#F8FAFC', padding: 'clamp(64px,8vw,100px) 0', borderTop: '1px solid rgba(0,0,0,0.07)', position: 'relative', overflow: 'hidden' }}>
+        {/* Ambient glow */}
+        <div style={{ position: 'absolute', top: '10%', left: '20%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '5%', right: '15%', width: 360, height: 360, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.04) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px', position: 'relative' }} className="max-md:!px-7 max-[767px]:!px-4">
+        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 clamp(20px,5vw,64px)', position: 'relative', zIndex: 1 }}>
           {/* Section header */}
-          <div style={{
-            display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
-            marginBottom: 64, flexWrap: 'wrap', gap: 24,
-            opacity: saiHpmReveal.on ? 1 : 0, transform: saiHpmReveal.on ? 'none' : 'translateY(16px)',
-            transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1)',
-          }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={saiHpmReveal.on ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 'clamp(40px,6vw,72px)', flexWrap: 'wrap', gap: 24 }}
+          >
             <div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#2563EB', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 28, height: 1, background: '#2563EB' }} />
                 Why Buy HPM Through Sai
               </div>
               <h2 style={{
                 fontFamily: "'Cormorant Garamond', serif",
                 fontSize: 'clamp(32px,4.5vw,60px)', fontWeight: 600, lineHeight: 0.95,
-                color: '#fff', letterSpacing: '-0.025em', margin: 0,
+                color: '#060A10', letterSpacing: '-0.025em', margin: 0,
               }}>
                 Authorized. Accountable.<br />
-                <span style={{ color: '#3B82F6', fontStyle: 'italic', fontWeight: 300 }}>The only source you need.</span>
+                <span style={{ color: '#2563EB', fontStyle: 'italic', fontWeight: 300 }}>The only source you need.</span>
               </h2>
             </div>
-            <div style={{ display: 'flex', gap: 12 }}>
-              <Link to="/contact?ref=hpm" style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
-                padding: '13px 28px', background: '#3B82F6', color: '#fff',
-                textDecoration: 'none', transition: 'background 0.2s', whiteSpace: 'nowrap',
-              }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
-              >
-                Enquire About HPM →
-              </Link>
-            </div>
-          </div>
+            <Link to="/contact?ref=hpm" style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
+              padding: '13px 28px', background: '#3B82F6', color: '#fff',
+              textDecoration: 'none', transition: 'background 0.2s', whiteSpace: 'nowrap', alignSelf: 'flex-end',
+            }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
+            >
+              Enquire About HPM →
+            </Link>
+          </motion.div>
 
-          {/* 4 advantage cards in a horizontal row */}
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1,
-            background: 'rgba(255,255,255,0.05)',
-            opacity: saiHpmReveal.on ? 1 : 0, transform: saiHpmReveal.on ? 'none' : 'translateY(24px)',
-            transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s',
-          }}
-            className="max-lg:!grid-cols-2 max-[767px]:!grid-cols-2 max-sm:!grid-cols-1"
-          >
+          {/* 2×2 animated cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }} className="max-[767px]:!grid-cols-1">
             {whySai.map((w, wi) => (
-              <WhySaiCard key={w.num} w={w} wi={wi} />
+              <WhySaiCard key={w.num} w={w} wi={wi} on={saiHpmReveal.on} />
             ))}
           </div>
         </div>
@@ -715,7 +843,7 @@ const PartnersPage = () => {
 
       {/* ── BROCHURE CTA ── */}
       <div style={{ background: '#060A10', padding: '80px 64px', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}
-        className="max-md:!px-7 max-[767px]:!px-4"
+        className="max-md:!px-7 max-[767px]:!px-4 max-[767px]:!py-12 max-[767px]:!pb-24"
       >
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(28px,3.5vw,44px)', fontWeight: 300, color: '#fff', lineHeight: 1.1, marginBottom: 36 }}>

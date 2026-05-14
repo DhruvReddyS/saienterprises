@@ -133,7 +133,7 @@ const ProductDetail = () => {
           </div>
         </section>
 
-        <section className="px-6 py-12 sm:px-8 md:px-12 lg:px-16 lg:py-16">
+        <section className="px-6 py-12 sm:px-8 md:px-12 lg:px-16 lg:py-16 max-[767px]:!pt-6">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1.02fr)_minmax(360px,0.98fr)]">
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -249,7 +249,7 @@ const ProductDetail = () => {
           </div>
         </section>
 
-        <section className="px-6 pb-12 sm:px-8 md:px-12 lg:px-16 lg:pb-16">
+        <section className="px-6 pb-12 sm:px-8 md:px-12 lg:px-16 lg:pb-16 max-[767px]:!pb-6">
           <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
             <div className="space-y-6">
               {informationSections.length > 0 ? (
@@ -303,7 +303,7 @@ const ProductDetail = () => {
         </section>
 
         {relatedProducts.length > 0 ? (
-          <section className="bg-primary/[0.05] px-6 py-12 sm:px-8 md:px-12 lg:px-16 lg:py-16">
+          <section className="bg-primary/[0.05] px-6 py-12 sm:px-8 md:px-12 lg:px-16 lg:py-16 max-[767px]:!pb-24">
             <div className="mx-auto max-w-7xl">
               <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>

@@ -214,6 +214,41 @@ const ServicesSection = () => {
               transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 0.12s',
             }}
           >
+            {/* Mobile fallback: 2-col step grid */}
+            <div
+              className="lg:!hidden"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2,1fr)',
+                gap: 8,
+              }}
+            >
+              {serviceSteps.map((step) => (
+                <div
+                  key={step.number}
+                  style={{
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 10,
+                    padding: '14px 16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 6,
+                  }}
+                >
+                  <span style={{ fontSize: 10, fontWeight: 800, color: '#60A5FA', letterSpacing: '0.1em' }}>
+                    {step.number}
+                  </span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#fff', lineHeight: 1.2 }}>
+                    {step.titleLines.join(' ')}
+                  </span>
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
+                    {step.detailLines.join(' ')}
+                  </span>
+                </div>
+              ))}
+            </div>
+
             <div
               style={{
                 position: 'relative',
@@ -222,6 +257,7 @@ const ServicesSection = () => {
                 maxWidth: 760,
                 margin: '0 auto',
               }}
+              className="max-lg:!hidden"
             >
               <svg viewBox="0 0 920 920" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
                 <defs>

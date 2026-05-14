@@ -145,7 +145,7 @@ const BrandPartnersSection = () => {
                 />
               </div>
               {/* Badge — positioned on outer container so it's not clipped */}
-              <div style={{ position: 'absolute', bottom: -12, right: -12, width: 90, height: 90, zIndex: 10 }}>
+              <div style={{ position: 'absolute', bottom: -8, right: -8, width: 80, height: 80, zIndex: 10 }}>
                 <img src={largestSellingBadge} alt="India's Largest Selling Paper Cutter" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
 

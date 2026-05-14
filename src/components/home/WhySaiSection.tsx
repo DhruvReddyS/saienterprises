@@ -290,8 +290,8 @@ const WhySaiSection = () => {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-            <Link to="/contact" className="btn-primary">
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }} className="max-[767px]:!w-full">
+            <Link to="/contact" className="btn-primary max-[767px]:!flex-1 max-[767px]:!justify-center">
               Talk to Sales <span style={{ fontSize: 15 }}>→</span>
             </Link>
             <Link to="/about" style={{

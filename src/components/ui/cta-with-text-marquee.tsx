@@ -150,35 +150,10 @@ export default function CTAWithVerticalMarquee() {
               lineHeight: 1.85,
               color: 'rgba(13,20,33,0.56)',
               maxWidth: 440,
-              marginBottom: 34,
-            }}>
-              Tell us your output, floor space, and budget. We shortlist, source, install, and support the machinery so your print floor moves faster.
-            </p>
-
-            <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 8,
               marginBottom: 38,
             }}>
-              {['Shortlist', 'Source', 'Install', 'Support'].map((item, idx) => (
-                <span key={item} style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 9,
-                  fontWeight: 800,
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: idx === 0 ? '#1D4ED8' : '#0F172A',
-                  background: idx === 0 ? 'rgba(59,130,246,0.08)' : '#FFFFFF',
-                  border: `1px solid ${idx === 0 ? 'rgba(59,130,246,0.22)' : 'rgba(13,20,33,0.09)'}`,
-                  borderRadius: 999,
-                  padding: '9px 14px',
-                  boxShadow: idx === 0 ? '0 0 0 3px rgba(59,130,246,0.06)' : '0 2px 8px rgba(13,20,33,0.04)',
-                }}>
-                  {idx === 0 && '✦ '}{item}
-                </span>
-              ))}
-            </div>
+              Tell us your output, floor space, and budget — we'll help you get the right machine on your print floor, faster.
+            </p>
 
             {/* CTA buttons */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>

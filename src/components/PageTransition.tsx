@@ -75,10 +75,10 @@ const ScanLoader = () => {
       </div>
 
       {/* Scan word */}
-      <div style={{ position: 'relative', display: 'inline-block', minWidth: 280, textAlign: 'center' }}>
+      <div style={{ position: 'relative', display: 'inline-block', minWidth: 'min(280px, 80vw)', textAlign: 'center' }}>
         <span style={{
           fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 54, fontWeight: 700, fontStyle: 'italic',
+          fontSize: 'clamp(32px, 10vw, 54px)', fontWeight: 700, fontStyle: 'italic',
           color: '#FFFFFF',
           letterSpacing: '0.08em',
           display: 'block',

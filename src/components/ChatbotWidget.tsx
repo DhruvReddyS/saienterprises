@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion, useDragControls } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { type ChatbotSessionState, type ChatbotSuggestion } from '@/lib/chatbotEngine';
 import { getChatbotRAGReply } from '@/lib/chatbotRAG';
 
@@ -74,8 +74,11 @@ const BotIcon = () => (
 
 const ChatbotWidget = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dragControls = useDragControls();
+  const isDraggingRef = useRef(false);
 
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
@@ -84,6 +87,8 @@ const ChatbotWidget = () => {
   const [responding, setResponding] = useState(false);
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef<InstanceType<typeof SpeechRecognition> | null>(null);
+
+  const isBrochurePage = location.pathname === '/brochure';
 
   // Scroll to bottom on new messages
   useEffect(() => {
@@ -187,8 +192,26 @@ const ChatbotWidget = () => {
         .sai-chat-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
       `}</style>
 
-      {/* Floating button */}
-      <div id="chatbot-anchor" style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 500 }}>
+      {/* Floating button — draggable */}
+      <motion.div
+        id="chatbot-anchor"
+        drag
+        dragMomentum={false}
+        dragElastic={0}
+        dragControls={dragControls}
+        onDragStart={() => { isDraggingRef.current = true; }}
+        onDragEnd={() => { setTimeout(() => { isDraggingRef.current = false; }, 50); }}
+        style={{
+          position: 'fixed',
+          bottom: 'calc(68px + env(safe-area-inset-bottom, 0px))',
+          right: isBrochurePage ? 'auto' : 16,
+          left: isBrochurePage ? 16 : 'auto',
+          zIndex: 500,
+          touchAction: 'none',
+          cursor: 'grab',
+        }}
+        className="sm:!bottom-6"
+      >
         <AnimatePresence>
           {open && (
             <motion.div
@@ -198,8 +221,8 @@ const ChatbotWidget = () => {
               exit={{ opacity: 0, scale: 0.92, y: 12 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               style={{
-                position: 'absolute', bottom: 72, right: 0,
-                width: 'min(90vw, 380px)',
+                position: 'absolute', bottom: 68, right: 0,
+                width: 'min(92vw, 380px)',
                 background: 'linear-gradient(160deg, rgba(8,14,26,0.97) 0%, rgba(6,10,18,0.99) 100%)',
                 border: '1px solid rgba(255,255,255,0.09)',
                 borderRadius: 20,
@@ -307,7 +330,7 @@ const ChatbotWidget = () => {
                   flex: 1, overflowY: 'auto',
                   padding: '14px 12px',
                   display: 'flex', flexDirection: 'column', gap: 12,
-                  maxHeight: '42vh', minHeight: 120,
+                  maxHeight: '36vh', minHeight: 100,
                 }}
               >
                 {visibleMsgs.map((msg, idx) => {
@@ -478,9 +501,21 @@ const ChatbotWidget = () => {
           )}
         </AnimatePresence>
 
+        {/* Drag handle — small grip at top of button area */}
+        <div
+          style={{
+            position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
+            width: 32, height: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'grab', zIndex: 10,
+          }}
+          onPointerDown={(e) => dragControls.start(e)}
+        >
+          <div style={{ width: 24, height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.22)' }} />
+        </div>
+
         {/* Trigger button */}
         <motion.button
-          onClick={() => setOpen(o => !o)}
+          onClick={() => { if (!isDraggingRef.current) setOpen(o => !o); }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           style={{
@@ -521,7 +556,7 @@ const ChatbotWidget = () => {
             )}
           </AnimatePresence>
         </motion.button>
-      </div>
+      </motion.div>
     </>
   );
 };

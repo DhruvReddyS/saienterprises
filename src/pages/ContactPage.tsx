@@ -434,7 +434,7 @@ const OfficesStrip = () => {
     <div ref={ref} style={{
       background: '#060A10', padding: '60px 64px',
       borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden',
-    }} className="max-md:!px-7 max-md:!py-10">
+    }} className="max-md:!px-7 max-md:!py-10 max-[767px]:!px-4 max-[767px]:!pb-24">
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: 1,
         background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.3) 40%, transparent)', pointerEvents: 'none',
@@ -563,7 +563,7 @@ const ContactPage = () => {
             </motion.div>
 
             <motion.h1 initial={{ opacity: 0, y: 28 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.06 }}
-              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(52px,7vw,96px)', fontWeight: 600, lineHeight: 0.9, letterSpacing: '-0.03em', color: '#fff', marginBottom: 36 }}>
+              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(40px,7vw,96px)', fontWeight: 600, lineHeight: 0.9, letterSpacing: '-0.03em', color: '#fff', marginBottom: 36 }}>
               Let's talk<br />
               <span style={{ fontStyle: 'italic', fontWeight: 300, color: '#3B82F6' }}>machinery.</span>
             </motion.h1>
@@ -613,7 +613,7 @@ const ContactPage = () => {
         <div ref={formRef} style={{
           background: '#F8FAFD', padding: '140px 64px 80px',
           display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative',
-        }} className="max-md:!px-8 max-md:!pt-12 max-md:!pb-16 max-[767px]:!px-5 max-[767px]:!pt-8">
+        }} className="max-md:!px-8 max-md:!pt-12 max-md:!pb-16 max-[767px]:!px-5 max-[767px]:!pt-8 max-[767px]:!pb-10">
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: 'linear-gradient(rgba(6,10,16,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(6,10,16,0.02) 1px, transparent 1px)', backgroundSize: '48px 48px' }} />
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.4) 40%, transparent)', pointerEvents: 'none' }} />
 

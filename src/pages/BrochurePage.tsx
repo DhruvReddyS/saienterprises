@@ -18,7 +18,7 @@ const BrochurePage = () => {
       <div style={{
         background: '#060A10', padding: '140px 64px 72px',
         position: 'relative', overflow: 'hidden',
-      }} className="max-md:!px-7 max-md:!pt-28 max-md:!pb-12 max-[767px]:!pt-8">
+      }} className="max-md:!px-7 max-md:!pt-28 max-md:!pb-12 max-[767px]:!pt-24 max-[767px]:!px-5 max-[767px]:!pb-10">
         <div style={{
           position: 'absolute', inset: 0,
           backgroundImage: 'radial-gradient(circle at 70% 40%, rgba(59,130,246,0.08) 0%, transparent 60%)',

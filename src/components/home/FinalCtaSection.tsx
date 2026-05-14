@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
 
 const FinalCtaSection = () => (
-  <section style={{ background: '#060A10', padding: '0 0 96px', position: 'relative', overflow: 'hidden' }}>
+  <section style={{ background: '#060A10', padding: '0 0 96px', position: 'relative', overflow: 'hidden' }} className="max-[767px]:!pb-20">
     {/* ambient glow */}
     <div style={{
       position: 'absolute', inset: 0, pointerEvents: 'none',
       background: 'radial-gradient(ellipse at 50% 60%, rgba(59,130,246,0.07) 0%, transparent 55%)',
     }} />
 
-    <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-6">
+    <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-4 max-[767px]:!px-3">
       <div style={{
         background: 'linear-gradient(135deg, rgba(11,19,31,0.97) 0%, rgba(8,13,22,0.99) 100%)',
         border: '1px solid rgba(59,130,246,0.18)',
@@ -17,7 +17,7 @@ const FinalCtaSection = () => (
         position: 'relative', overflow: 'hidden',
         boxShadow: '0 32px 80px rgba(2,6,23,0.38), inset 0 1px 0 rgba(255,255,255,0.04)',
       }}
-        className="max-md:!px-8 max-md:!py-10"
+        className="max-md:!px-8 max-md:!py-10 max-[767px]:!px-5 max-[767px]:!py-8"
       >
         {/* Background watermark */}
         <div style={{
@@ -61,7 +61,7 @@ const FinalCtaSection = () => (
             </p>
 
             {/* Trust signals */}
-            <div style={{ display: 'flex', gap: 24, marginTop: 24, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 16, marginTop: 24, flexWrap: 'wrap' }}>
               {['24+ Years', '4000+ Machines', '2000+ Clients', 'HPM Sole Agent'].map((t) => (
                 <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="#22C55E" stroke="none">

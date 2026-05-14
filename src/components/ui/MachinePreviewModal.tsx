@@ -55,7 +55,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
           backdropFilter: 'blur(18px)',
           WebkitBackdropFilter: 'blur(18px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '20px',
+          padding: 'clamp(8px,2vw,20px)',
           animation: 'modal-overlay-in 0.22s ease forwards',
         }}
       >
@@ -142,7 +142,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
 
             {/* ── RIGHT: details ── */}
             <div style={{
-              padding: '48px 42px 42px',
+              padding: 'clamp(24px,4vw,48px) clamp(20px,3.5vw,42px)',
               display: 'flex',
               flexDirection: 'column',
               gap: 24,

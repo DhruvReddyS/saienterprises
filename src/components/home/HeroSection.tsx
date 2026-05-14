@@ -126,7 +126,7 @@ const HeroSection = () => {
           justifyContent: 'center',
           padding: '124px 64px 168px',
         }}
-        className="max-lg:!px-8 max-lg:!py-28 max-md:!px-6 max-md:!py-24 max-[767px]:!pt-10 max-[767px]:!pb-12"
+        className="max-lg:!px-8 max-lg:!py-28 max-md:!px-6 max-md:!py-24 max-[767px]:!pt-24 max-[767px]:!pb-40 max-[767px]:!px-5"
       >
         <div
           style={{
@@ -187,7 +187,7 @@ const HeroSection = () => {
                   className="ml-inner"
                   style={{
                     display: 'block',
-                    fontSize: 'clamp(56px,8.5vw,116px)',
+                    fontSize: 'clamp(38px,8.5vw,116px)',
                     fontWeight: 800,
                     lineHeight: 0.9,
                     letterSpacing: '-0.06em',
@@ -228,7 +228,7 @@ const HeroSection = () => {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 36,
+              gap: 20,
               marginBottom: 24,
               flexWrap: 'wrap',
               opacity: revealed ? 1 : 0,
@@ -297,16 +297,16 @@ const HeroSection = () => {
         </div>
 
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 4, overflow: 'hidden' }}>
-          <div
-            style={{
-              position: 'absolute',
-              left: '13%',
-              top: 0,
-              width: 1,
-              height: '100%',
-              background: 'linear-gradient(to bottom, transparent, rgba(59,130,246,0.4), transparent)',
-            }}
-          />
+          <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="diag-glow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="transparent" />
+                <stop offset="42%" stopColor="rgba(59,130,246,0.55)" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+            </defs>
+            <line x1="13%" y1="0" x2="0%" y2="100%" stroke="url(#diag-glow)" strokeWidth="1.2" />
+          </svg>
         </div>
       </div>
 
@@ -321,7 +321,8 @@ const HeroSection = () => {
           background: 'linear-gradient(180deg, rgba(8,12,18,0.92) 0%, rgba(5,9,14,0.98) 100%)',
           backdropFilter: 'blur(12px)',
           borderTop: '1px solid rgba(59,130,246,0.14)',
-          padding: '20px 0',
+          padding: '16px 0',
+          paddingBottom: 'clamp(16px, calc(16px + env(safe-area-inset-bottom, 0px)), 80px)',
           opacity: revealed ? 1 : 0,
           transition: 'opacity 0.6s 0.9s',
         }}
@@ -339,7 +340,7 @@ const HeroSection = () => {
             <div
               key={`stamp-${i < stampItems.length ? 'a' : 'b'}-${i % stampItems.length}`}
               style={{
-                minWidth: 'clamp(240px, 30vw, 312px)',
+                minWidth: 'clamp(200px, 28vw, 312px)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 14,

@@ -40,9 +40,17 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 };
 
+const STATS = [
+  { val: '24+', label: 'Years' },
+  { val: '4K+', label: 'Machines' },
+  { val: '2K+', label: 'Clients' },
+  { val: '15+', label: 'Countries' },
+];
+
 export const CinematicFooter = () => {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -53,9 +61,16 @@ export const CinematicFooter = () => {
     return () => obs.disconnect();
   }, []);
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    setMouse({ x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height });
+  };
+
   return (
     <footer
       ref={ref}
+      onMouseMove={handleMouseMove}
       style={{
         background: 'linear-gradient(180deg, #05070B 0%, #060A10 48%, #02040A 100%)',
         color: '#fff',
@@ -69,6 +84,10 @@ export const CinematicFooter = () => {
           0%   { transform: translateX(-100%) }
           100% { transform: translateX(100vw) }
         }
+        @keyframes footer-marquee {
+          0%   { transform: translateX(0) }
+          100% { transform: translateX(-50%) }
+        }
       `}</style>
 
       {/* Subtle grid */}
@@ -79,6 +98,19 @@ export const CinematicFooter = () => {
           linear-gradient(90deg, rgba(59,130,246,0.02) 1px, transparent 1px)
         `,
         backgroundSize: '64px 64px',
+      }} />
+      {/* Mouse-following glow orb */}
+      <div style={{
+        position: 'absolute',
+        left: `${mouse.x * 100}%`,
+        top: `${mouse.y * 100}%`,
+        width: 600,
+        height: 600,
+        transform: 'translate(-50%, -50%)',
+        background: 'radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 70%)',
+        pointerEvents: 'none',
+        transition: 'left 0.18s ease-out, top 0.18s ease-out',
+        zIndex: 1,
       }} />
       {/* Top border + scan line */}
       <div style={{
@@ -121,6 +153,55 @@ export const CinematicFooter = () => {
         </div>
       </div>
 
+      {/* ── Stats strip ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={visible ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+        style={{
+          display: 'flex', justifyContent: 'center', gap: 0,
+          borderBottom: '1px solid rgba(255,255,255,0.04)',
+          position: 'relative', zIndex: 2,
+        }}
+      >
+        {STATS.map((s, i) => (
+          <div key={i} style={{
+            flex: 1, maxWidth: 200,
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            padding: '22px 16px',
+            borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
+            position: 'relative',
+            cursor: 'default',
+          }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = 'rgba(59,130,246,0.04)';
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLElement;
+              el.style.background = 'transparent';
+            }}
+          >
+            <span style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: 'clamp(22px, 3.5vw, 36px)',
+              fontWeight: 700,
+              lineHeight: 1,
+              color: '#fff',
+              letterSpacing: '-0.02em',
+            }}>
+              {s.val}
+            </span>
+            <span style={{
+              fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: 'rgba(59,130,246,0.55)', fontWeight: 700, marginTop: 5,
+            }}>
+              {s.label}
+            </span>
+          </div>
+        ))}
+      </motion.div>
+
       {/* ── Giant wordmark ── */}
       <div style={{ position: 'relative', zIndex: 2, overflow: 'hidden' }}>
         <motion.div
@@ -146,7 +227,7 @@ export const CinematicFooter = () => {
           <div
             style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(44px, 9vw, 130px)',
+              fontSize: 'clamp(32px, 9vw, 130px)',
               fontWeight: 700,
               letterSpacing: '-0.03em',
               lineHeight: 1,
@@ -188,7 +269,7 @@ export const CinematicFooter = () => {
           position: 'relative',
           zIndex: 2,
         }}
-        className="max-[900px]:!grid-cols-1 max-[900px]:!gap-10 max-md:!px-6 max-[767px]:!px-4"
+        className="max-[900px]:!grid-cols-1 max-[900px]:!gap-10 max-md:!px-6 max-[767px]:!px-4 max-[767px]:!pt-8"
       >
         {/* Col 1 — Brand */}
         <motion.div variants={fadeUp}>
@@ -342,7 +423,7 @@ export const CinematicFooter = () => {
           marginTop: 40,
           position: 'relative', zIndex: 2,
         }}
-        className="max-md:!px-6 max-[767px]:!px-4"
+        className="max-md:!px-6 max-[767px]:!px-4 max-[767px]:!flex-col max-[767px]:!items-start max-[767px]:!gap-3 max-[767px]:!pb-20"
       >
         <span style={{ fontSize: 8, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.14)' }}>
           © 2026 Sai Enterprises · Hyderabad, India
