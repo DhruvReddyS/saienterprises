@@ -1,5 +1,5 @@
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
 import HeroSection from '@/components/home/HeroSection';
 import OfferingsSection from '@/components/home/OfferingsSection';
@@ -7,7 +7,9 @@ import ServicesSection from '@/components/home/ServicesSection';
 import BrandPartnersSection from '@/components/home/BrandPartnersSection';
 import GlobalPresenceSection from '@/components/home/GlobalPresenceSection';
 import WhySaiSection from '@/components/home/WhySaiSection';
-import FinalCtaSection from '@/components/home/FinalCtaSection';
+import ClientsSection from '@/components/home/ClientsSection';
+import TestimonialsSection from '@/components/home/TestimonialsSection';
+import CTAWithVerticalMarquee from '@/components/ui/cta-with-text-marquee';
 
 const Index = () => {
   return (
@@ -21,10 +23,12 @@ const Index = () => {
         <BrandPartnersSection />
         <GlobalPresenceSection />
         <WhySaiSection />
-        <FinalCtaSection />
+        <ClientsSection />
+        <TestimonialsSection />
+        <CTAWithVerticalMarquee />
       </main>
 
-      <Footer />
+      <CinematicFooter />
     </PageTransition>
   );
 };

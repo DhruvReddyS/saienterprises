@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, FileText, MessageSquareMore } from 'lucide-react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import ScrollProgress from '@/components/ScrollProgress';
 import PageTransition from '@/components/PageTransition';
 import { productCategories } from '@/data/products';
@@ -38,7 +38,7 @@ const ProductDetail = () => {
             Back to Machinery
           </Link>
         </main>
-        <Footer />
+        <CinematicFooter />
       </PageTransition>
     );
   }
@@ -381,7 +381,7 @@ const ProductDetail = () => {
         ) : null}
       </main>
 
-      <Footer />
+      <CinematicFooter />
     </PageTransition>
   );
 };

@@ -65,7 +65,7 @@ const tiles: Tile[] = [
   {
     icon: <IcoUsers />,
     kicker: 'Trust',
-    title: '4100+ Customers',
+    title: '2000+ Customers',
     subtitle: 'Built through long-term service, supply, and responsive support.',
     accent: '#0EA5E9',
     col: 'span 3',
@@ -128,6 +128,9 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
       transition={{ type: 'spring', stiffness: 280, damping: 22 }}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
+      initial={{ opacity: 0, y: 28 }}
+      animate={{ opacity: on ? 1 : 0, y: on ? 0 : 28 }}
+      transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
       style={{
         gridColumn: item.col,
         padding: item.featured ? '36px 32px' : '28px 24px',
@@ -140,9 +143,6 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
         border: `1px solid ${hov ? `${item.accent}20` : 'rgba(13,20,33,0.07)'}`,
         transition: 'box-shadow 0.35s, background 0.3s, border-color 0.3s',
         cursor: 'default', overflow: 'hidden', position: 'relative',
-        opacity: on ? 1 : 0,
-        transform: on ? 'none' : 'translateY(32px)',
-        transitionDelay: `${delay}s`,
         borderRadius: 2,
       }}
       className="max-lg:!col-span-full"
@@ -238,7 +238,7 @@ const WhySaiSection = () => {
   return (
     <section style={{
       background: 'linear-gradient(180deg, #F4F8FE 0%, #ECF2FB 100%)',
-      padding: '120px 0 112px',
+      padding: 'clamp(60px,8vw,120px) 0 clamp(56px,7vw,112px)',
       position: 'relative', overflow: 'hidden',
     }}>
       {/* Dot grid bg */}
@@ -264,7 +264,7 @@ const WhySaiSection = () => {
           display: 'grid', gridTemplateColumns: '1fr auto',
           gap: 32, alignItems: 'flex-end',
         }}
-          className="max-lg:!grid-cols-1 max-lg:!gap-6"
+          className="max-lg:!grid-cols-1 max-lg:!gap-5"
         >
           <div>
             <div style={{
@@ -316,7 +316,7 @@ const WhySaiSection = () => {
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
           gap: 10,
-        }}>
+        }} className="max-lg:!grid-cols-1 max-lg:!gap-3">
           {tiles.map((item, index) => (
             <TileCard key={item.title} item={item} delay={0.04 + index * 0.05} on={reveal.on} />
           ))}

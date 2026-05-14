@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '@/assets/hero-industrial.jpg';
+import heroImage from '@/assets/hero-printing.jpg';
 import hpmMachineImage from '@/assets/hpm-machine.png';
 import corrugationImage from '@/assets/corrugation-hero.jpg';
 import brochureImage from '@/assets/brochure-hero.jpg';
@@ -51,7 +51,7 @@ const OfferingsSection = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
+    const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
@@ -59,19 +59,23 @@ const OfferingsSection = () => {
 
   useEffect(() => {
     if (isMobile) return;
+    let rafId = 0;
     const onScroll = () => {
-      const sec = sectionRef.current;
-      if (!sec) return;
-      const rect = sec.getBoundingClientRect();
-      const secH = sec.offsetHeight;
-      const vh = window.innerHeight;
-      const p = Math.max(0, Math.min(1, -rect.top / (secH - vh)));
-      setProg(p);
-      const idx = Math.min(CATS.length - 1, Math.floor(p * CATS.length));
-      setCurIdx(idx);
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const sec = sectionRef.current;
+        if (!sec) return;
+        const rect = sec.getBoundingClientRect();
+        const secH = sec.offsetHeight;
+        const vh = window.innerHeight;
+        const p = Math.max(0, Math.min(1, -rect.top / (secH - vh)));
+        setProg(p);
+        const idx = Math.min(CATS.length - 1, Math.floor(p * CATS.length));
+        setCurIdx(idx);
+      });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(rafId); };
   }, [isMobile]);
 
   const cat = CATS[curIdx];
@@ -92,7 +96,7 @@ const OfferingsSection = () => {
               0{i + 1} / 05
             </div>
             <div style={{ aspectRatio: '16/9', overflow: 'hidden', marginBottom: 24 }}>
-              <img src={c.img} alt={c.name} style={{
+              <img src={c.img} alt={c.name} loading="lazy" decoding="async" style={{
                 width: '100%', height: '100%',
                 objectFit: c.imgContain ? 'contain' : 'cover',
                 background: c.imgContain ? '#0D1421' : undefined,
@@ -232,12 +236,15 @@ const OfferingsSection = () => {
               <img
                 src={c.img}
                 alt={c.name}
+                loading="lazy"
+                decoding="async"
                 style={{
                   width: '100%', height: '100%',
                   objectFit: c.imgContain ? 'contain' : 'cover',
                   background: c.imgContain ? '#0D1421' : undefined,
                   transition: 'transform 0.6s cubic-bezier(0.16,1,0.3,1)',
                   transform: i === curIdx ? 'scale(1)' : 'scale(1.03)',
+                  willChange: 'transform',
                 }}
               />
               <div style={{

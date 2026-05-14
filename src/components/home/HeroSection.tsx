@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '@/assets/hero-industrial.jpg';
+import heroImage from '@/assets/hero-printing.jpg';
 import largestSellingBadge from '@/assets/largest-selling-badge.png';
 import badge24 from '@/assets/24-years-badge.png';
 import hpmLogo from '@/assets/hpm-logo.png';
@@ -91,13 +91,17 @@ const HeroSection = () => {
   }, []);
 
   useEffect(() => {
+    let rafId = 0;
     const onScroll = () => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      setParallaxY(-rect.top * 0.25);
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (!sectionRef.current) return;
+        const rect = sectionRef.current.getBoundingClientRect();
+        setParallaxY(-rect.top * 0.25);
+      });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(rafId); };
   }, []);
 
   return (
@@ -111,7 +115,7 @@ const HeroSection = () => {
         overflow: 'hidden',
         position: 'relative',
       }}
-      className="max-[900px]:grid-cols-1"
+      className="max-[1024px]:!grid-cols-1"
     >
       <div
         style={{
@@ -122,7 +126,7 @@ const HeroSection = () => {
           justifyContent: 'center',
           padding: '124px 64px 168px',
         }}
-        className="max-md:!px-7 max-md:!py-24"
+        className="max-lg:!px-8 max-lg:!py-28 max-md:!px-6 max-md:!py-24"
       >
         <div
           style={{
@@ -270,12 +274,16 @@ const HeroSection = () => {
           <img
             src={heroImage}
             alt="Graphic printing facility"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             style={{
               width: '100%',
               height: '120%',
               objectFit: 'cover',
               transform: `scale(1.05) translateY(${parallaxY * 0.3}px)`,
               transition: 'transform 0.05s linear',
+              willChange: 'transform',
             }}
           />
           <div
@@ -329,9 +337,9 @@ const HeroSection = () => {
         >
           {[...stampItems, ...stampItems].map((item, i) => (
             <div
-              key={`${item.title}-${i}`}
+              key={`stamp-${i < stampItems.length ? 'a' : 'b'}-${i % stampItems.length}`}
               style={{
-                minWidth: 312,
+                minWidth: 'clamp(240px, 30vw, 312px)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 14,

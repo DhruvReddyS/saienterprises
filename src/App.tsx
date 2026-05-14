@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, lazy } from "react";
+import { useState, Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,12 +28,6 @@ const ProductPreviewRedirect = () => {
   return <Navigate replace to={`/machinery/${categorySlug}?preview=${productId}`} />;
 };
 
-// Preload critical images
-const preloadImages = [
-  '/src/assets/hero-industrial.jpg',
-  '/src/assets/sai-logo-cmyk.png',
-];
-
 const AnimatedRoutes = () => {
   const location = useLocation();
   useScrollToTop();
@@ -58,41 +52,17 @@ const AnimatedRoutes = () => {
 };
 
 const AppContent = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
-
-  useEffect(() => {
-    // Preload critical images
-    let loadedCount = 0;
-    const totalImages = preloadImages.length;
-    
-    const checkAllLoaded = () => {
-      loadedCount++;
-      if (loadedCount >= totalImages) {
-        setImagesLoaded(true);
-      }
-    };
-
-    preloadImages.forEach((src) => {
-      const img = new Image();
-      img.onload = checkAllLoaded;
-      img.onerror = checkAllLoaded;
-      img.src = src;
-    });
-
-    // Fallback timeout
-    const timeout = setTimeout(() => {
-      setImagesLoaded(true);
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, []);
+  const [showLoader, setShowLoader] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !sessionStorage.getItem("sai-loader-seen");
+  });
 
   const handleLoaderComplete = () => {
-    setIsLoading(false);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("sai-loader-seen", "1");
+    }
+    setShowLoader(false);
   };
-
-  const showLoader = isLoading || !imagesLoaded;
 
   return (
     <>

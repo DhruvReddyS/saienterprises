@@ -72,7 +72,7 @@ const SocialZone = () => {
       style={{
         position: 'fixed',
         right: 0,
-        top: '40.5%',
+        top: '28%',
         transform: 'translateY(-50%)',
         zIndex: 489,
         display: 'flex',

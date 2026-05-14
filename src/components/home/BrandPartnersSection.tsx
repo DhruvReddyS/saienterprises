@@ -32,7 +32,7 @@ const BrandPartnersSection = () => {
   }, []);
 
   return (
-    <section style={{ background: '#F0F4FF', padding: '120px 0', overflow: 'hidden' }}>
+    <section style={{ background: '#F0F4FF', padding: 'clamp(64px,8vw,120px) 0', overflow: 'hidden' }}>
       <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7">
 
         {/* Divider with line-draw */}
@@ -61,8 +61,8 @@ const BrandPartnersSection = () => {
 
         {/* Two-column layout */}
         <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 96, alignItems: 'start',
-        }} className="max-[900px]:grid-cols-1 max-[900px]:gap-14">
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(32px, 5vw, 96px)', alignItems: 'start',
+        }} className="max-lg:!grid-cols-1 max-lg:!gap-12">
 
           {/* Left: brand info */}
           <div>
@@ -134,16 +134,19 @@ const BrandPartnersSection = () => {
                 <img
                   src={hpmMachine}
                   alt="HPM Paper Cutter"
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     width: '85%', height: '85%', objectFit: 'contain',
                     filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.6))',
                     animation: 'float 5s ease-in-out infinite',
+                    willChange: 'transform',
                   }}
                 />
-                {/* Badge */}
-                <div style={{ position: 'absolute', bottom: -20, right: -20, width: 100, height: 100 }}>
-                  <img src={largestSellingBadge} alt="India's Largest Selling Paper Cutter" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                </div>
+              </div>
+              {/* Badge — positioned on outer container so it's not clipped */}
+              <div style={{ position: 'absolute', bottom: -12, right: -12, width: 90, height: 90, zIndex: 10 }}>
+                <img src={largestSellingBadge} alt="India's Largest Selling Paper Cutter" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
 
               {/* Stats grid */}

@@ -4,10 +4,11 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Eye, Search } from 'lucide-react';
 import { useRef } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import ScrollProgress from '@/components/ScrollProgress';
 import PageTransition from '@/components/PageTransition';
 import MachinePreviewModal from '@/components/ui/MachinePreviewModal';
+import { GlowCard } from '@/components/ui/spotlight-card';
 import { productCategories, Product } from '@/data/products';
 import { buildSearchableMachine, searchMachines } from '@/lib/machineSearch';
 
@@ -99,6 +100,14 @@ const postPressGroups = [
   },
 ];
 
+const CATEGORY_GLOW: Record<string, 'blue' | 'purple' | 'green' | 'orange'> = {
+  'pre-press': 'purple',
+  press: 'blue',
+  'post-press': 'blue',
+  corrugation: 'green',
+  allied: 'orange',
+};
+
 const MachineryCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -164,7 +173,7 @@ const MachineryCategory = () => {
             Back to Machinery
           </Link>
         </main>
-        <Footer />
+        <CinematicFooter />
       </PageTransition>
     );
   }
@@ -222,6 +231,7 @@ const MachineryCategory = () => {
   const renderProductCard = (product: Product, index: number) => {
     const sizeCount = product.sizes?.length ?? 0;
     const featureCount = product.features?.length ?? 0;
+    const glowColor = CATEGORY_GLOW[activeCategorySlug] ?? 'blue';
     const quickStat =
       sizeCount > 0
         ? `${sizeCount} size${sizeCount > 1 ? 's' : ''} available`
@@ -236,80 +246,86 @@ const MachineryCategory = () => {
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true }}
         transition={{ delay: Math.min(index, 8) * 0.04, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="group overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_30px_70px_-48px_rgba(15,23,42,0.28)]"
+        className="group"
       >
-        <motion.div
-          className="relative aspect-[4/3] overflow-hidden cursor-pointer bg-[linear-gradient(180deg,rgba(15,23,42,0.08),rgba(15,23,42,0.02))]"
-          onClick={() => handleOpenPreview(product, index)}
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.3 }}
+        <GlowCard
+          glowColor={glowColor}
+          customSize
+          className="h-full w-full gap-0 rounded-[28px] border-white/70 bg-white/85 p-0 shadow-[0_30px_70px_-48px_rgba(15,23,42,0.22)] backdrop-blur-[14px]"
         >
-          <motion.img
-            src={product.image || category.heroImage}
-            alt={product.name}
-            className="w-full h-full object-cover"
-            whileHover={{ scale: 1.08 }}
-            transition={{ duration: 0.7 }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/16 to-transparent" />
-          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-foreground/28 to-transparent" />
-
-          <div className="absolute left-4 top-4 rounded-full border border-background/16 bg-background/10 px-3 py-1 text-[11px] font-medium tracking-[0.16em] text-background/72 backdrop-blur-sm">
-            {String(index + 1).padStart(2, '0')}
-          </div>
-          <div className="absolute right-4 top-4 rounded-full border border-background/16 bg-background/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-background/78 backdrop-blur-sm">
-            Preview
-          </div>
-
           <motion.div
-            className="absolute inset-0 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
+            className="relative aspect-[4/3] overflow-hidden cursor-pointer bg-[linear-gradient(180deg,rgba(15,23,42,0.08),rgba(15,23,42,0.02))]"
+            onClick={() => handleOpenPreview(product, index)}
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.3 }}
           >
+            <motion.img
+              src={product.image || category.heroImage}
+              alt={product.name}
+              className="w-full h-full object-cover"
+              whileHover={{ scale: 1.08 }}
+              transition={{ duration: 0.7 }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/16 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-foreground/28 to-transparent" />
+
+            <div className="absolute left-4 top-4 rounded-full border border-background/16 bg-background/10 px-3 py-1 text-[11px] font-medium tracking-[0.16em] text-background/72 backdrop-blur-sm">
+              {String(index + 1).padStart(2, '0')}
+            </div>
+            <div className="absolute right-4 top-4 rounded-full border border-background/16 bg-background/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-background/78 backdrop-blur-sm">
+              Preview
+            </div>
+
             <motion.div
-              initial={{ scale: 0.84 }}
-              whileHover={{ scale: 1 }}
-              className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/90 shadow-lg"
+              className="absolute inset-0 flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
             >
-              <Eye className="h-7 w-7 text-primary-foreground" />
+              <motion.div
+                initial={{ scale: 0.84 }}
+                whileHover={{ scale: 1 }}
+                className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/90 shadow-lg"
+              >
+                <Eye className="h-7 w-7 text-primary-foreground" />
+              </motion.div>
             </motion.div>
+
+            <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+              <p className="text-[10px] uppercase tracking-[0.16em] text-background/56">{category.name}</p>
+              <motion.h3 className="mt-2 font-serif text-xl sm:text-2xl text-background leading-tight">
+                {product.name}
+              </motion.h3>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-background/68 line-clamp-2">
+                {product.description}
+              </p>
+            </div>
           </motion.div>
 
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-background/56">{category.name}</p>
-            <motion.h3 className="mt-2 font-serif text-xl sm:text-2xl text-background leading-tight">
-              {product.name}
-            </motion.h3>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-background/68 line-clamp-2">
-              {product.description}
-            </p>
-          </div>
-        </motion.div>
-
-        <div className="border-t border-border bg-[linear-gradient(180deg,rgba(15,23,42,0.01),rgba(15,23,42,0.06))] p-5">
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full border border-border bg-background px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-              {quickStat}
-            </span>
-            {product.applications?.[0] && (
+          <div className="border-t border-border bg-[linear-gradient(180deg,rgba(15,23,42,0.01),rgba(15,23,42,0.06))] p-5">
+            <div className="flex flex-wrap gap-2">
               <span className="rounded-full border border-border bg-background px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                {product.applications[0]}
+                {quickStat}
               </span>
-            )}
-          </div>
+              {product.applications?.[0] && (
+                <span className="rounded-full border border-border bg-background px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                  {product.applications[0]}
+                </span>
+              )}
+            </div>
 
-          <div className="mt-5 flex items-center justify-between gap-3">
-            <span className="text-xs text-muted-foreground">Open the quick machine preview</span>
-            <button
-              type="button"
-              onClick={() => handleOpenPreview(product, index)}
-              className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:text-primary/80"
-            >
-              Open preview
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
+            <div className="mt-5 flex items-center justify-between gap-3">
+              <span className="text-xs text-muted-foreground">Open the quick machine preview</span>
+              <button
+                type="button"
+                onClick={() => handleOpenPreview(product, index)}
+                className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary transition-colors hover:text-primary/80"
+              >
+                Open preview
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
           </div>
-        </div>
+        </GlowCard>
       </motion.article>
     );
   };
@@ -327,6 +343,9 @@ const MachineryCategory = () => {
               <img
                 src={category.heroImage}
                 alt={category.name}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className="w-full h-full object-cover opacity-[0.12]"
               />
             </div>
@@ -518,7 +537,7 @@ const MachineryCategory = () => {
         </section>
       </main>
 
-      <Footer />
+      <CinematicFooter />
 
       {/* Preview Modal */}
       <MachinePreviewModal

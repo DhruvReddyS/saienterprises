@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
-import BrochureViewer from '@/components/brochure/BrochureViewer';
+import BookViewer from '@/components/brochure/BookViewer';
 import brochurePdf from '@/assets/Sai Enterprises-2026.pdf';
-import { productCategories } from '@/data/products';
 import { useEffect, useState } from 'react';
 
 const BrochurePage = () => {
@@ -43,17 +42,16 @@ const BrochurePage = () => {
             lineHeight: 0.9, letterSpacing: '-0.02em',
             color: '#fff', marginBottom: 24,
           }}>
-            Full Catalogue<br />
-            <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.6)' }}>
-              — Page by Page
+            Our Complete<br />
+            <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.55)' }}>
+              Machinery Portfolio
             </span>
           </h1>
           <p style={{
             fontFamily: "'DM Sans', sans-serif", fontSize: 14,
             color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, maxWidth: 560, marginBottom: 32,
           }}>
-            Browse every machine in our portfolio — flip through categories, search by name,
-            and jump directly to the machine you need.
+            Every press, cutter, laminator, and finishing machine we carry — organised by category, with full specifications and configurations.
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>
@@ -92,42 +90,10 @@ const BrochurePage = () => {
         </div>
       </div>
 
-      {/* Brochure viewer */}
-      <BrochureViewer />
+      {/* Book viewer */}
+      <BookViewer />
 
-      {/* Category quick links */}
-      <div style={{ background: '#F0F4FF', padding: '64px 64px' }} className="max-md:!px-7 max-md:!py-12">
-        <div style={{ maxWidth: 1300, margin: '0 auto' }}>
-          <div style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.28em',
-            textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16,
-          }}>
-            Explore by Category
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            {productCategories.map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/machinery/${cat.slug}`}
-                style={{
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.16em',
-                  textTransform: 'uppercase', fontWeight: 600,
-                  padding: '10px 20px',
-                  border: '1px solid rgba(0,0,0,0.12)', color: '#060A10',
-                  background: '#fff', textDecoration: 'none',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#3B82F6'; el.style.color = '#3B82F6'; }}
-                onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(0,0,0,0.12)'; el.style.color = '#060A10'; }}
-              >
-                {cat.name}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <Footer />
+      <CinematicFooter />
     </PageTransition>
   );
 };

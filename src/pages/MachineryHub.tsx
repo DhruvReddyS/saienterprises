@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
 import { productCategories, type Product } from '@/data/products';
 import corrugationHero from '@/assets/corrugation-hero.jpg';
@@ -18,6 +18,14 @@ const CATEGORY_COLORS: Record<string, string> = {
   'post-press': '#0EA5E9',
   corrugation: '#10B981',
   allied: '#F59E0B',
+};
+
+const CATEGORY_GLOWS: Record<string, 'blue' | 'purple' | 'green' | 'orange'> = {
+  'pre-press': 'purple',
+  press: 'blue',
+  'post-press': 'blue',
+  corrugation: 'green',
+  allied: 'orange',
 };
 
 const IcoSearch = () => (
@@ -59,14 +67,18 @@ const MachineryHub = () => {
 
   /* Parallax */
   useEffect(() => {
+    let rafId = 0;
     const onScroll = () => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect();
-        setParallax(-rect.top * 0.3);
-      }
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        if (heroRef.current) {
+          const rect = heroRef.current.getBoundingClientRect();
+          setParallax(-rect.top * 0.3);
+        }
+      });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(rafId); };
   }, []);
 
   useEffect(() => {
@@ -86,16 +98,20 @@ const MachineryHub = () => {
         background: '#060A10', padding: '140px 64px 72px',
         position: 'relative', overflow: 'hidden', minHeight: '68vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-      }} className="max-md:!px-7 max-md:!pt-24 max-md:min-h-0">
+      }} className="max-lg:!px-10 max-lg:!pt-32 max-md:!px-6 max-md:!pt-28 max-md:min-h-0">
         {/* Background image */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <img
             src={corrugationHero}
             alt="Machinery"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             style={{
               width: '100%', height: '110%', objectFit: 'cover', opacity: 0.15,
               transform: `translateY(${parallax}px)`,
               transition: 'transform 0.05s linear',
+              willChange: 'transform',
             }}
           />
           <div style={{
@@ -117,60 +133,10 @@ const MachineryHub = () => {
           <h1 style={{
             fontSize: 'clamp(56px,9vw,132px)',
             fontWeight: 700, lineHeight: 0.86,
-            color: '#fff', letterSpacing: '-0.04em', marginBottom: 20,
+            color: '#fff', letterSpacing: '-0.04em', marginBottom: 32,
           }}>
             THE MACHINES
           </h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 28 }}>
-            <div style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(28px,3.5vw,48px)', fontWeight: 700,
-              color: '#3B82F6', letterSpacing: '-0.02em', lineHeight: 1,
-            }}>
-              4000+
-            </div>
-            <div style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 11, letterSpacing: '0.14em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.38)', lineHeight: 1.4,
-            }}>
-              machines placed<br />across India
-            </div>
-          </div>
-
-          {/* Category stat pills */}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 36, flexWrap: 'wrap' }}>
-            {productCategories.map((cat) => {
-              const accent = CATEGORY_COLORS[cat.id] ?? '#3B82F6';
-              const isActive = filter === cat.slug;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setFilter(isActive ? 'all' : cat.slug)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 8,
-                    padding: '7px 14px',
-                    background: isActive ? accent : 'rgba(255,255,255,0.06)',
-                    border: `1px solid ${isActive ? accent : 'rgba(255,255,255,0.12)'}`,
-                    color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
-                    fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
-                    cursor: 'pointer', transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.borderColor = accent; (e.currentTarget as HTMLElement).style.color = '#fff'; } }}
-                  onMouseLeave={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.12)'; (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.6)'; } }}
-                >
-                  {cat.name}
-                  <span style={{
-                    fontSize: 9, fontWeight: 800, padding: '1px 6px',
-                    background: isActive ? 'rgba(255,255,255,0.2)' : `${accent}25`,
-                    color: isActive ? '#fff' : accent,
-                  }}>
-                    {cat.products.length}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
 
           {/* Search input */}
           <div style={{ maxWidth: 560, position: 'relative' }}>
@@ -260,8 +226,14 @@ const MachineryHub = () => {
       </div>
 
       {/* Machine grid */}
-      <div style={{ background: '#F0F4FF', padding: '48px 48px 80px' }} className="max-md:!px-5 max-md:!py-8">
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+      <div style={{ background: '#F4F7FF', padding: '48px 48px 80px', position: 'relative' }} className="max-md:!px-5 max-md:!py-8">
+        {/* Subtle grid bg */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: 'linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+        }} />
+        <div style={{ maxWidth: 1400, margin: '0 auto', position: 'relative' }}>
           {/* Result count + active filters */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -269,7 +241,7 @@ const MachineryHub = () => {
           }}>
             <div style={{
               fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: 'rgba(0,0,0,0.35)',
+              color: 'rgba(6,10,16,0.38)', fontFamily: "'DM Sans', sans-serif",
             }}>
               {filtered.length} machine{filtered.length !== 1 ? 's' : ''}
               {filter !== 'all' && ` in ${ALL_CATS.find(c => c.id === filter)?.label}`}
@@ -281,7 +253,7 @@ const MachineryHub = () => {
                 style={{
                   display: 'flex', alignItems: 'center', gap: 5,
                   fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase',
-                  color: '#3B82F6', background: 'none', border: 'none',
+                  color: '#2563EB', background: 'none', border: 'none',
                   cursor: 'pointer', fontWeight: 700, padding: '4px 8px',
                   transition: 'opacity 0.2s',
                 }}
@@ -294,7 +266,8 @@ const MachineryHub = () => {
           {filtered.length === 0 ? (
             <div style={{
               padding: '80px 0', textAlign: 'center',
-              fontSize: 40, color: 'rgba(0,0,0,0.12)',
+              fontSize: 40, color: 'rgba(6,10,16,0.15)',
+              fontFamily: "'Cormorant Garamond', serif",
             }}>
               No machines found.
             </div>
@@ -312,7 +285,7 @@ const MachineryHub = () => {
         />
       )}
 
-      <Footer />
+      <CinematicFooter />
     </PageTransition>
   );
 };
@@ -327,7 +300,7 @@ const MachineGrid = ({ machines, onSelect }: {
     gridTemplateColumns: 'repeat(4, 1fr)',
     gap: 16,
   }}
-    className="max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-sm:!grid-cols-1"
+    className="max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-md:!grid-cols-2 max-sm:!grid-cols-1"
   >
     {machines.map((m) => (
       <MachineCard key={m.id} m={m} onSelect={onSelect} />
@@ -350,28 +323,32 @@ const MachineCard = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: '#fff',
-        boxShadow: hovered
-          ? `0 16px 48px rgba(0,0,0,0.12), 0 0 0 1px ${accent}33`
-          : '0 2px 10px rgba(0,0,0,0.05)',
-        cursor: 'pointer', position: 'relative', overflow: 'hidden',
-        transition: 'box-shadow 0.25s, transform 0.25s',
+        position: 'relative', overflow: 'hidden', cursor: 'pointer',
+        background: '#ffffff',
+        border: `1px solid ${hovered ? `${accent}40` : 'rgba(6,10,16,0.08)'}`,
+        transition: 'all 0.28s cubic-bezier(0.16,1,0.3,1)',
         transform: hovered ? 'translateY(-4px)' : 'none',
+        boxShadow: hovered ? `0 20px 48px rgba(6,10,16,0.14), 0 0 0 1px ${accent}20` : '0 2px 12px rgba(6,10,16,0.06)',
+        display: 'flex', flexDirection: 'column',
       }}
     >
       {/* Top accent bar */}
       <div style={{
-        height: 2, background: accent,
+        height: 2,
+        background: `linear-gradient(90deg, ${accent}, transparent)`,
         transform: hovered ? 'scaleX(1)' : 'scaleX(0)',
         transformOrigin: 'left',
-        transition: 'transform 0.3s cubic-bezier(0.16,1,0.3,1)',
+        transition: 'transform 0.35s cubic-bezier(0.16,1,0.3,1)',
+        flexShrink: 0,
       }} />
 
       {/* Image */}
       <div style={{
         aspectRatio: '4/3', overflow: 'hidden',
-        background: '#F8FAFE',
+        background: hovered ? 'rgba(59,130,246,0.04)' : '#F8F9FE',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0, transition: 'background 0.3s',
+        borderBottom: '1px solid rgba(6,10,16,0.06)',
       }}>
         {m.image ? (
           <img
@@ -383,15 +360,24 @@ const MachineCard = ({
               objectFit: m.image.endsWith('.png') ? 'contain' : 'cover',
               transform: hovered ? 'scale(1.06)' : 'scale(1)',
               transition: 'transform 0.5s cubic-bezier(0.16,1,0.3,1)',
-              padding: m.image.endsWith('.png') ? '12px' : undefined,
+              padding: m.image.endsWith('.png') ? '16px' : undefined,
+              filter: m.image.endsWith('.png') ? undefined : 'brightness(0.88)',
             }}
           />
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: 20 }}>
-            <div style={{ width: 36, height: 36, background: `${accent}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>
-              <div style={{ width: 14, height: 14, border: `1.5px solid ${accent}`, borderRadius: '50%' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 44, height: 44,
+              background: `${accent}12`, border: `1px solid ${accent}25`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              borderRadius: '50%',
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                <path d="m21 15-5-5L5 21"/>
+              </svg>
             </div>
-            <span style={{ fontSize: 9, color: 'rgba(0,0,0,0.25)', letterSpacing: '0.1em', textAlign: 'center' }}>
+            <span style={{ fontSize: 8, color: 'rgba(6,10,16,0.28)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
               Image on request
             </span>
           </div>
@@ -399,13 +385,15 @@ const MachineCard = ({
       </div>
 
       {/* Info */}
-      <div style={{ padding: '16px 18px 20px' }}>
+      <div style={{ padding: '16px 18px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         {/* Category tag */}
         <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5,
+          display: 'inline-flex', alignItems: 'center', gap: 5, width: 'fit-content',
           fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase',
-          color: accent, background: `${accent}0F`,
-          padding: '3px 8px', marginBottom: 9,
+          color: accent, background: `${accent}14`,
+          padding: '3px 9px', marginBottom: 10, borderRadius: 999,
+          border: `1px solid ${accent}20`,
+          fontFamily: "'DM Sans', sans-serif", fontWeight: 700,
         }}>
           <span style={{ width: 4, height: 4, borderRadius: '50%', background: accent, flexShrink: 0, display: 'inline-block' }} />
           {m.categoryName}
@@ -413,8 +401,9 @@ const MachineCard = ({
 
         {/* Machine name */}
         <div style={{
-          fontSize: 17, fontWeight: 700, color: '#060A10', lineHeight: 1.25,
+          fontSize: 16, fontWeight: 700, color: '#060A10', lineHeight: 1.25,
           marginBottom: 8, letterSpacing: '-0.01em',
+          fontFamily: "'DM Sans', sans-serif",
         }}>
           {m.name}
         </div>
@@ -422,12 +411,14 @@ const MachineCard = ({
         {/* Description */}
         {m.description && (
           <p style={{
-            fontSize: 11.5, color: 'rgba(0,0,0,0.45)', lineHeight: 1.6,
+            fontSize: 11.5, color: 'rgba(6,10,16,0.48)', lineHeight: 1.6,
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical' as const,
             overflow: 'hidden',
             margin: '0 0 10px',
+            fontFamily: "'DM Sans', sans-serif",
+            flex: 1,
           }}>
             {m.description}
           </p>
@@ -438,15 +429,17 @@ const MachineCard = ({
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 12 }}>
             {m.sizes.slice(0, 3).map((s) => (
               <span key={s} style={{
-                fontSize: 9, padding: '2px 7px',
+                fontSize: 8.5, padding: '2px 8px',
                 border: `1px solid ${accent}30`,
-                color: '#060A10', background: `${accent}07`,
+                color: 'rgba(6,10,16,0.5)',
+                background: `${accent}0C`,
+                fontFamily: "'DM Sans', sans-serif",
               }}>
                 {s}
               </span>
             ))}
             {m.sizes.length > 3 && (
-              <span style={{ fontSize: 9, color: 'rgba(0,0,0,0.35)' }}>
+              <span style={{ fontSize: 8.5, color: 'rgba(6,10,16,0.3)', fontFamily: "'DM Sans', sans-serif" }}>
                 +{m.sizes.length - 3} more
               </span>
             )}
@@ -455,10 +448,11 @@ const MachineCard = ({
 
         {/* View detail */}
         <div style={{
-          fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase',
+          fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase',
           color: accent, display: 'flex', alignItems: 'center', gap: 6,
-          opacity: hovered ? 1 : 0.55, transition: 'opacity 0.2s',
-          fontWeight: 700,
+          opacity: hovered ? 1 : 0.45, transition: 'opacity 0.2s',
+          fontWeight: 700, fontFamily: "'DM Sans', sans-serif",
+          marginTop: 'auto',
         }}>
           View details
           <span style={{

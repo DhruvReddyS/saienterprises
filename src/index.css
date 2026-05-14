@@ -4,6 +4,50 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes scan {
+  0% {
+    top: 0;
+  }
+  25% {
+    top: 64px;
+  }
+  50% {
+    top: 0;
+  }
+  75% {
+    top: 64px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes cut {
+  0% {
+    clip-path: inset(0 0 0 0);
+  }
+  25% {
+    clip-path: inset(100% 0 0 0);
+  }
+  50% {
+    clip-path: inset(0 0 100% 0);
+  }
+  75%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@layer utilities {
+  .animate-scan {
+    animation: scan 1.52s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+  }
+
+  .animate-cut {
+    animation: cut 1.52s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite;
+  }
+}
+
 @layer base {
   :root {
     /* ── BLACK / BLUE / WHITE SYSTEM ── */
@@ -88,6 +132,20 @@
     overflow-x: hidden;
   }
 
+  body a,
+  body button,
+  body input,
+  body textarea,
+  body select {
+    transition:
+      color 0.24s ease,
+      background-color 0.24s ease,
+      border-color 0.24s ease,
+      opacity 0.24s ease,
+      box-shadow 0.24s ease,
+      transform 0.24s ease;
+  }
+
   body,
   body button,
   body input,
@@ -139,6 +197,20 @@
     outline: 1px solid hsl(var(--primary));
     outline-offset: 2px;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer components {
@@ -174,7 +246,7 @@
 
   /* ── EYEBROW / CAPTION ── */
   .eyebrow {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-site) !important;
     font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.28em;
@@ -183,7 +255,7 @@
   }
 
   .caption {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-site) !important;
     font-size: 10px;
     font-weight: 500;
     letter-spacing: 0.2em;
@@ -242,7 +314,7 @@
     padding: 13px 28px;
     background: hsl(var(--primary));
     color: #fff;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-site) !important;
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.14em; text-transform: uppercase;
     text-decoration: none;
@@ -260,7 +332,7 @@
     padding: 13px 28px;
     background: transparent;
     color: rgba(255,255,255,0.7);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-site) !important;
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.14em; text-transform: uppercase;
     text-decoration: none;
@@ -275,7 +347,7 @@
 
   .cta-arrow {
     display: inline-flex; align-items: center; gap: 10px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-site) !important;
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: rgba(255,255,255,0.8);
@@ -289,7 +361,7 @@
 
   .cta-blue {
     display: inline-flex; align-items: center; gap: 10px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-site) !important;
     font-size: 11px; font-weight: 600;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: hsl(var(--primary));
@@ -416,3 +488,49 @@
 .delay-500 { animation-delay: 0.5s; }
 .delay-600 { animation-delay: 0.6s; }
 .delay-700 { animation-delay: 0.7s; }
+
+/* ── PERFORMANCE: GPU promote layers that animate ── */
+[style*="willChange"],
+[style*="will-change"] {
+  isolation: isolate;
+}
+
+/* ── GLOBAL LAZY LOADING HINT ── */
+img:not([loading]) {
+  content-visibility: auto;
+}
+
+/* ── MOBILE TOUCH TARGETS ── */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Prevent text overflow on small screens */
+  h1, h2, h3 {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* ── TABLET FIXES ── */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .container-editorial { padding-inline: 40px; }
+}
+
+/* ── ANIMATION: smooth marquee GPU layer ── */
+.marquee-track,
+[style*="clients-left"],
+[style*="clients-right"],
+[style*="ticker-scroll"] {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ── LOW MOTION: respect user preference ── */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track,
+  [style*="animation"] {
+    animation-play-state: paused !important;
+  }
+}

@@ -77,16 +77,83 @@ const parseCompareQuery = (query: string) => {
 };
 
 const compareMachines = (left: SearchableMachine, right: SearchableMachine) => {
-  const leftSize = left.sizes?.slice(0, 2).join(', ') || 'Sizes on request';
-  const rightSize = right.sizes?.slice(0, 2).join(', ') || 'Sizes on request';
+  const leftSize = left.sizes?.slice(0, 2).join(', ') || 'sizes on request';
+  const rightSize = right.sizes?.slice(0, 2).join(', ') || 'sizes on request';
+  const leftFeatures = left.features?.slice(0, 2).join(', ') || '';
+  const rightFeatures = right.features?.slice(0, 2).join(', ') || '';
+  const leftApps = left.applications?.slice(0, 2).join(', ') || '';
+  const rightApps = right.applications?.slice(0, 2).join(', ') || '';
 
-  return [
-    `Comparison: ${left.name} vs ${right.name}`,
-    `${left.name}: ${left.resolvedBrand} · ${left.categoryName} · ${leftSize}`,
-    `${right.name}: ${right.resolvedBrand} · ${right.categoryName} · ${rightSize}`,
-    'Choose based on production stage, size coverage, finishing requirement, and installation fit.',
-  ].join('\n');
+  const lines = [
+    `Here's a quick comparison to help you decide:`,
+    ``,
+    `${left.name}`,
+    `  Brand: ${left.resolvedBrand} · Category: ${left.categoryName}`,
+    `  Sizes: ${leftSize}`,
+    ...(leftFeatures ? [`  Key features: ${leftFeatures}`] : []),
+    ...(leftApps ? [`  Best for: ${leftApps}`] : []),
+    ``,
+    `${right.name}`,
+    `  Brand: ${right.resolvedBrand} · Category: ${right.categoryName}`,
+    `  Sizes: ${rightSize}`,
+    ...(rightFeatures ? [`  Key features: ${rightFeatures}`] : []),
+    ...(rightApps ? [`  Best for: ${rightApps}`] : []),
+    ``,
+    left.categorySlug === right.categorySlug
+      ? `Both are in the same category — the right pick depends on your production volume and size requirement. Want to enquire about either?`
+      : `These serve different stages of your workflow — ${left.name} for ${left.categoryName.toLowerCase()} work, ${right.name} for ${right.categoryName.toLowerCase()} work. Want me to suggest which fits your setup?`,
+  ];
+
+  return lines.join('\n');
 };
+
+const useCaseMap: Array<{ keywords: string[]; categorySlug: string; reply: string }> = [
+  {
+    keywords: ['book', 'booklet', 'notebook', 'diary', 'publishing', 'perfect bind', 'hardcover', 'softcover'],
+    categorySlug: 'post-press',
+    reply: 'For book/publishing work, I\'d recommend looking at our Perfect Binder, Three Knife Trimmer, and Sewing Machine. These three form a complete book finishing line. The Perfect Binder handles spines up to 70mm and runs at 700 books/hour — solid for most print shops.',
+  },
+  {
+    keywords: ['carton', 'box making', 'packaging', 'corrugated', 'flute', 'rigid box'],
+    categorySlug: 'corrugation',
+    reply: 'For packaging and box work, it depends on the board type. For corrugated cartons, our Double Profile Paper Corrugation Machine with a Flute Laminator is the standard setup. For premium rigid boxes (gift boxes, product packaging), our Automatic Rigid Box Making Machine with Corner Pasting Machine is the right fit.',
+  },
+  {
+    keywords: ['lamination', 'laminating', 'gloss', 'matte', 'pouch', 'cover lamination'],
+    categorySlug: 'post-press',
+    reply: 'For lamination, we offer Thermal & Water Base Laminators in 24" and 32" sizes. For high-volume cover lamination, the 32" with sheeter attachment is the best choice. If you do both thermal and water-base jobs, I\'d recommend the combo model — more flexibility.',
+  },
+  {
+    keywords: ['ctp', 'plate making', 'pre press', 'prepress', 'ctcp', 'plate exposure'],
+    categorySlug: 'pre-press',
+    reply: 'For plate making, we stock CTP (Computer-to-Plate) in Violet and Thermal variants as well as the Fully Automatic CTCP which works with conventional plates — no special plate cost. If you\'re already on conventional workflow, CTCP is the more economical upgrade path.',
+  },
+  {
+    keywords: ['cutting', 'paper cutter', 'trim', 'stack cutter', 'hpm'],
+    categorySlug: 'post-press',
+    reply: 'For paper cutting, we\'re the sole HPM agent in India — 490+ HPM cutters placed across the country. The HPM Programmable Paper Cutter comes in sizes from 920mm to 1880mm. Most print shops go with the 920mm or 1150mm. The 26" heavy-duty digital variant is great for smaller setups.',
+  },
+  {
+    keywords: ['wire o', 'spiral binding', 'coil binding', 'punch bind'],
+    categorySlug: 'post-press',
+    reply: 'For wire-o and spiral binding, we have the Automatic Wire-O Binding Machine and Automatic Spiral Binding Machine. The wire-o is better for corporate documents and catalogues — cleaner look. Spiral is faster for high-volume notebooks. Want to know which size fits your sheet size?',
+  },
+  {
+    keywords: ['uv coating', 'spot uv', 'aqua coat', 'varnish', 'gloss finish'],
+    categorySlug: 'post-press',
+    reply: 'For UV/coating, our UV/Aqua Coater with Dryer comes in 24", 30", and 32" widths. It supports both UV and IR drying. For spot UV on packaging, the Two Color UV Conversion unit is the right add-on. Most shops pair this with a laminator for a full finishing line.',
+  },
+  {
+    keywords: ['foil', 'hot foil', 'stamping', 'gold foil', 'emboss'],
+    categorySlug: 'post-press',
+    reply: 'For foil stamping and embossing, we have the Hot Foil Stamping Machine (300×350mm plate, up to 100mm job height) and the Die Punching unit with optional hot foil. If you\'re doing high-end packaging or stationery, these two together cover most premium finishing needs.',
+  },
+  {
+    keywords: ['offset press', 'sheet fed', 'printing press', 'heidelberg', 'komori'],
+    categorySlug: 'press',
+    reply: 'For offset presses, we deal in Heidelberg, Komori, and manroland — new and pre-owned. For entry-level, the Mini Offset 16"×22" is a solid starter. For commercial printing at scale, a used Heidelberg or Komori is often the most cost-effective route. What sheet size and colour count are you targeting?',
+  },
+];
 
 export const getChatbotReply = (query: string, state: ChatbotSessionState = {}): ChatbotReply => {
   const normalized = normalize(query);
@@ -274,11 +341,27 @@ export const getChatbotReply = (query: string, state: ChatbotSessionState = {}):
     }
   }
 
-  if (hasAny(normalized, ['best', 'suggest', 'which machine'])) {
+  // Use-case detection — salesman-style recommendation
+  const useCaseMatch = useCaseMap.find(({ keywords }) => hasAny(normalized, keywords));
+  if (useCaseMatch && hasAny(normalized, ['need', 'want', 'looking', 'suggest', 'recommend', 'best', 'for my', 'for our', 'which', 'what machine', 'machine for', 'use case', 'usecase', 'setup', 'unit', 'plant', 'workshop', 'production'])) {
+    const category = productCategories.find((c) => c.slug === useCaseMatch.categorySlug);
+    return {
+      text: useCaseMatch.reply,
+      suggestions: [
+        ...(category ? [{ label: `Browse ${category.name}`, categorySlug: category.slug }] : []),
+        { label: 'Get a Quote', route: 'contact' as const },
+        ...(category ? category.products.slice(0, 2).map((p) => ({ label: p.name, categorySlug: category.slug, productId: p.id })) : []),
+      ].slice(0, 4),
+      state: { ...state, lastIntent: 'general', lastQuery: query },
+    };
+  }
+
+  if (hasAny(normalized, ['best', 'suggest', 'which machine', 'recommend', 'what should i', 'help me choose'])) {
     const shortlisted = searchMachines(query, indexedMachines, 4);
     if (shortlisted.length > 0) {
+      const top = shortlisted[0].machine;
       return {
-        text: `Shortlisted options based on your request: ${shortlisted.map((item) => item.machine.name).join(', ')}.`,
+        text: `Based on your query, here are the best matches from our catalogue:\n${shortlisted.map((item, i) => `${i + 1}. ${item.machine.name} (${item.machine.categoryName})`).join('\n')}\n\nI'd start with ${top.name} — it covers the most common requirements for this type of work. Want me to share more details or connect you to our team?`,
         suggestions: shortlisted.map((item) => ({
           label: item.machine.name,
           categorySlug: item.machine.categorySlug,
@@ -289,11 +372,12 @@ export const getChatbotReply = (query: string, state: ChatbotSessionState = {}):
     }
 
     return {
-      text: 'Share the machine type, use case, size range, or category. Example: “Need rigid box machine options” or “Need 24 inch laminator options”.',
+      text: 'Tell me what you\'re trying to produce — the machine type, your workflow stage (pre-press / press / post-press), or a use case like “book finishing” or “carton packaging”. I\'ll give you a specific recommendation.',
       suggestions: [
-        { label: 'Need rigid box machine options' },
-        { label: 'Need 24 inch laminator options' },
-        { label: 'Show Corrugation machines', categorySlug: 'corrugation' },
+        { label: 'Machine for book finishing' },
+        { label: 'Machine for carton packaging' },
+        { label: 'Machine for cover lamination' },
+        { label: 'Compare HPM cutter sizes' },
       ],
       state: { ...state, lastIntent: 'general', lastQuery: query },
     };

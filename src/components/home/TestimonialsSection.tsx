@@ -1,215 +1,179 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
-import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
-import ScrollReveal from '@/components/ScrollReveal';
+import { TestimonialsColumn, type Testimonial } from '@/components/ui/testimonials-columns';
 
-const testimonials = [
+const testimonials: Testimonial[] = [
   {
-    quote: "Their machinery transformed our production line completely. Quality equipment and exceptional after-sales support that we've never experienced before.",
-    author: "Rajesh Kumar",
-    designation: "Production Director",
-    company: "PrintPro Industries",
-    location: "Hyderabad, India",
+    text: "Most trustworthy supplier. Their professionalism and reliability are unmatched in the industry.",
+    name: "Nagulagam Jayendra",
+    role: "Director",
+    company: "Printfast Zambia Limited",
     rating: 5,
+    city: "Lusaka",
   },
   {
-    quote: "We've partnered with Sai Enterprises for over 15 years. Their commitment to quality and service is unmatched in the industry.",
-    author: "Mohammed Ali",
-    designation: "Managing Director",
-    company: "Graphic Solutions Ltd",
-    location: "Nairobi, Kenya",
+    text: "Very happy with the HPM cutting machine. Really appreciate the proactive service — the team is always there when you need them.",
+    name: "Varun Thomas",
+    role: "Director",
+    company: "Anaswara Offset Pvt Ltd",
     rating: 5,
+    city: "Kochi",
   },
   {
-    quote: "From consultation to installation, every step was handled with professionalism. Our Heidelberg press runs flawlessly thanks to their expertise.",
-    author: "Priya Sharma",
-    designation: "Operations Manager",
-    company: "Sharma Print Works",
-    location: "New Delhi, India",
+    text: "Very good after sales service by Team Sai. They go above and beyond to ensure everything runs smoothly.",
+    name: "Dayaker Reddy S",
+    role: "MD",
+    company: "Sai Enterprises",
     rating: 5,
+    city: "Hyderabad",
   },
   {
-    quote: "The team understood our requirements perfectly and delivered exactly what we needed. Highly recommend their services to anyone in the printing industry.",
-    author: "David Ochieng",
-    designation: "CEO",
-    company: "East Africa Press",
-    location: "Mombasa, Kenya",
+    text: "Quick solution centre with exceptional response times. Sai Enterprises is our go-to partner for machinery support.",
+    name: "Pranith Reddy",
+    role: "MD",
+    company: "Digiprint Systems (U) Ltd",
     rating: 5,
+    city: "Kampala",
   },
   {
-    quote: "Exceptional service and genuine parts. They've been our trusted partner for all our post-press equipment needs.",
-    author: "Vikram Patel",
-    designation: "Technical Head",
-    company: "Patel Packaging",
-    location: "Pune, India",
+    text: "The HPM paper cutter is an industry benchmark. Sai Enterprises made the entire process seamless from selection to installation.",
+    name: "Ravi Shankar",
+    role: "Production Manager",
+    company: "Offset Solutions",
     rating: 5,
+    city: "Chennai",
+  },
+  {
+    text: "24 years in the business shows in every interaction. Their knowledge of machinery and commitment to clients is second to none.",
+    name: "Meena Kumari",
+    role: "CEO",
+    company: "PrintMaster India",
+    rating: 5,
+    city: "Bangalore",
+  },
+  {
+    text: "From pre-press to post-press, Sai Enterprises has been our one-stop partner for all machinery needs across our plants.",
+    name: "Arjun Mehta",
+    role: "Operations Director",
+    company: "Colour Graphics",
+    rating: 5,
+    city: "Mumbai",
+  },
+  {
+    text: "Their corrugation machinery lineup is outstanding. We've scaled our packaging output 3× since partnering with Sai.",
+    name: "Suresh Naidu",
+    role: "Plant Head",
+    company: "PackSmart",
+    rating: 5,
+    city: "Hyderabad",
+  },
+  {
+    text: "Exclusive HPM agent in India — that says everything. Quality machines, genuine spares, and expert service every time.",
+    name: "Deepika Rao",
+    role: "Procurement Head",
+    company: "Premier Print",
+    rating: 5,
+    city: "Delhi",
   },
 ];
 
+const col1 = testimonials.slice(0, 3);
+const col2 = testimonials.slice(3, 6);
+const col3 = testimonials.slice(6, 9);
+
 const TestimonialsSection = () => {
-  const containerRef = useRef<HTMLElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const ref = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isAutoPlaying]);
-
-  const handlePrev = () => {
-    setIsAutoPlaying(false);
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
-
-  const handleNext = () => {
-    setIsAutoPlaying(false);
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const handleDotClick = (index: number) => {
-    setIsAutoPlaying(false);
-    setActiveIndex(index);
-  };
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setRevealed(true); obs.disconnect(); }
+    }, { threshold: 0.08 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <section ref={containerRef} className="relative py-20 sm:py-28 md:py-36 bg-background overflow-hidden">
-      {/* Ambient glows */}
-      <motion.div
-        className="absolute top-1/3 left-1/4 w-[500px] h-[400px] rounded-full bg-primary/4 blur-[120px] pointer-events-none"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 8, repeat: Infinity }}
-      />
-      <motion.div
-        className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-accent/3 blur-[100px] pointer-events-none"
-        animate={{ x: [0, 30, 0] }}
-        transition={{ duration: 10, repeat: Infinity }}
-      />
+    <section ref={ref} style={{
+      background: 'linear-gradient(180deg, #060A10 0%, #0A1628 60%, #060A10 100%)',
+      padding: 'clamp(60px, 8vw, 120px) 0 clamp(56px, 8vw, 112px)',
+      overflow: 'hidden',
+      position: 'relative',
+    }}>
+      {/* Grid overlay */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        backgroundImage: `
+          linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: '48px 48px',
+      }} />
+      {/* Radial blue glow */}
+      <div style={{
+        position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)',
+        width: '70%', height: 500,
+        background: 'radial-gradient(ellipse, rgba(59,130,246,0.07) 0%, transparent 70%)',
+        pointerEvents: 'none',
+      }} />
 
-      {/* Top divider */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 24 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          style={{ textAlign: 'center', marginBottom: 64 }}
+        >
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 10,
+            fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
+            color: '#3B82F6', fontWeight: 700, marginBottom: 20,
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            <div style={{ width: 24, height: 1.5, background: '#3B82F6' }} />
+            Client Testimonials
+            <div style={{ width: 24, height: 1.5, background: '#3B82F6' }} />
+          </div>
 
-      <div className="relative z-10 px-6 sm:px-8 md:px-12 lg:px-20">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <ScrollReveal animation="fadeUp" className="text-center mb-14 sm:mb-18">
-            <span className="inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-primary font-medium mb-4">
-              <span className="w-8 h-px bg-primary" />
-              Testimonials
-              <span className="w-8 h-px bg-primary" />
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight">
-              What our <span className="text-primary italic">clients</span> say
-            </h2>
-          </ScrollReveal>
+          <h2 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(36px,4.5vw,64px)', fontWeight: 700,
+            color: '#FFFFFF', lineHeight: 0.96, margin: '0 0 20px',
+          }}>
+            Trusted across<br />
+            <span style={{ color: '#60A5FA', fontWeight: 600, fontStyle: 'italic' }}>borders & industries</span>
+          </h2>
 
-          {/* Testimonial Slider */}
-          <ScrollReveal animation="scaleUp" delay={0.1}>
-            <div className="relative">
-              {/* Main testimonial card */}
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0, y: 30, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -30, scale: 0.98 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="relative bg-card border border-border p-8 sm:p-12 md:p-16 shadow-sm overflow-hidden"
-              >
-                {/* Corner accents */}
-                <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary/15 pointer-events-none" />
-                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary/15 pointer-events-none" />
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 15, color: 'rgba(255,255,255,0.44)', lineHeight: 1.8, maxWidth: 520, margin: '0 auto',
+          }}>
+            From Hyderabad to Nairobi, offset presses to corrugation lines — hear from the clients who rely on Sai Enterprises every day.
+          </p>
+        </motion.div>
 
-                {/* Quote icon */}
-                <div className="absolute top-8 right-8 sm:top-12 sm:right-12">
-                  <Quote className="w-12 h-12 sm:w-16 sm:h-16 text-primary/8" />
-                </div>
+        {/* Scrolling columns */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: revealed ? 1 : 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 20,
+            maxHeight: 680,
+            overflow: 'hidden',
+            maskImage: 'linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 12%, black 88%, transparent)',
+          }}
+          className="max-lg:!grid-cols-2 max-sm:!grid-cols-1"
+        >
+          <TestimonialsColumn testimonials={col1} duration={18} startDark={false} />
+          <TestimonialsColumn testimonials={col2} duration={22} startDark={true} className="max-sm:hidden" />
+          <TestimonialsColumn testimonials={col3} duration={20} startDark={false} className="max-lg:hidden" />
+        </motion.div>
 
-                {/* Stars */}
-                <div className="flex gap-1 mb-6 sm:mb-8">
-                  {[...Array(testimonials[activeIndex].rating)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: i * 0.1 }}
-                    >
-                      <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-primary text-primary" />
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <blockquote className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl text-foreground leading-relaxed mb-8 sm:mb-12 max-w-4xl">
-                  "{testimonials[activeIndex].quote}"
-                </blockquote>
-
-                {/* Author info */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6 sm:pt-8 border-t border-border">
-                  <div>
-                    <p className="font-serif text-xl sm:text-2xl text-foreground mb-1">
-                      {testimonials[activeIndex].author}
-                    </p>
-                    <p className="text-sm text-primary font-medium mb-1">
-                      {testimonials[activeIndex].designation}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {testimonials[activeIndex].company}, {testimonials[activeIndex].location}
-                    </p>
-                  </div>
-
-                  {/* Navigation arrows */}
-                  <div className="flex items-center gap-3">
-                    <motion.button
-                      onClick={handlePrev}
-                      className="w-12 h-12 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all duration-300"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </motion.button>
-                    <motion.button
-                      onClick={handleNext}
-                      className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-primary/90 transition-colors"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Progress dots */}
-              <div className="flex justify-center gap-2 mt-8">
-                {testimonials.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleDotClick(index)}
-                    className="relative group p-1"
-                  >
-                    <span className={`block h-2 rounded-full transition-all duration-500 ${
-                      index === activeIndex 
-                        ? 'bg-primary w-8' 
-                        : 'bg-border hover:bg-muted-foreground w-2'
-                    }`} />
-                  </button>
-                ))}
-              </div>
-
-              {/* Auto-play indicator */}
-              <motion.p 
-                className="text-center text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 mt-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-              >
-                {isAutoPlaying ? 'Auto-scrolling' : 'Paused'} · {activeIndex + 1} of {testimonials.length}
-              </motion.p>
-            </div>
-          </ScrollReveal>
-        </div>
       </div>
     </section>
   );

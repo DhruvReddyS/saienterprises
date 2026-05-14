@@ -82,11 +82,11 @@ const IndiaPresenceMap = ({ selectedCityId, onSelectCity }: Props) => {
             <path
               key={loc.id}
               d={loc.path}
-              fill={cityInState ? 'rgba(59,130,246,0.1)' : 'rgba(59,130,246,0.03)'}
-              stroke="rgba(255,255,255,0.1)"
+              fill={cityInState ? 'rgba(96,165,250,0.12)' : 'rgba(255,255,255,0.025)'}
+              stroke={cityInState ? 'rgba(96,165,250,0.28)' : 'rgba(255,255,255,0.08)'}
               strokeWidth="0.6"
               style={{
-                transition: 'fill 0.5s ease',
+                transition: 'fill 0.4s ease, stroke 0.4s ease',
               }}
             />
           );
@@ -154,7 +154,7 @@ const IndiaPresenceMap = ({ selectedCityId, onSelectCity }: Props) => {
               {isActive && (
                 <circle
                   cx={cx} cy={cy}
-                  r={isHQ ? 14 : 12}
+                  r={isHQ ? 12 : 10}
                   fill={`${color}20`}
                   filter="url(#pin-glow-active)"
                   style={{
@@ -167,7 +167,7 @@ const IndiaPresenceMap = ({ selectedCityId, onSelectCity }: Props) => {
               <g
                 style={{
                   transform: isActive
-                    ? `translate(${cx}px, ${cy - 2}px) scale(1.15)`
+                    ? `translate(${cx}px, ${cy - 1.5}px) scale(1.12)`
                     : `translate(${cx}px, ${cy}px) scale(1)`,
                   transformOrigin: '0 0',
                   transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -192,60 +192,45 @@ const IndiaPresenceMap = ({ selectedCityId, onSelectCity }: Props) => {
               </g>
 
               {/* City label */}
-              <text
-                x={cx + (city.mapOffset?.x ?? 7)}
-                y={cy + (city.mapOffset?.y ?? 4)}
-                fill={isActive ? '#fff' : 'rgba(255,255,255,0.45)'}
-                fontSize={isActive ? '8.5' : '7.5'}
-                fontFamily="'DM Sans', sans-serif"
-                fontWeight={isActive ? '700' : '500'}
-                letterSpacing="0.04em"
-                style={{
-                  transition: 'fill 0.35s, font-size 0.35s, font-weight 0.35s',
-                  pointerEvents: 'none',
-                  userSelect: 'none',
-                  textShadow: isActive ? '0 1px 4px rgba(0,0,0,0.5)' : 'none',
-                }}
-              >
-                {city.city}
-              </text>
+              {(isHQ || isActive) && (
+                <g style={{ pointerEvents: 'none', userSelect: 'none' }}>
+                  <rect
+                    x={cx + (city.mapOffset?.x ?? 7) - 4}
+                    y={cy + (city.mapOffset?.y ?? 4) - 9}
+                    rx="6"
+                    width={Math.max(city.city.length * 6.7, 54)}
+                    height="16"
+                    fill={isSelected ? 'rgba(6,10,16,0.9)' : 'rgba(6,10,16,0.72)'}
+                    stroke={isSelected ? `${color}55` : 'rgba(255,255,255,0.08)'}
+                  />
+                  <text
+                    x={cx + (city.mapOffset?.x ?? 7)}
+                    y={cy + (city.mapOffset?.y ?? 4) + 1.5}
+                    fill="#fff"
+                    fontSize="7.8"
+                    fontFamily="'DM Sans', sans-serif"
+                    fontWeight="700"
+                    letterSpacing="0.05em"
+                    style={{
+                      textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+                    }}
+                  >
+                    {city.city}
+                  </text>
+                </g>
+              )}
             </g>
           );
         })}
 
-        {/* Legend */}
-        <g transform="translate(10, 18)">
-          {([
-            { type: 'headquarters' as PresenceType, label: 'Headquarters' },
-            { type: 'salesOffice' as PresenceType, label: 'Sales Office' },
-            { type: 'serviceCentre' as PresenceType, label: 'Service Centre' },
-            { type: 'salesPartner' as PresenceType, label: 'Sales Partner' },
-          ]).map((item, i) => (
-            <g key={item.type} transform={`translate(0, ${i * 16})`}>
-              <circle cx="5" cy="0" r="3.5" fill={TYPE_COLORS[item.type]} />
-              <circle cx="5" cy="0" r="1.3" fill="#fff" opacity="0.7" />
-              <text
-                x="14" y="3.5"
-                fill="rgba(255,255,255,0.5)"
-                fontSize="7"
-                fontFamily="'DM Sans', sans-serif"
-                fontWeight="500"
-                letterSpacing="0.03em"
-              >
-                {item.label}
-              </text>
-            </g>
-          ))}
-        </g>
-
         <style>{`
           @keyframes pulse-ring-map {
             0%   { r: 5;  opacity: 0.6; }
-            100% { r: 22; opacity: 0; }
+            100% { r: 18; opacity: 0; }
           }
           @keyframes map-ping {
             0%   { r: 6;  opacity: 0.7; }
-            100% { r: 28; opacity: 0; }
+            100% { r: 22; opacity: 0; }
           }
         `}</style>
       </svg>
