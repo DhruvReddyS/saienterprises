@@ -80,7 +80,7 @@ const SocialZone = () => {
         gap: 0,
         filter: 'drop-shadow(-10px 18px 22px rgba(7, 10, 17, 0.16))',
       }}
-      className="max-[767px]:!hidden"
+      className="max-[767px]:!top-auto max-[767px]:!bottom-[120px] max-[767px]:!right-0"
       id="social-zone"
     >
       <motion.button

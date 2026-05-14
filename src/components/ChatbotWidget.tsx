@@ -6,10 +6,8 @@ import { getChatbotRAGReply } from '@/lib/chatbotRAG';
 
 // Browser Speech Recognition shim
 const SpeechRecognition =
-  (window as typeof window & { SpeechRecognition?: typeof window.SpeechRecognition; webkitSpeechRecognition?: typeof window.SpeechRecognition })
-    .SpeechRecognition ??
-  (window as typeof window & { webkitSpeechRecognition?: typeof window.SpeechRecognition })
-    .webkitSpeechRecognition ??
+  (window as any).SpeechRecognition ??
+  (window as any).webkitSpeechRecognition ??
   null;
 
 type Msg = {
@@ -154,7 +152,7 @@ const ChatbotWidget = () => {
     rec.onend = () => setListening(false);
     rec.onerror = () => setListening(false);
 
-    rec.onresult = (e: SpeechRecognitionEvent) => {
+    rec.onresult = (e: any) => {
       const transcript = Array.from(e.results)
         .map(r => r[0].transcript)
         .join('');

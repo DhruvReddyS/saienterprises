@@ -22,8 +22,8 @@ const WORDS = [
 
 const pageVariants = {
   initial: { opacity: 0 },
-  enter: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
-  exit: { opacity: 0, transition: { duration: 0.25, ease: [0.55, 0, 1, 0.45] } },
+  enter: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
+  exit: { opacity: 0, transition: { duration: 0.25, ease: [0.55, 0, 1, 0.45] as [number, number, number, number] } },
 };
 
 const ScanLoader = () => {

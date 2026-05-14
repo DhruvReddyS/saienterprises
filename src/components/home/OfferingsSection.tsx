@@ -124,6 +124,25 @@ const ImgCell = ({ src, alt, style }: { src?: string; alt: string; style?: React
   );
 };
 
+/* ── Desktop collage: large left + 2 stacked right ── */
+const DesktopCollage = ({ imgs, name, fadeKey }: { imgs: (string | undefined)[]; name: string; fadeKey: number }) => (
+  <div
+    key={fadeKey}
+    style={{
+      position: 'absolute', inset: 0,
+      display: 'grid',
+      gridTemplateColumns: '58.7% 1fr',
+      gridTemplateRows: '1fr 1fr',
+      gap: 2,
+      animation: 'offerings-fade-in 0.45s ease forwards',
+    }}
+  >
+    <ImgCell src={imgs[0]} alt={`${name} — main`} style={{ gridRow: '1 / 3' }} />
+    <ImgCell src={imgs[1]} alt={`${name} — secondary`} />
+    <ImgCell src={imgs[2]} alt={`${name} — tertiary`} />
+  </div>
+);
+
 const OfferingsSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [curIdx, setCurIdx] = useState(0);
@@ -246,7 +265,7 @@ const OfferingsSection = () => {
       `}</style>
       <div style={{
         position: 'sticky', top: 0, height: '100vh', overflow: 'hidden',
-        display: 'grid', gridTemplateColumns: '48% 52%',
+        display: 'grid', gridTemplateColumns: '48% 52%', gridTemplateRows: '1fr',
         background: '#060A10',
       }}>
         {/* LEFT: typography */}

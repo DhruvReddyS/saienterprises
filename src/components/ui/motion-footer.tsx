@@ -37,7 +37,7 @@ const stagger = {
 };
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
 };
 
 const STATS = [
@@ -153,55 +153,6 @@ export const CinematicFooter = () => {
         </div>
       </div>
 
-      {/* ── Stats strip ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={visible ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-        style={{
-          display: 'flex', justifyContent: 'center', gap: 0,
-          borderBottom: '1px solid rgba(255,255,255,0.04)',
-          position: 'relative', zIndex: 2,
-        }}
-      >
-        {STATS.map((s, i) => (
-          <div key={i} style={{
-            flex: 1, maxWidth: 200,
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-            padding: '22px 16px',
-            borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
-            position: 'relative',
-            cursor: 'default',
-          }}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = 'rgba(59,130,246,0.04)';
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLElement;
-              el.style.background = 'transparent';
-            }}
-          >
-            <span style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: 'clamp(22px, 3.5vw, 36px)',
-              fontWeight: 700,
-              lineHeight: 1,
-              color: '#fff',
-              letterSpacing: '-0.02em',
-            }}>
-              {s.val}
-            </span>
-            <span style={{
-              fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase',
-              color: 'rgba(59,130,246,0.55)', fontWeight: 700, marginTop: 5,
-            }}>
-              {s.label}
-            </span>
-          </div>
-        ))}
-      </motion.div>
-
       {/* ── Giant wordmark ── */}
       <div style={{ position: 'relative', zIndex: 2, overflow: 'hidden' }}>
         <motion.div
@@ -240,12 +191,12 @@ export const CinematicFooter = () => {
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLElement;
-              el.style.WebkitTextStroke = '1px rgba(96,165,250,0.35)';
+              (el.style as any).webkitTextStroke = '1px rgba(96,165,250,0.35)';
               el.style.textShadow = '0 0 80px rgba(59,130,246,0.12), 0 0 160px rgba(59,130,246,0.06)';
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLElement;
-              el.style.WebkitTextStroke = '1px rgba(255,255,255,0.07)';
+              (el.style as any).webkitTextStroke = '1px rgba(255,255,255,0.07)';
               el.style.textShadow = 'none';
             }}
           >

@@ -137,13 +137,19 @@ const MachineryHub = () => {
       </div>
 
       {/* ── CATEGORY SELECTOR ── */}
-      <div style={{ background: '#0D1421', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: 'clamp(12px,2vw,20px) clamp(16px,5vw,64px)' }}>
+      <div style={{
+        background: '#0D1421',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        padding: '0 clamp(16px,5vw,64px)',
+        position: 'sticky', top: 0, zIndex: 30,
+        backdropFilter: 'blur(16px)',
+      }}>
         <div style={{ maxWidth: 1300, margin: '0 auto' }}>
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: 8,
-          }} className="max-lg:!grid-cols-3 max-[767px]:!grid-cols-3 max-[400px]:!grid-cols-2">
+            display: 'flex', gap: 6, overflowX: 'auto',
+            padding: '14px 0',
+            scrollbarWidth: 'none',
+          }} className="hide-scrollbar">
             {CATS.map((cat) => {
               const isActive = filter === cat.id;
               const count = cat.id === 'all' ? allMachines.length : (countByCat[cat.id] ?? 0);
@@ -152,42 +158,42 @@ const MachineryHub = () => {
                   key={cat.id}
                   onClick={() => setFilter(cat.id)}
                   style={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
-                    padding: 'clamp(10px,1.5vw,14px) clamp(10px,1.5vw,16px)',
-                    background: isActive ? `${cat.color}18` : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${isActive ? cat.color + '55' : 'rgba(255,255,255,0.07)'}`,
-                    borderRadius: 8, cursor: 'pointer',
-                    transition: 'all 0.22s cubic-bezier(0.16,1,0.3,1)',
-                    textAlign: 'left',
-                    position: 'relative', overflow: 'hidden',
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '9px 18px',
+                    background: isActive ? cat.color : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${isActive ? cat.color : 'rgba(255,255,255,0.08)'}`,
+                    borderRadius: 40, cursor: 'pointer',
+                    transition: 'all 0.25s cubic-bezier(0.16,1,0.3,1)',
+                    whiteSpace: 'nowrap', flexShrink: 0,
                   }}
+                  onMouseEnter={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.borderColor = `${cat.color}60`; (e.currentTarget as HTMLElement).style.background = `${cat.color}15`; } }}
+                  onMouseLeave={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)'; } }}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="cat-active-bar"
-                      style={{
-                        position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                        background: cat.color, borderRadius: '0 0 2px 2px',
-                      }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: 4 }}>
-                    <span style={{ fontSize: 9, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: isActive ? cat.color : 'rgba(255,255,255,0.35)', fontFamily: "'DM Sans', sans-serif", transition: 'color 0.2s' }}>
-                      {cat.label}
-                    </span>
-                    <span style={{ fontSize: 9, fontWeight: 700, color: isActive ? cat.color : 'rgba(255,255,255,0.2)', fontFamily: "'DM Sans', sans-serif" }}>
-                      {count}
-                    </span>
-                  </div>
-                  <span className="max-[767px]:hidden" style={{ fontSize: 9, color: 'rgba(255,255,255,0.28)', fontFamily: "'DM Sans', sans-serif", letterSpacing: '0.04em' }}>
-                    {cat.desc}
+                  <span style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
+                    color: isActive ? '#fff' : 'rgba(255,255,255,0.5)',
+                    transition: 'color 0.2s',
+                  }}>
+                    {cat.label}
+                  </span>
+                  <span style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 10, fontWeight: 700,
+                    color: isActive ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
+                    background: isActive ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.06)',
+                    padding: '2px 8px', borderRadius: 20,
+                    transition: 'all 0.2s',
+                    minWidth: 24, textAlign: 'center',
+                  }}>
+                    {count}
                   </span>
                 </button>
               );
             })}
           </div>
         </div>
+        <style>{`.hide-scrollbar::-webkit-scrollbar { display: none; }`}</style>
       </div>
 
       {/* ── MACHINE GRID ── */}
