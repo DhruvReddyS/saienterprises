@@ -133,19 +133,6 @@ const MachineryHub = () => {
             )}
           </div>
 
-          {/* Quick stats */}
-          <div style={{ display: 'flex', gap: 24, marginTop: 28, flexWrap: 'wrap' }}>
-            {[
-              { val: `${allMachines.length}+`, label: 'Machines' },
-              { val: '5', label: 'Categories' },
-              { val: '4000+', label: 'Units Sold' },
-            ].map((s) => (
-              <div key={s.label} style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 700, color: '#fff' }}>{s.val}</span>
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>{s.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
 
