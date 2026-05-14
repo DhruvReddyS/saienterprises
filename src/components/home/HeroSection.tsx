@@ -115,7 +115,7 @@ const HeroSection = () => {
         overflow: 'hidden',
         position: 'relative',
       }}
-      className="max-[1024px]:!grid-cols-1"
+      className="max-[1024px]:!grid-cols-1 max-[767px]:!min-h-0 max-[767px]:!h-auto"
     >
       <div
         style={{
@@ -126,7 +126,7 @@ const HeroSection = () => {
           justifyContent: 'center',
           padding: '124px 64px 168px',
         }}
-        className="max-lg:!px-8 max-lg:!py-28 max-md:!px-6 max-md:!py-24"
+        className="max-lg:!px-8 max-lg:!py-28 max-md:!px-6 max-md:!py-24 max-[767px]:!pt-10 max-[767px]:!pb-12"
       >
         <div
           style={{

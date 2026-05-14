@@ -547,7 +547,7 @@ const ContactPage = () => {
           background: '#060A10', padding: '140px 64px 80px',
           position: 'relative', overflow: 'hidden',
           display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        }} className="max-lg:!px-10 max-lg:!pt-28 max-md:!px-6 max-md:!pt-24 max-md:!pb-10">
+        }} className="max-lg:!px-10 max-lg:!pt-28 max-md:!px-6 max-md:!pt-24 max-md:!pb-10 max-[767px]:!pt-8">
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: 'radial-gradient(circle, rgba(59,130,246,0.06) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 10% 40%, rgba(59,130,246,0.12) 0%, transparent 55%)' }} />
           <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 1, background: 'linear-gradient(to bottom, transparent, rgba(59,130,246,0.2) 30%, rgba(59,130,246,0.08) 70%, transparent)', pointerEvents: 'none' }} />

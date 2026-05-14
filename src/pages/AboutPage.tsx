@@ -331,7 +331,7 @@ const AboutPage = () => {
       <div style={{
         background: '#060A10', paddingTop: 'clamp(100px,12vw,160px)', paddingBottom: 'clamp(60px,8vw,100px)',
         position: 'relative', overflow: 'hidden',
-      }}>
+      }} className="max-[767px]:!pt-8">
         {/* Dot-grid overlay */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',

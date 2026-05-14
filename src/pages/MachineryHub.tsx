@@ -106,7 +106,7 @@ const MachineryHub = () => {
         background: '#060A10', padding: '140px 64px 72px',
         position: 'relative', overflow: 'hidden', minHeight: '68vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-      }} className="max-lg:!px-10 max-lg:!pt-32 max-md:!px-6 max-md:!pt-28 max-md:min-h-0">
+      }} className="max-lg:!px-10 max-lg:!pt-32 max-md:!px-6 max-md:!pt-28 max-md:min-h-0 max-[767px]:!pt-8">
         {/* Background image */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
           <img
@@ -196,6 +196,7 @@ const MachineryHub = () => {
         background: '#0A1220',
         borderBottom: '1px solid rgba(255,255,255,0.06)',
         position: 'sticky', top: 72, zIndex: 100,
+        /* on mobile header is hidden so stick to top */
         padding: '0 64px',
       }} className="max-md:!px-5">
         <div style={{ overflowX: 'auto', display: 'flex', alignItems: 'center', gap: 0 }}>

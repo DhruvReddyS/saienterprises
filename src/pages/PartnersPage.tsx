@@ -342,7 +342,7 @@ const PartnersPage = () => {
 
         <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
           <div style={{ maxWidth: 1300, margin: '0 auto', padding: '160px 64px 100px', width: '100%', position: 'relative', zIndex: 2 }}
-            className="max-lg:!px-10 max-lg:!pt-36 max-md:!px-6 max-md:!pt-28 max-md:!pb-12"
+            className="max-lg:!px-10 max-lg:!pt-36 max-md:!px-6 max-md:!pt-28 max-md:!pb-12 max-[767px]:!pt-8"
           >
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 72, alignItems: 'center' }}
               className="max-lg:!grid-cols-1 max-lg:!gap-16"

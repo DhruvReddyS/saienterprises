@@ -176,7 +176,7 @@ const MachineryCategory = () => {
     return (
       <PageTransition>
         <Header />
-        <main className="pt-32 pb-20 px-8 md:px-16 lg:px-24 min-h-screen">
+        <main className="pt-32 pb-20 px-8 md:px-16 lg:px-24 min-h-screen max-[767px]:!pt-8">
           <h1 className="text-3xl text-foreground mb-4 font-serif">Category not found</h1>
           <Link to="/machinery" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
@@ -362,7 +362,7 @@ const MachineryCategory = () => {
           )}
 
           <motion.div 
-            className="relative text-center px-6 sm:px-8 pt-24 sm:pt-28 pb-12 sm:pb-16"
+            className="relative text-center px-6 sm:px-8 pt-24 sm:pt-28 pb-12 sm:pb-16 max-[767px]:!pt-8"
             style={{ opacity: heroOpacity, y: heroY }}
           >
             {/* Breadcrumb */}
