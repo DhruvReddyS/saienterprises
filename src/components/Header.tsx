@@ -46,6 +46,7 @@ const Header = () => {
     <>
       <header
         ref={headerRef}
+        className="max-[767px]:!hidden"
         style={{
           position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
           transition: 'background 0.4s, box-shadow 0.4s',
