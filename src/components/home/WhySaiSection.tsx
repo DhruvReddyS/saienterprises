@@ -124,8 +124,7 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
 
   return (
     <motion.div
-      whileHover={{ y: -6, scale: 1.015 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+      whileHover={{ y: -6, scale: 1.015, transition: { type: 'spring', stiffness: 280, damping: 22 } }}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       initial={{ opacity: 0, y: 28 }}

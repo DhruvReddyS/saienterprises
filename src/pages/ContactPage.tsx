@@ -156,7 +156,7 @@ const CategoryPicker = ({ value, onChange }: { value: string; onChange: (v: stri
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 40,
-              background: '#fff', border: '1.5px solid rgba(59,130,246,0.2)',
+              border: '1.5px solid rgba(59,130,246,0.2)',
               borderTop: 'none', boxShadow: '0 12px 40px rgba(6,10,16,0.1)',
               transformOrigin: 'top',
               display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1,

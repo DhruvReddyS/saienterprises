@@ -99,28 +99,30 @@ const MobileCollage = ({ imgs, name }: { imgs: (string | undefined)[]; name: str
   </div>
 );
 
-/* ── Desktop image collage panel ── renders only the active category ── */
-const DesktopCollage = ({ imgs, name, fadeKey }: { imgs: (string | undefined)[]; name: string; fadeKey: number }) => (
-  <div
-    key={fadeKey}
-    style={{
-      position: 'absolute', inset: 0,
-      display: 'grid', gridTemplateColumns: '1.45fr 1fr', gridTemplateRows: '1fr 1fr',
-      gap: 3,
-      animation: 'offerings-fade-in 0.45s ease forwards',
-    }}
-  >
-    <ImgPanel src={imgs[0]} alt={name} style={{ gridColumn: 1, gridRow: '1 / 3' }} />
-    <ImgPanel src={imgs[1]} alt={name} style={{ gridColumn: 2, gridRow: 1 }} />
-    <ImgPanel src={imgs[2]} alt={name} style={{ gridColumn: 2, gridRow: 2 }} />
-    {/* Edge gradient blending into text panel */}
+/* ── Desktop image cell ── self-contained with explicit sizing ── */
+const ImgCell = ({ src, alt, style }: { src?: string; alt: string; style?: React.CSSProperties }) => {
+  const isJpg = src?.match(/\.(jpg|jpeg)$/i);
+  return (
     <div style={{
-      position: 'absolute', left: 0, top: 0, bottom: 0, width: 72,
-      background: 'linear-gradient(to right, #060A10 0%, transparent 100%)',
-      pointerEvents: 'none', zIndex: 2,
-    }} />
-  </div>
-);
+      background: isJpg ? '#080D16' : 'radial-gradient(circle at 50% 55%, rgba(59,130,246,0.09) 0%, #080D16 70%)',
+      overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      ...style,
+    }}>
+      {src && (
+        <img
+          src={src} alt={alt} loading="eager" decoding="async"
+          style={{
+            width: '100%', height: '100%',
+            objectFit: isJpg ? 'cover' : 'contain',
+            objectPosition: 'center',
+            padding: isJpg ? 0 : 16,
+          }}
+        />
+      )}
+    </div>
+  );
+};
 
 const OfferingsSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
