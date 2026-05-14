@@ -354,7 +354,7 @@ const MachineryCategory = () => {
                 src={category.heroImage}
                 alt={category.name}
                 loading="eager"
-                fetchPriority="high"
+                fetchpriority="high"
                 decoding="async"
                 className="w-full h-full object-cover opacity-[0.12]"
               />
