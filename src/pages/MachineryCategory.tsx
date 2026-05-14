@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
+import { setPageMeta } from '@/lib/seo';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Eye, Search } from 'lucide-react';
 import { useRef } from 'react';
@@ -127,6 +128,15 @@ const MachineryCategory = () => {
 
   const normalizedSlug = categorySlug === 'hlm' || categorySlug === 'hpm' ? 'post-press' : categorySlug;
   const category = productCategories.find(c => c.slug === normalizedSlug);
+
+  useEffect(() => {
+    if (category) {
+      setPageMeta(
+        `${category.name} Machines | Sai Enterprises`,
+        `Browse ${category.products.length}+ ${category.name} machines from Sai Enterprises. Trusted suppliers in India and East Africa since 2000.`,
+      );
+    }
+  }, [category]);
   const activeCategorySlug = category?.slug ?? normalizedSlug ?? '';
 
   const categorySearchMachines = useMemo(

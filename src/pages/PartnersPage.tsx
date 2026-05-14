@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { setPageMeta } from '@/lib/seo';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
@@ -186,7 +187,7 @@ const ProductCard = ({ p, i }: { p: typeof hpmProducts[0]; i: number }) => {
         borderBottom: '1px solid rgba(255,255,255,0.05)',
       }}>
         {p.image ? (
-          <img src={p.image} alt={p.name} style={{
+          <img src={p.image} alt={p.name} loading="lazy" decoding="async" style={{
             maxWidth: '100%', maxHeight: 170, objectFit: 'contain',
             filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.5))',
             transform: hov ? 'scale(1.06) translateY(-4px)' : 'scale(1)',
@@ -296,6 +297,13 @@ const PartnersPage = () => {
   const [activeHistoryIdx, setActiveHistoryIdx] = useState(0);
   const [activeCat, setActiveCat] = useState<HpmCat>('All');
   const saiHpmReveal = useReveal(0.12);
+
+  useEffect(() => {
+    setPageMeta(
+      'Partners & Brands | Sai Enterprises — HPM, Heidelberg, Komori & More',
+      'Sai Enterprises is the sole authorized HPM agent in India. Partnered with Heidelberg, Komori, and 10+ global machinery brands.',
+    );
+  }, []);
 
   const filteredProducts = activeCat === 'All'
     ? hpmProducts
@@ -409,7 +417,7 @@ const PartnersPage = () => {
                   >
                     Enquire About HPM →
                   </Link>
-                  <img src={largestSellingBadge} alt="India's Largest Paper Cutter Distributor" style={{ height: 40, objectFit: 'contain' }} />
+                  <img src={largestSellingBadge} alt="India's Largest Paper Cutter Distributor" loading="lazy" decoding="async" style={{ height: 40, objectFit: 'contain' }} />
                 </motion.div>
               </div>
 

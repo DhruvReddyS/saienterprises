@@ -38,7 +38,7 @@ const FinalCtaSection = () => (
           <div>
             {/* Logo + eyebrow */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
-              <img src={saiLogo} alt="Sai Enterprises" style={{ height: 32, objectFit: 'contain' }} />
+              <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 32, objectFit: 'contain' }} />
               <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.12)' }} />
               <span style={{
                 fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase',

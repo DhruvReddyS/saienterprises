@@ -120,7 +120,7 @@ export default function CTAWithVerticalMarquee() {
           >
             {/* Logo + eyebrow */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 36 }}>
-              <img src={saiLogo} alt="Sai Enterprises" style={{ height: 28, objectFit: 'contain' }} />
+              <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 28, objectFit: 'contain' }} />
               <div style={{ width: 1, height: 22, background: 'rgba(13,20,33,0.12)' }} />
               <span style={{
                 fontFamily: "'DM Sans', sans-serif",

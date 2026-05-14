@@ -193,7 +193,7 @@ export const CinematicFooter = () => {
         {/* Col 1 — Brand */}
         <motion.div variants={fadeUp}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-            <img src={saiLogo} alt="Sai Enterprises" style={{ height: 32, objectFit: 'contain' }} />
+            <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 32, objectFit: 'contain' }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', letterSpacing: '-0.01em' }}>
                 Sai Enterprises

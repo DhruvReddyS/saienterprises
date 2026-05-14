@@ -178,7 +178,7 @@ export default function BookViewer() {
           boxShadow: '0 32px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06)',
           position: 'relative',
         }}>
-          <img src={PAGES[mobilePage]} alt={`Page ${mobilePage + 1}`} style={{ width: '100%', display: 'block' }} />
+          <img src={PAGES[mobilePage]} alt={`Page ${mobilePage + 1}`} loading="lazy" decoding="async" style={{ width: '100%', display: 'block' }} />
           {/* Page number */}
           <div style={{
             position: 'absolute', bottom: 10, right: 12,
@@ -325,7 +325,7 @@ export default function BookViewer() {
               onClick={() => !isFlipping && canGoBwd && goBwd()}
             >
               {staticLeft ? (
-                <img src={staticLeft} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+                <img src={staticLeft} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
               ) : (
                 /* Empty left page — back cover side */
                 <div style={{
@@ -386,7 +386,7 @@ export default function BookViewer() {
               onClick={() => !isFlipping && canGoFwd && goFwd()}
             >
               {staticRight ? (
-                <img src={staticRight} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', background: '#F7F4EE' }} />
+                <img src={staticRight} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', background: '#F7F4EE' }} />
               ) : (
                 <div style={{
                   width: '100%', height: '100%',
@@ -450,7 +450,7 @@ export default function BookViewer() {
                   overflow: 'hidden',
                   background: '#F7F4EE',
                 }}>
-                  {flipFrontPage && <img src={flipFrontPage} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
+                  {flipFrontPage && <img src={flipFrontPage} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
                   {/* Gradient shadow on spine side */}
                   <div style={{
                     position: 'absolute', top: 0,
@@ -470,7 +470,7 @@ export default function BookViewer() {
                   overflow: 'hidden',
                   background: '#F7F4EE',
                 }}>
-                  {flipBackPage && <img src={flipBackPage} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
+                  {flipBackPage && <img src={flipBackPage} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
                   {/* Gradient shadow on spine side */}
                   <div style={{
                     position: 'absolute', top: 0,
@@ -625,12 +625,12 @@ export default function BookViewer() {
                   }}
                 >
                   {sp.left ? (
-                    <img src={sp.left} alt="" style={{ height: 72, width: 'auto', display: 'block' }} />
+                    <img src={sp.left} alt="" loading="lazy" decoding="async" style={{ height: 72, width: 'auto', display: 'block' }} />
                   ) : (
                     <div style={{ height: 72, width: 50, background: 'rgba(255,255,255,0.03)' }} />
                   )}
                   {sp.right ? (
-                    <img src={sp.right} alt="" style={{ height: 72, width: 'auto', display: 'block' }} />
+                    <img src={sp.right} alt="" loading="lazy" decoding="async" style={{ height: 72, width: 'auto', display: 'block' }} />
                   ) : (
                     <div style={{ height: 72, width: 50, background: 'rgba(255,255,255,0.03)' }} />
                   )}

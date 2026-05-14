@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { setPageMeta } from '@/lib/seo';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
@@ -314,6 +315,13 @@ const TeamCard = ({ person, i }: { person: typeof team[0]; i: number }) => {
 const AboutPage = () => {
   const quoteReveal = useReveal(0.2);
   const foundersReveal = useReveal(0.1);
+
+  useEffect(() => {
+    setPageMeta(
+      'About Us | Sai Enterprises — Graphic Machinery Since 2000',
+      'Learn about Sai Enterprises — 24+ years of graphic machinery expertise. HPM sole agent in India, serving printers across India and East Africa.',
+    );
+  }, []);
 
   return (
     <PageTransition>

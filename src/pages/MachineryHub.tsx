@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { setPageMeta } from '@/lib/seo';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
@@ -47,6 +48,13 @@ const MachineryHub = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const [parallax, setParallax] = useState(0);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setPageMeta(
+      'Machinery Catalogue | Sai Enterprises — Pre-Press, Press, Post-Press & Corrugation',
+      'Browse 500+ graphic machines — pre-press, press, post-press, corrugation and allied. HPM paper cutters, Heidelberg, Komori and more.',
+    );
+  }, []);
 
   const allMachines = productCategories.flatMap((c) =>
     c.products.map((p) => ({ ...p, categoryName: c.name, categorySlug: c.slug }))

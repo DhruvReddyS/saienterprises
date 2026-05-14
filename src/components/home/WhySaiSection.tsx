@@ -45,7 +45,7 @@ type Tile = {
 
 const tiles: Tile[] = [
   {
-    icon: <img src={badge24} alt="24 Years" style={{ width: 24, height: 24, objectFit: 'contain' }} />,
+    icon: <img src={badge24} alt="24 Years" loading="lazy" decoding="async" style={{ width: 24, height: 24, objectFit: 'contain' }} />,
     kicker: 'Legacy',
     title: '24+ Years',
     subtitle: '24+ years of industry continuity, machine trust, and client relationships.',
@@ -72,7 +72,7 @@ const tiles: Tile[] = [
     stat: '4K+',
   },
   {
-    icon: <img src={largestSellingBadge} alt="Largest Selling" style={{ width: 24, height: 24, objectFit: 'contain' }} />,
+    icon: <img src={largestSellingBadge} alt="Largest Selling" loading="lazy" decoding="async" style={{ width: 24, height: 24, objectFit: 'contain' }} />,
     kicker: 'Market Lead',
     title: 'Largest Distributor',
     subtitle: "India's #1 paper cutter distributor. 90% market share.",
@@ -89,7 +89,7 @@ const tiles: Tile[] = [
     featured: true,
   },
   {
-    icon: <img src={hpmLogo} alt="HPM" style={{ height: 16, objectFit: 'contain' }} />,
+    icon: <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ height: 16, objectFit: 'contain' }} />,
     kicker: 'Exclusive',
     title: 'HPM Sole Agent',
     subtitle: 'Only authorized HPM source in India for machines, spares, and service.',

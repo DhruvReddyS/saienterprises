@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { setPageMeta } from '@/lib/seo';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
@@ -480,6 +481,13 @@ const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [on, setOn] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setPageMeta(
+      'Contact Us | Sai Enterprises — Machinery Enquiries, India & East Africa',
+      'Contact Sai Enterprises for machinery enquiries, quotes, and support. Offices in Hyderabad and Nairobi. Response within 24 hours.',
+    );
+  }, []);
 
   const [form, setForm] = useState(() => {
     const catRaw = params.get('category') ?? '';

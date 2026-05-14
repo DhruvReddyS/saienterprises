@@ -37,7 +37,7 @@ const IcoPin = () => (
 
 const stampItems: { badge: ReactNode; title: string; subtitle: string; accent: string }[] = [
   {
-    badge: <img src={badge24} alt="24 Years" style={{ width: 48, height: 48, objectFit: 'contain' }} />,
+    badge: <img src={badge24} alt="24 Years" loading="lazy" decoding="async" style={{ width: 48, height: 48, objectFit: 'contain' }} />,
     title: '24 Years',
     subtitle: '24+ Years in Industry',
     accent: '#3B82F6',
@@ -55,7 +55,7 @@ const stampItems: { badge: ReactNode; title: string; subtitle: string; accent: s
     accent: '#38BDF8',
   },
   {
-    badge: <img src={largestSellingBadge} alt="Largest Selling" style={{ width: 48, height: 48, objectFit: 'contain' }} />,
+    badge: <img src={largestSellingBadge} alt="Largest Selling" loading="lazy" decoding="async" style={{ width: 48, height: 48, objectFit: 'contain' }} />,
     title: 'Largest Selling',
     subtitle: "India's Largest Paper Cutter Distributor",
     accent: '#FACC15',

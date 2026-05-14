@@ -44,7 +44,7 @@ const Footer = () => (
             display: 'flex', alignItems: 'center', gap: 14, marginBottom: 28,
             paddingBottom: 24, borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}>
-            <img src={saiLogo} alt="Sai Enterprises" style={{ height: 40, objectFit: 'contain', flexShrink: 0 }} />
+            <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 40, objectFit: 'contain', flexShrink: 0 }} />
             <div>
               <div style={{
                 fontSize: 16, fontWeight: 700, color: '#fff', lineHeight: 1.1,

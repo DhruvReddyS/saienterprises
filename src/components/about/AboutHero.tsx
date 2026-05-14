@@ -53,9 +53,11 @@ const AboutHero = ({ experience }: AboutHeroProps) => {
             transition={{ delay: 0.5, duration: 0.6, type: "spring" }}
             className="flex-shrink-0"
           >
-            <img 
-              src={yearsBadge} 
-              alt="24 Years of Excellence in Industry" 
+            <img
+              src={yearsBadge}
+              loading="lazy"
+              decoding="async"
+              alt="24 Years of Excellence in Industry"
               className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 object-contain"
             />
           </motion.div>

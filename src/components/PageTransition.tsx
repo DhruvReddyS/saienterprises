@@ -71,7 +71,7 @@ const ScanLoader = () => {
 
       {/* Logo */}
       <div style={{ marginBottom: 52, opacity: 0.5 }}>
-        <img src={saiLogo} alt="Sai Enterprises" style={{ height: 22, objectFit: 'contain' }} />
+        <img src={saiLogo} alt="Sai Enterprises" loading="eager" decoding="async" style={{ height: 22, objectFit: 'contain' }} />
       </div>
 
       {/* Scan word */}

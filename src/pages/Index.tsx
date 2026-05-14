@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
@@ -10,8 +11,17 @@ import WhySaiSection from '@/components/home/WhySaiSection';
 import ClientsSection from '@/components/home/ClientsSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import CTAWithVerticalMarquee from '@/components/ui/cta-with-text-marquee';
+import { setPageMeta } from '@/lib/seo';
 
 const Index = () => {
+  useEffect(() => {
+    setPageMeta(
+      'Sai Enterprises | Graphic Machinery Suppliers — India & East Africa',
+      'Sai Enterprises — premium graphic machinery suppliers since 2000. HPM sole agent in India. 5000+ machines sold across India, Kenya and East Africa.',
+      'https://saienterprises.in/',
+    );
+  }, []);
+
   return (
     <PageTransition>
       <Header />
