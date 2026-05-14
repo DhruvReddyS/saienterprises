@@ -565,13 +565,6 @@ html, body {
     right: 14px !important;
   }
 
-  /* Social zone: smaller on mobile, centered vertically */
-  #social-zone {
-    top: 50% !important;
-    transform: translateY(-50%) scale(0.72) !important;
-    transform-origin: right center !important;
-  }
-
   /* ── SECTION ALIGNMENT ── */
 
   /* Ensure all section content containers are contained */

@@ -78,6 +78,9 @@ const MobileBottomNav = () => {
         WebkitBackdropFilter: 'blur(24px)',
         borderTop: '1px solid rgba(255,255,255,0.06)',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        /* iOS Safari: force compositing layer so fixed positioning doesn't float */
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
       }}
     >
       {tabs.map((tab) => {

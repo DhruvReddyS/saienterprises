@@ -275,7 +275,7 @@ const HeroSection = () => {
             src={heroImage}
             alt="Graphic printing facility"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
             style={{
               width: '100%',
