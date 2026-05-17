@@ -767,7 +767,7 @@ const AboutPage = () => {
         background: '#F8FAFC', padding: '100px 64px', textAlign: 'center',
         borderTop: '1px solid rgba(0,0,0,0.07)',
       }}
-        className="max-md:!px-7 max-md:!py-16 max-[767px]:!px-5 max-[767px]:!py-12 max-[767px]:!pb-24"
+        className="max-md:!px-7 max-md:!py-16 max-[767px]:!px-5 max-[767px]:!py-12"
       >
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 22 }}>

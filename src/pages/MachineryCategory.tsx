@@ -354,7 +354,7 @@ const MachineryCategory = () => {
                 src={category.heroImage}
                 alt={category.name}
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
                 decoding="async"
                 className="w-full h-full object-cover opacity-[0.12]"
               />
@@ -517,7 +517,7 @@ const MachineryCategory = () => {
         </section>
 
         {/* CTA */}
-        <section className="py-20 sm:py-28 px-6 sm:px-8 md:px-16 lg:px-24 bg-primary/[0.06] max-[767px]:!pb-24">
+        <section className="py-20 sm:py-28 px-6 sm:px-8 md:px-16 lg:px-24 bg-primary/[0.06]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -549,23 +549,18 @@ const MachineryCategory = () => {
 
       <CinematicFooter />
 
-      {/* Preview Modal */}
-      <MachinePreviewModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedProduct(null);
-          const nextParams = new URLSearchParams(searchParams);
-          nextParams.delete('preview');
-          setSearchParams(nextParams, { replace: true });
-        }}
-        product={selectedProduct}
-        categorySlug={activeCategorySlug}
-        onNext={handleNext}
-        onPrev={handlePrev}
-        hasNext={activeProducts.length > 1}
-        hasPrev={activeProducts.length > 1}
-      />
+      {isModalOpen && selectedProduct && (
+        <MachinePreviewModal
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedProduct(null);
+            const nextParams = new URLSearchParams(searchParams);
+            nextParams.delete('preview');
+            setSearchParams(nextParams, { replace: true });
+          }}
+          product={selectedProduct}
+        />
+      )}
     </PageTransition>
   );
 };

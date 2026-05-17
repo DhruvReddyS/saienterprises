@@ -545,24 +545,11 @@ html, body {
   }
 }
 
-/* ── MOBILE BOTTOM NAV: pad page content ── */
+/* ── MOBILE FIXES ── */
 @media (max-width: 767px) {
-  #root > div > div:first-child {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
-  }
-  footer {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
-  }
-
   /* Sticky filter bar: no header so stick to top 0 */
   .sticky-filter-bar {
     top: 0 !important;
-  }
-
-  /* Chatbot: raise above bottom nav */
-  #chatbot-anchor {
-    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
-    right: 14px !important;
   }
 
   /* ── SECTION ALIGNMENT ── */

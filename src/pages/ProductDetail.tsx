@@ -303,7 +303,7 @@ const ProductDetail = () => {
         </section>
 
         {relatedProducts.length > 0 ? (
-          <section className="bg-primary/[0.05] px-6 py-12 sm:px-8 md:px-12 lg:px-16 lg:py-16 max-[767px]:!pb-24">
+          <section className="bg-primary/[0.05] px-6 py-12 sm:px-8 md:px-12 lg:px-16 lg:py-16">
             <div className="mx-auto max-w-7xl">
               <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>

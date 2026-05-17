@@ -843,7 +843,7 @@ const PartnersPage = () => {
 
       {/* ── BROCHURE CTA ── */}
       <div style={{ background: '#060A10', padding: '80px 64px', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}
-        className="max-md:!px-7 max-[767px]:!px-4 max-[767px]:!py-12 max-[767px]:!pb-24"
+        className="max-md:!px-7 max-[767px]:!px-4 max-[767px]:!py-12"
       >
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(28px,3.5vw,44px)', fontWeight: 300, color: '#fff', lineHeight: 1.1, marginBottom: 36 }}>

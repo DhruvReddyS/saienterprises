@@ -374,7 +374,7 @@ export const CinematicFooter = () => {
           marginTop: 40,
           position: 'relative', zIndex: 2,
         }}
-        className="max-md:!px-6 max-[767px]:!px-4 max-[767px]:!flex-col max-[767px]:!items-start max-[767px]:!gap-3 max-[767px]:!pb-20"
+        className="max-md:!px-6 max-[767px]:!px-4 max-[767px]:!flex-col max-[767px]:!items-start max-[767px]:!gap-3"
       >
         <span style={{ fontSize: 8, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.14)' }}>
           © 2026 Sai Enterprises · Hyderabad, India

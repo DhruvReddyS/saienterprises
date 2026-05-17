@@ -434,7 +434,7 @@ const OfficesStrip = () => {
     <div ref={ref} style={{
       background: '#060A10', padding: '60px 64px',
       borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden',
-    }} className="max-md:!px-7 max-md:!py-10 max-[767px]:!px-4 max-[767px]:!pb-24">
+    }} className="max-md:!px-7 max-md:!py-10 max-[767px]:!px-4">
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: 1,
         background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.3) 40%, transparent)', pointerEvents: 'none',

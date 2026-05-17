@@ -10,7 +10,6 @@ import PremiumLoader from "./components/PremiumLoader";
 import PageSkeleton from "./components/PageSkeleton";
 import ChatbotWidget from "./components/ChatbotWidget";
 import SocialZone from "./components/SocialZone";
-import MobileBottomNav from "./components/MobileBottomNav";
 import Index from "./pages/Index";
 
 // Lazy load pages for better performance
@@ -80,7 +79,6 @@ const AppContent = () => {
         <AnimatedRoutes />
         <SocialZone />
         <ChatbotWidget />
-        <MobileBottomNav />
       </div>
     </>
   );
