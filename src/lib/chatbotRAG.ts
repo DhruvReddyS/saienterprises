@@ -50,8 +50,9 @@ export async function getChatbotRAGReply(
   text: string,
   sessionState: ChatbotSessionState
 ): Promise<ChatbotReply> {
+  const groundedReply = getChatbotReply(text, sessionState);
   if (!API_KEY || apiLimitReached) {
-    return getChatbotReply(text, sessionState);
+    return groundedReply;
   }
 
   try {
@@ -61,7 +62,12 @@ export async function getChatbotRAGReply(
       systemInstruction: SYSTEM_PROMPT,
     });
 
-    const result = await model.generateContent(text);
+    const result = await model.generateContent(`Customer question: ${text}
+
+Catalogue-grounded answer from the Sai recommendation engine:
+${groundedReply.text}
+
+Rewrite the grounded answer so it is concise, consultative, and easy to read. Preserve every machine name, measurement, limitation, comparison, and recommendation. Do not add facts, prices, capacities, warranty promises, or machine names that are not in the grounded answer.`);
     const replyText = result.response.text();
 
     const lower = replyText.toLowerCase();
@@ -94,7 +100,11 @@ export async function getChatbotRAGReply(
       suggestions.push({ label: 'Browse All Machinery', route: 'machinery' as const });
     }
 
-    return { text: replyText, suggestions: suggestions.length > 0 ? suggestions : undefined };
+    return {
+      text: replyText,
+      suggestions: groundedReply.suggestions ?? (suggestions.length > 0 ? suggestions : undefined),
+      state: groundedReply.state ?? sessionState,
+    };
   } catch (error: unknown) {
     const errMsg = (error instanceof Error ? error.message : String(error)).toLowerCase();
     if (
@@ -106,6 +116,6 @@ export async function getChatbotRAGReply(
     ) {
       apiLimitReached = true;
     }
-    return getChatbotReply(text, sessionState);
+    return groundedReply;
   }
 }

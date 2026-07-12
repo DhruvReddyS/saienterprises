@@ -6,6 +6,13 @@ import {
   searchMachines,
   type SearchableMachine,
 } from '@/lib/machineSearch';
+import {
+  extractAdvisorRequirements,
+  getAdvisorQuestion,
+  getMachineFaqAnswer,
+  getWorkflowDependencies,
+  type AdvisorRequirements,
+} from '@/lib/machineAdvisor';
 
 export type ChatbotSuggestion = {
   label: string;
@@ -22,6 +29,7 @@ export type ChatbotSessionState = {
   lastMachineId?: string;
   lastIntent?: 'machine' | 'category' | 'contact' | 'general';
   lastQuery?: string;
+  advisor?: AdvisorRequirements;
 };
 
 export type ChatbotReply = {
@@ -157,6 +165,7 @@ const useCaseMap: Array<{ keywords: string[]; categorySlug: string; reply: strin
 
 export const getChatbotReply = (query: string, state: ChatbotSessionState = {}): ChatbotReply => {
   const normalized = normalize(query);
+  const advisor = extractAdvisorRequirements(query, state.advisor);
 
   if (!normalized) {
     return {
@@ -187,6 +196,21 @@ export const getChatbotReply = (query: string, state: ChatbotSessionState = {}):
         { label: 'Contact details', route: 'contact' },
       ],
       state: {},
+    };
+  }
+
+  const faqAnswer = getMachineFaqAnswer(query);
+  if (faqAnswer) {
+    const lastMachine = machineById(state.lastMachineId);
+    return {
+      text: faqAnswer,
+      suggestions: lastMachine
+        ? suggestionsForMachine(lastMachine).slice(0, 2)
+        : [
+            { label: 'Help me choose a machine' },
+            { label: 'Talk to sales', route: 'contact' },
+          ],
+      state: { ...state, advisor, lastIntent: 'general', lastQuery: query },
     };
   }
 
@@ -258,8 +282,12 @@ export const getChatbotReply = (query: string, state: ChatbotSessionState = {}):
     const right = searchMachines(compareQuery.right, indexedMachines, 1)[0]?.machine;
 
     if (left && right) {
+      const leftDependencies = getWorkflowDependencies(left, indexedMachines);
+      const rightDependencies = getWorkflowDependencies(right, indexedMachines);
       return {
-        text: compareMachines(left, right),
+        text: `${compareMachines(left, right)}${leftDependencies.length || rightDependencies.length
+          ? `\n\nWorkflow fit:\n${left.name}: ${leftDependencies.length ? `commonly paired with ${leftDependencies.map((item) => item.name).join(', ')}` : 'no additional dependency identified from the catalogue'}.\n${right.name}: ${rightDependencies.length ? `commonly paired with ${rightDependencies.map((item) => item.name).join(', ')}` : 'no additional dependency identified from the catalogue'}.`
+          : ''}`,
         suggestions: [
           { label: `View ${left.name}`, categorySlug: left.categorySlug, productId: left.id },
           { label: `View ${right.name}`, categorySlug: right.categorySlug, productId: right.id },
@@ -270,7 +298,62 @@ export const getChatbotReply = (query: string, state: ChatbotSessionState = {}):
           lastMachineId: left.id,
           lastCategorySlug: left.categorySlug,
           lastQuery: query,
+          advisor,
         },
+      };
+    }
+  }
+
+  if (state.lastMachineId && hasAny(normalized, ['dependency', 'dependencies', 'what else', 'complete line', 'pair with', 'before this', 'after this', 'workflow'])) {
+    const machine = machineById(state.lastMachineId);
+    if (machine) {
+      const dependencies = getWorkflowDependencies(machine, indexedMachines);
+      return {
+        text: dependencies.length
+          ? `${machine.name} is commonly planned with ${dependencies.map((item) => item.name).join(', ')}. The exact line depends on input material, finished product, production volume, and how much handling you want to automate.`
+          : `No fixed dependency is listed for ${machine.name}. Share your input material and finished product and I’ll map the upstream and downstream machines needed for a complete line.`,
+        suggestions: dependencies.map((item) => ({ label: item.name, categorySlug: item.categorySlug, productId: item.id })),
+        state: { ...state, lastIntent: 'machine', lastQuery: query },
+      };
+    }
+  }
+
+  const isAdvisorRequest = hasAny(normalized, [
+    'help me choose', 'suggest machine', 'recommend machine', 'which machine', 'best machine',
+    'machine for', 'complete line', 'setup for', 'start a print', 'new print shop',
+  ]) || Boolean(state.advisor && !state.lastMachineId);
+
+  if (isAdvisorRequest) {
+    const question = getAdvisorQuestion(advisor);
+    if (question) {
+      return {
+        text: `I’ll narrow this down as a production consultant, not just list machines. ${question}`,
+        suggestions: !advisor.application
+          ? [
+              { label: 'Books and publishing' },
+              { label: 'Corrugated cartons' },
+              { label: 'Rigid boxes' },
+              { label: 'Commercial printing' },
+            ]
+          : !advisor.volume
+            ? [{ label: 'Starter / low volume' }, { label: 'Regular medium volume' }, { label: 'High-volume industrial' }]
+            : [{ label: 'Lower investment manual' }, { label: 'Semi-automatic' }, { label: 'Maximum automation' }],
+        state: { ...state, advisor, lastIntent: 'general', lastQuery: query },
+      };
+    }
+
+    const advisorQuery = [advisor.application, advisor.volume, advisor.automation, advisor.sheetSize].filter(Boolean).join(' ');
+    const matches = searchMachines(advisorQuery, indexedMachines, 3);
+    if (matches.length) {
+      const top = matches[0].machine;
+      const dependencies = getWorkflowDependencies(top, indexedMachines);
+      return {
+        text: `Recommended shortlist for ${advisor.application}, ${advisor.volume} production, ${advisor.automation} operation:\n${matches.map((item, index) => `${index + 1}. ${item.machine.name}, ${item.machine.description}`).join('\n')}\n\nMy first choice is ${top.name}.${dependencies.length ? ` For a complete workflow, also consider ${dependencies.map((item) => item.name).join(', ')}.` : ''} Final capacity and site requirements should be confirmed before quotation.`,
+        suggestions: [
+          ...matches.map((item) => ({ label: item.machine.name, categorySlug: item.machine.categorySlug, productId: item.machine.id })),
+          { label: `Enquire about ${top.name}`, route: 'contact' as const, contactCategory: top.categoryName, contactMachine: top.name, contactMessage: getMachineEnquiryMessage(top, top.categoryName) },
+        ],
+        state: { ...state, advisor, lastMachineId: top.id, lastCategorySlug: top.categorySlug, lastIntent: 'machine', lastQuery: query },
       };
     }
   }
@@ -389,9 +472,10 @@ export const getChatbotReply = (query: string, state: ChatbotSessionState = {}):
 
     if (matches[0].score > 105) {
       const related = recommendMachines(top, indexedMachines, 3).map((item) => item.machine);
+      const dependencies = getWorkflowDependencies(top, indexedMachines);
 
       return {
-        text: `${formatMachineResponse(top)}\nRelated options: ${related.map((machine) => machine.name).join(', ')}.`,
+        text: `${formatMachineResponse(top)}\nRelated options: ${related.map((machine) => machine.name).join(', ')}.${dependencies.length ? `\nCommon workflow companions: ${dependencies.map((machine) => machine.name).join(', ')}.` : ''}`,
         suggestions: [
           ...suggestionsForMachine(top),
           ...related.map((machine) => ({

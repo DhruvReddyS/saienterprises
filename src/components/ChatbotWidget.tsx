@@ -22,20 +22,20 @@ const WELCOME: Msg = {
   id: 'welcome',
   role: 'bot',
   ts: new Date(),
-  text: "Hi! I'm Sai Enterprises' sales assistant.\n\nTell me what you're producing and I'll recommend the right machine, or ask me to compare any two machines and I'll give you an honest breakdown.",
+  text: "Hi! I'm Sai Enterprises' machine advisor.\n\nTell me what you produce, your volume, and preferred automation. I can shortlist machines, compare options, explain workflow dependencies, answer technical FAQs, and prepare the right sales enquiry.",
   suggestions: [
-    { label: 'Machine for book finishing' },
-    { label: 'Machine for carton packaging' },
-    { label: 'Compare HPM cutter vs trimmer' },
-    { label: 'Talk to sales', route: 'contact' },
+    { label: 'Help me choose a machine' },
+    { label: 'Compare HPM cutter vs digital cutter' },
+    { label: 'Plan a complete production line' },
+    { label: 'Machine service FAQs' },
   ],
 };
 
 const STARTERS = [
-  'Best machine for my print shop',
-  'Compare laminator options',
-  'HPM cutter which size?',
-  'Complete post-press line',
+  'Help me choose a machine',
+  'Compare HPM cutter vs digital cutter',
+  'What else is needed for a complete line?',
+  'Installation, warranty and service FAQs',
 ];
 
 const fmt = (d: Date) => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -256,7 +256,7 @@ const ChatbotWidget = () => {
                       fontFamily: "'Manrope', sans-serif",
                       fontSize: 10.5, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em',
                     }}>
-                      AI Assistant · Online
+                      Advanced Machine Advisor · Online
                     </span>
                   </div>
                 </div>
