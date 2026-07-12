@@ -444,8 +444,8 @@ const AboutPage = () => {
 
   useEffect(() => {
     setPageMeta(
-      'About Us | Sai Enterprises, Graphic Machinery Since 2000',
-      'Learn about Sai Enterprises, 24+ years of graphic machinery expertise. HPM sole agent in India, serving printers across India and East Africa.',
+      'About Sai Enterprises | Graphic Machinery Expertise',
+      'Meet the founders and team behind Sai Enterprises, a trusted graphic machinery partner serving print and packaging businesses across India and international markets.',
     );
   }, []);
 

@@ -30,8 +30,8 @@ const MachineryHub = () => {
 
   useEffect(() => {
     setPageMeta(
-      'Machinery Catalogue | Sai Enterprises',
-      'Browse graphic machines, pre-press, press, post-press, corrugation and allied.',
+      'Printing & Packaging Machinery Catalogue | Sai Enterprises',
+      'Browse pre-press, printing, post-press, paper cutting, binding, corrugation and allied machinery from Sai Enterprises.',
     );
   }, []);
 

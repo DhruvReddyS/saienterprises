@@ -72,12 +72,16 @@ export function setPageMeta(
   if (desc) setMetaByProp('og:description', desc);
   setMetaByProp('og:url', url);
   setMetaByProp('og:image', image);
+  setMetaByProp('og:image:alt', `${title}, Sai Enterprises`);
   setMetaByProp('og:type', type);
+  setMetaByProp('og:site_name', 'Sai Enterprises');
+  setMetaByProp('og:locale', 'en_IN');
 
   // Twitter
   setMetaByName('twitter:title', title);
   if (desc) setMetaByName('twitter:description', desc);
   setMetaByName('twitter:image', image);
+  setMetaByName('twitter:image:alt', `${title}, Sai Enterprises`);
   setMetaByName('twitter:card', 'summary_large_image');
 
   // Canonical

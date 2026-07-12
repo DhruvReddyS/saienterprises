@@ -488,8 +488,8 @@ const ContactPage = () => {
 
   useEffect(() => {
     setPageMeta(
-      'Contact Us | Sai Enterprises, Machinery Enquiries, India & East Africa',
-      'Contact Sai Enterprises for machinery enquiries, quotes, and support. Offices in Hyderabad and Nairobi. Response within 24 hours.',
+      'Contact Sai Enterprises | Machinery Enquiries & Support',
+      'Contact Sai Enterprises for printing and packaging machinery enquiries, quotations, installation, spares and service support across India and East Africa.',
     );
   }, []);
 

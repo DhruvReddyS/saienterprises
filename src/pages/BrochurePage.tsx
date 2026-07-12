@@ -5,10 +5,17 @@ import PageTransition from '@/components/PageTransition';
 import BookViewer from '@/components/brochure/BookViewer';
 import brochurePdf from '@/assets/Sai Enterprises-2026.pdf';
 import { useEffect, useState } from 'react';
+import { setPageMeta } from '@/lib/seo';
 
 const BrochurePage = () => {
   const [revealed, setRevealed] = useState(false);
   useEffect(() => { setTimeout(() => setRevealed(true), 80); }, []);
+  useEffect(() => {
+    setPageMeta(
+      'Graphic Machinery Brochure | Sai Enterprises',
+      'View or download the Sai Enterprises machinery brochure covering printing, paper cutting, binding, finishing, corrugation and packaging equipment.',
+    );
+  }, []);
 
   return (
     <PageTransition>

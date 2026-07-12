@@ -440,8 +440,8 @@ const PartnersPage = () => {
 
   useEffect(() => {
     setPageMeta(
-      'Partners & Brands | Sai Enterprises, HPM, Heidelberg, Komori & More',
-      'Sai Enterprises is the sole authorized HPM agent in India. Partnered with Heidelberg, Komori, and 10+ global machinery brands.',
+      'Machinery Partners & Brands | Sai Enterprises',
+      'Explore Sai Enterprises machinery partners and brands, including HPM paper cutters, Heidelberg, Komori and global print-finishing manufacturers.',
     );
   }, []);
 
