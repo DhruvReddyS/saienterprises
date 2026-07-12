@@ -37,7 +37,7 @@ const testimonials: StaggerTestimonial[] = [
   {
     id: 4,
     testimonial:
-      'A quick solution centre with exceptional response times—our go-to partner for machinery support.',
+      'A quick solution centre with exceptional response times, our go-to partner for machinery support.',
     name: 'Pranith Reddy',
     role: 'Managing Director',
     company: 'Digiprint Systems (U) Ltd',

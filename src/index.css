@@ -64,7 +64,7 @@
     --popover:     216 28% 10%;
     --popover-foreground: 0 0% 100%;
 
-    /* Primary — electric blue */
+    /* Primary, electric blue */
     --primary:     217 91% 60%;  /* #3B82F6 */
     --primary-foreground: 0 0% 100%;
 
@@ -100,7 +100,7 @@
     --sidebar-ring:              217 91% 60%;
   }
 
-  /* No separate .dark — the whole site is dark */
+  /* No separate .dark, the whole site is dark */
 }
 
 @layer base {
@@ -350,6 +350,18 @@
   .btn-primary:hover {
     background: transparent;
     color: hsl(var(--primary));
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(59,130,246,0.26);
+  }
+
+  .sai-page-shell a[href^="/contact"] {
+    transition: color 0.24s ease, background-color 0.24s ease, border-color 0.24s ease,
+      box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  .sai-page-shell a[href^="/contact"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(59,130,246,0.22);
   }
 
   .btn-outline {

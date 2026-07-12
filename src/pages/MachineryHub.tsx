@@ -31,7 +31,7 @@ const MachineryHub = () => {
   useEffect(() => {
     setPageMeta(
       'Machinery Catalogue | Sai Enterprises',
-      'Browse graphic machines — pre-press, press, post-press, corrugation and allied.',
+      'Browse graphic machines, pre-press, press, post-press, corrugation and allied.',
     );
   }, []);
 
@@ -424,7 +424,7 @@ const MachineCard = ({
           {m.name}
         </div>
 
-        {/* Description — 2 lines */}
+        {/* Description, 2 lines */}
         {m.description && (
           <p style={{
             fontFamily: "'Manrope', sans-serif",

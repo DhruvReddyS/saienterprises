@@ -223,7 +223,7 @@ export const CinematicFooter = () => {
         }}
         className="max-[900px]:!grid-cols-1 max-[900px]:!gap-10 max-md:!px-6 max-[767px]:!px-4 max-[767px]:!pt-8"
       >
-        {/* Col 1 — Brand */}
+        {/* Col 1, Brand */}
         <motion.div variants={fadeUp}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
             <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 32, objectFit: 'contain' }} />
@@ -238,7 +238,7 @@ export const CinematicFooter = () => {
           </div>
 
           <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.28)', lineHeight: 1.85, maxWidth: 320, marginBottom: 20 }}>
-            India's trusted graphic machinery supplier. Pre-press to post-press, corrugation, and allied finishing — end-to-end, one team.
+            India's trusted graphic machinery supplier. Pre-press to post-press, corrugation, and allied finishing, end-to-end, one team.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -275,7 +275,7 @@ export const CinematicFooter = () => {
           </div>
         </motion.div>
 
-        {/* Col 2 — Navigate */}
+        {/* Col 2, Navigate */}
         <motion.div variants={fadeUp}>
           <div style={{ fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(59,130,246,0.6)', marginBottom: 16, fontWeight: 700 }}>
             Navigate
@@ -305,7 +305,7 @@ export const CinematicFooter = () => {
           </div>
         </motion.div>
 
-        {/* Col 3 — Machinery + HPM */}
+        {/* Col 3, Machinery + HPM */}
         <motion.div variants={fadeUp}>
           <div style={{ fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(59,130,246,0.6)', marginBottom: 16, fontWeight: 700 }}>
             Machinery
@@ -354,7 +354,7 @@ export const CinematicFooter = () => {
                 <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ width: 55, height: 'auto', objectFit: 'contain' }} />
               </span>
               <span>
-                <span style={{ display: 'block', fontSize: 12.5, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>Sole Agent — India</span>
+                <span style={{ display: 'block', fontSize: 12.5, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>Sole Agent, India</span>
                 <span style={{ display: 'block', marginTop: 3, fontSize: 8.5, color: 'rgba(96,165,250,0.94)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 800 }}>Partners →</span>
               </span>
             </Link>

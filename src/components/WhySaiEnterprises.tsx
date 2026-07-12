@@ -60,7 +60,7 @@ const WhySaiEnterprises = () => {
             Why Sai Enterprises?
           </h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            More than machinery suppliers — your trusted partner in print excellence
+            More than machinery suppliers, your trusted partner in print excellence
           </p>
         </motion.div>
 

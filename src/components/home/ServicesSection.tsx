@@ -62,7 +62,7 @@ const ServicesSection = () => {
     return () => window.removeEventListener('resize', c);
   }, []);
 
-  /* SVG text scales with viewBox (920) — bump sizes on mobile for readability */
+  /* SVG text scales with viewBox (920), bump sizes on mobile for readability */
   const FS_TITLE  = isMobile ? 32 : 21;
   const FS_DETAIL = isMobile ? 20 : 13;
   const FS_NUM    = isMobile ? 26 : 18;

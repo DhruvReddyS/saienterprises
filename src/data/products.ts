@@ -161,7 +161,7 @@ export const productCategories: ProductCategory[] = [
         specifications: {
           'Cutoff Sizes': '508 mm, 546 mm, 578 mm, 600 mm',
         },
-        features: ['Optional numbering unit — mechanical or digital', 'Sheeter compatibility', 'Multi-colour web printing', 'High-volume production line'],
+        features: ['Optional numbering unit, mechanical or digital', 'Sheeter compatibility', 'Multi-colour web printing', 'High-volume production line'],
         image: machineImage(['PRESS'], ['Web Offset Printing Machine']),
       },
       {
@@ -1068,7 +1068,7 @@ export const companyInfo = {
       country: 'India',
       type: 'Head Office',
       address: 'SAI ARCADE, Plot No 99, H.No 7-1-307/14/G/6/5, Near A.K Goud Gardens, Lingaiah Nagar, Balkampet, Hyderabad-500018, Telangana, India',
-      contactPerson: 'VENKAT — General Manager',
+      contactPerson: 'VENKAT, General Manager',
       phone: '+91 9397678950',
       email: 'venkat@saienterprises.info',
     },

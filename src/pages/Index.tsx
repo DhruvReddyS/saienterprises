@@ -15,8 +15,8 @@ import { setPageMeta } from '@/lib/seo';
 const Index = () => {
   useEffect(() => {
     setPageMeta(
-      'Sai Enterprises | Graphic Machinery Suppliers — India & East Africa',
-      'Sai Enterprises — premium graphic machinery suppliers since 2000. HPM sole agent in India. 5000+ machines sold across India, Kenya and East Africa.',
+      'Sai Enterprises | Graphic Machinery Suppliers, India & East Africa',
+      'Sai Enterprises, premium graphic machinery suppliers since 2000. HPM sole agent in India. 5000+ machines sold across India, Kenya and East Africa.',
       'https://saienterprises.in/',
     );
   }, []);

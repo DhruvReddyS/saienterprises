@@ -52,7 +52,7 @@ const BrochurePage = () => {
             fontFamily: "'Manrope', sans-serif", fontSize: 14,
             color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, maxWidth: 560, marginBottom: 32,
           }}>
-            Every press, cutter, laminator, and finishing machine we carry — organised by category, with full specifications and configurations.
+            Every press, cutter, laminator, and finishing machine we carry, organised by category, with full specifications and configurations.
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, alignItems: 'center' }}>

@@ -50,10 +50,10 @@ function useCounter(target: number, started: boolean) {
 
 /* ── data ── */
 const hpmHistory = [
-  { year: '1983', event: 'Paper cutter manufacturing begins', detail: 'Rui\'an Longshan General Machinery Factory starts producing paper cutters — the seed of what HPM becomes.' },
+  { year: '1983', event: 'Paper cutter manufacturing begins', detail: 'Rui\'an Longshan General Machinery Factory starts producing paper cutters, the seed of what HPM becomes.' },
   { year: '1997', event: 'Huayue identity formed', detail: 'Business evolves into Ruian Huayue Packaging Machinery. The HPM brand name is established with a tightened focus on cutting systems.' },
   { year: '2000', event: 'Sai becomes sole India agent', detail: 'Sai Enterprises, founded in Hyderabad, secures the exclusive HPM distribution and service mandate for India from day one.' },
-  { year: '2005+', event: 'Programmable cutters advanced', detail: 'The HPM line expands into fully hydraulic and program-controlled cutter systems — bringing precision and automation to production floors.' },
+  { year: '2005+', event: 'Programmable cutters advanced', detail: 'The HPM line expands into fully hydraulic and program-controlled cutter systems, bringing precision and automation to production floors.' },
   { year: 'Today', event: 'Full paper handling stack', detail: 'HPM now spans programmable paper cutters, pile handling, digital cutters, and finishing support for production environments worldwide.' },
 ];
 
@@ -440,7 +440,7 @@ const PartnersPage = () => {
 
   useEffect(() => {
     setPageMeta(
-      'Partners & Brands | Sai Enterprises — HPM, Heidelberg, Komori & More',
+      'Partners & Brands | Sai Enterprises, HPM, Heidelberg, Komori & More',
       'Sai Enterprises is the sole authorized HPM agent in India. Partnered with Heidelberg, Komori, and 10+ global machinery brands.',
     );
   }, []);
@@ -473,7 +473,7 @@ const PartnersPage = () => {
           pointerEvents: 'none', filter: 'blur(60px)',
         }} />
 
-        {/* Ghost "HPM" watermark — right-bleed */}
+        {/* Ghost "HPM" watermark, right-bleed */}
         <motion.div
           initial={{ opacity: 0, x: 80 }}
           animate={{ opacity: 1, x: 0 }}
@@ -502,7 +502,7 @@ const PartnersPage = () => {
           <div style={{ maxWidth: 1300, margin: '0 auto', width: '100%', padding: '160px 80px 60px' }}
             className="max-lg:!px-10 max-lg:!pt-36 max-md:!px-6 max-md:!pt-28 max-[767px]:!pt-10 max-[767px]:!px-5"
           >
-            {/* Eyebrow — HPM logo + tag */}
+            {/* Eyebrow, HPM logo + tag */}
             <motion.div
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -521,7 +521,7 @@ const PartnersPage = () => {
               </div>
             </motion.div>
 
-            {/* Headline + badge — side by side */}
+            {/* Headline + badge, side by side */}
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 32, marginBottom: 40 }}
               className="max-lg:!flex-col max-lg:!gap-6"
             >
@@ -549,7 +549,7 @@ const PartnersPage = () => {
                 ))}
               </div>
 
-              {/* Large badge — right of title */}
+              {/* Large badge, right of title */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.88 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -578,7 +578,7 @@ const PartnersPage = () => {
                 color: 'rgba(255,255,255,0.4)', lineHeight: 1.85,
                 maxWidth: 420, margin: 0,
               }}>
-                Selection, import, installation, spares, and service — Sai is the sole authorised HPM path for every Indian print floor.
+                Selection, import, installation, spares, and service, Sai is the sole authorised HPM path for every Indian print floor.
               </p>
               <Link to="/contact?ref=hpm" style={{
                 fontFamily: "'Manrope', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
@@ -592,7 +592,7 @@ const PartnersPage = () => {
               </Link>
             </motion.div>
 
-            {/* Proof strip — 4 highlighted cards */}
+            {/* Proof strip, 4 highlighted cards */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -615,7 +615,7 @@ const PartnersPage = () => {
                     position: 'relative', overflow: 'hidden',
                   }}
                 >
-                  {/* Top accent bar — animated */}
+                  {/* Top accent bar, animated */}
                   <motion.div
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: proofOn ? 1 : 0 }}
@@ -626,7 +626,7 @@ const PartnersPage = () => {
                       transformOrigin: 'left',
                     }}
                   />
-                  {/* Ghost value — watermark */}
+                  {/* Ghost value, watermark */}
                   <div style={{
                     position: 'absolute', bottom: -10, right: -4,
                     fontFamily: "'Manrope', sans-serif",
@@ -698,7 +698,7 @@ const PartnersPage = () => {
         }} />
       </div>
 
-      {/* ── HISTORY TIMELINE — light / dark alternation ── */}
+      {/* ── HISTORY TIMELINE, light / dark alternation ── */}
       <div style={{ background: '#F5F8FF', borderTop: '1px solid rgba(13,20,33,0.08)', padding: 'clamp(56px,8vw,110px) 0' }}>
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }} className="max-md:!px-7 max-[767px]:!px-4">
           <div style={{ marginBottom: 60 }}>
@@ -1090,7 +1090,7 @@ const PartnersPage = () => {
         </div>
       </div>
 
-      {/* ── HPM MACHINE RANGE — filtered grid ── */}
+      {/* ── HPM MACHINE RANGE, filtered grid ── */}
       <div style={{
         background: 'linear-gradient(180deg, #060A10 0%, #08111F 54%, #060A10 100%)',
         padding: '100px 0',
@@ -1116,7 +1116,7 @@ const PartnersPage = () => {
                 Built around the cut.
               </h2>
               <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7, maxWidth: 380, margin: 0 }}>
-                Paper cutters, handling systems, and finishing support — curated for production floors that need speed, accuracy and uptime.
+                Paper cutters, handling systems, and finishing support, curated for production floors that need speed, accuracy and uptime.
               </p>
             </div>
           </div>
@@ -1183,7 +1183,7 @@ const PartnersPage = () => {
         </div>
       </div>
 
-      {/* ── WHY SAI FOR HPM — light theme cards ── */}
+      {/* ── WHY SAI FOR HPM, light theme cards ── */}
       <div ref={saiHpmReveal.ref} style={{ background: '#F8FAFC', padding: 'clamp(64px,8vw,100px) 0', borderTop: '1px solid rgba(0,0,0,0.07)', position: 'relative', overflow: 'hidden' }}>
         {/* Ambient glow */}
         <div style={{ position: 'absolute', top: '10%', left: '20%', width: 480, height: 480, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />

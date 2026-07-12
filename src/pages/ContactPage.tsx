@@ -488,7 +488,7 @@ const ContactPage = () => {
 
   useEffect(() => {
     setPageMeta(
-      'Contact Us | Sai Enterprises — Machinery Enquiries, India & East Africa',
+      'Contact Us | Sai Enterprises, Machinery Enquiries, India & East Africa',
       'Contact Sai Enterprises for machinery enquiries, quotes, and support. Offices in Hyderabad and Nairobi. Response within 24 hours.',
     );
   }, []);
@@ -585,7 +585,7 @@ const ContactPage = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '100dvh' }}
         className="max-lg:!grid-cols-1"
       >
-        {/* ── LEFT — dark info panel ── */}
+        {/* ── LEFT, dark info panel ── */}
         <div style={{
           background: '#060A10', padding: '140px 64px 80px',
           position: 'relative', overflow: 'hidden',
@@ -613,7 +613,7 @@ const ContactPage = () => {
 
             <motion.p initial={{ opacity: 0, y: 14 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.14 }}
               style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 300, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, maxWidth: 380, marginBottom: 56 }}>
-              Machine inquiry, spares request, installation, or service — we respond within 24 hours, every time.
+              Machine inquiry, spares request, installation, or service, we respond within 24 hours, every time.
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 16 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.22 }}
@@ -621,8 +621,8 @@ const ContactPage = () => {
               {[
                 { icon: <IcoPhone />, label: 'Call', lines: ['+91 939 767 8950 (Venkat)', '+91 931 217 5513 (M.S. Rao)'], href: 'tel:+919397678950' },
                 { icon: <IcoMail />, label: 'Email', lines: ['venkat@saienterprises.info', 'msrao@saienterprises.info'], href: 'mailto:venkat@saienterprises.info' },
-                { icon: <IcoPin />, label: 'Head Office', lines: ['SAI ARCADE, Plot No 99,', 'Near A.K Goud Gardens, Balkampet,', 'Hyderabad — 500018, Telangana'], href: undefined },
-                { icon: <IcoPin />, label: 'Delhi Branch', lines: ['G-20, Vikas Surya Janak Plaza,', 'Janakpuri, New Delhi — 110058'], href: undefined },
+                { icon: <IcoPin />, label: 'Head Office', lines: ['SAI ARCADE, Plot No 99,', 'Near A.K Goud Gardens, Balkampet,', 'Hyderabad, 500018, Telangana'], href: undefined },
+                { icon: <IcoPin />, label: 'Delhi Branch', lines: ['G-20, Vikas Surya Janak Plaza,', 'Janakpuri, New Delhi, 110058'], href: undefined },
               ].map((m, mi) => (
                 <ContactRow key={m.label} {...m} delay={0.24 + mi * 0.07} on={on} />
               ))}
@@ -653,7 +653,7 @@ const ContactPage = () => {
           </motion.div>
         </div>
 
-        {/* ── RIGHT — form panel ── */}
+        {/* ── RIGHT, form panel ── */}
         <div ref={formRef} style={{
           background: '#F8FAFD', padding: '140px 64px 80px',
           display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative',
@@ -723,7 +723,7 @@ const ContactPage = () => {
                   {/* Smart category picker */}
                   <CategoryPicker value={form.category} onChange={setCategory} />
 
-                  {/* Smart machine picker — filtered by category */}
+                  {/* Smart machine picker, filtered by category */}
                   <MachinePicker
                     categoryId={form.category}
                     value={form.machine}

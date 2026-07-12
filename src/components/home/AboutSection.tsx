@@ -39,7 +39,7 @@ const AboutSection = () => (
       color: 'rgba(255,255,255,0.35)', lineHeight: 1.8,
       padding: '0 24px 12px',
     }}>
-      A trusted name in graphic machinery since 2000 — from pre-press to post-press, we put the right machine in the right hands.
+      A trusted name in graphic machinery since 2000, from pre-press to post-press, we put the right machine in the right hands.
     </p>
   </section>
 );

@@ -103,7 +103,7 @@ const Footer = () => (
             </div>
           </div>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, maxWidth: 320, marginBottom: 28 }}>
-            India's trusted graphic machinery supplier since 2000. Pre-press to post-press, corrugation, and allied finishing — delivered end-to-end.
+            India's trusted graphic machinery supplier since 2000. Pre-press to post-press, corrugation, and allied finishing, delivered end-to-end.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
             {[
@@ -176,7 +176,7 @@ const Footer = () => (
                 <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ width: 58, height: 'auto', objectFit: 'contain' }} />
               </span>
               <span>
-                <span style={{ display: 'block', fontSize: 12.5, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>Sole Agent — India</span>
+                <span style={{ display: 'block', fontSize: 12.5, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>Sole Agent, India</span>
                 <span style={{ display: 'block', marginTop: 3, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#60A5FA', fontWeight: 800 }}>Partners →</span>
               </span>
             </Link>
@@ -203,7 +203,7 @@ const Footer = () => (
 
       {/* Tagline */}
       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.36)', lineHeight: 1.75, marginBottom: 20 }}>
-        India's trusted graphic machinery supplier. Pre-press to corrugation — end-to-end by one team.
+        India's trusted graphic machinery supplier. Pre-press to corrugation, end-to-end by one team.
       </p>
 
       {/* Quick contact grid */}
@@ -256,7 +256,7 @@ const Footer = () => (
             <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ width: 58, height: 'auto', objectFit: 'contain' }} />
           </span>
           <span style={{ minWidth: 0 }}>
-            <span style={{ display: 'block', fontSize: 14, fontWeight: 800, color: '#fff' }}>Sole Agent — India</span>
+            <span style={{ display: 'block', fontSize: 14, fontWeight: 800, color: '#fff' }}>Sole Agent, India</span>
             <span style={{ display: 'block', marginTop: 3, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#60A5FA', fontWeight: 700 }}>Partners →</span>
           </span>
         </Link>

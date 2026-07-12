@@ -310,7 +310,7 @@ const WhySaiSection = () => {
           </div>
         </div>
 
-        {/* Mosaic grid — 12 col */}
+        {/* Mosaic grid, 12 col */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',

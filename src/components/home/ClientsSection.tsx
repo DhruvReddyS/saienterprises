@@ -78,7 +78,7 @@ const LogoCard = ({ client }: { client: Client }) => {
         transition: 'opacity 0.35s',
       }} />
 
-      {/* Category chip — top right */}
+      {/* Category chip, top right */}
       <div style={{
         position: 'absolute', top: 12, right: 12, zIndex: 2,
         fontFamily: "'Manrope', sans-serif",
@@ -260,7 +260,7 @@ const ClientsSection = () => {
             marginTop: 22, maxWidth: 540, lineHeight: 1.75,
             marginLeft: 'auto', marginRight: 'auto',
           }}>
-            From packaging giants to security printers — India's leading operations have built their machinery floors with Sai Enterprises.
+            From packaging giants to security printers, India's leading operations have built their machinery floors with Sai Enterprises.
           </p>
         </motion.div>
 

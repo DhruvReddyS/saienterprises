@@ -152,7 +152,7 @@ export default function CTAWithVerticalMarquee() {
               maxWidth: 440,
               marginBottom: 38,
             }}>
-              Tell us your output, floor space, and budget — we'll help you get the right machine on your print floor, faster.
+              Tell us your output, floor space, and budget, we'll help you get the right machine on your print floor, faster.
             </p>
 
             {/* CTA buttons */}
@@ -224,7 +224,7 @@ export default function CTAWithVerticalMarquee() {
             </div>
           </motion.div>
 
-          {/* ── Right — marquee ── */}
+          {/* ── Right, marquee ── */}
           <motion.div
             ref={marqueeRef}
             initial={{ opacity: 0 }}

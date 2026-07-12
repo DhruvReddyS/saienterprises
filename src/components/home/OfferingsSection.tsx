@@ -58,7 +58,7 @@ const OfferingsSection = () => (
         Your complete print floor. One trusted partner.
       </h2>
       <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-white/55 sm:text-base">
-        Scroll through the production journey—from plate preparation to packaging.
+        Scroll through the production journey, from plate preparation to packaging.
       </p>
     </div>
 

@@ -147,7 +147,7 @@ const BrandPartnersSection = () => {
               fontSize: 14, lineHeight: 1.8, color: 'rgba(13,20,33,0.55)',
               maxWidth: 420, marginBottom: 44,
             }}>
-              HPM's paper cutter manufacturing story starts in 1983. The range is now known for programmable paper cutters and pile handling systems — used by printers, finishers, and packaging plants that need dependable output.
+              HPM's paper cutter manufacturing story starts in 1983. The range is now known for programmable paper cutters and pile handling systems, used by printers, finishers, and packaging plants that need dependable output.
             </p>
 
             {/* Facts table */}

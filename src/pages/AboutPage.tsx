@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { setPageMeta } from '@/lib/seo';
 import { motion, useScroll, useSpring } from 'framer-motion';
@@ -29,23 +29,32 @@ function useReveal(threshold = 0.12) {
   return { ref, on };
 }
 
-const SmoothCounter = ({ target, started }: { target: number; started: boolean }) => {
-  const ref = useRef<HTMLSpanElement>(null);
+const SmoothCounter = memo(({ target, started }: { target: number; started: boolean }) => {
+  const [value, setValue] = useState(0);
   useEffect(() => {
-    if (!started) return;
-    const startedAt = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - startedAt) / 1260);
-      const value = Math.round(target * (1 - Math.pow(1 - progress, 3)));
-      if (ref.current) ref.current.textContent = value.toLocaleString();
-      if (progress < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    if (!started) {
+      setValue(0);
+      return;
+    }
+    setValue(0);
+    let frame = 0;
+    const totalFrames = 70;
+    const timer = window.setInterval(() => {
+      frame = Math.min(totalFrames, frame + 1);
+      const progress = frame / totalFrames;
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const nextValue = Math.max(0, Math.min(target, Math.round(target * eased)));
+      setValue(nextValue);
+      if (frame >= totalFrames) {
+        setValue(target);
+        window.clearInterval(timer);
+      }
+    }, 18);
+    return () => window.clearInterval(timer);
   }, [started, target]);
-  return <span ref={ref}>0</span>;
-};
+  return <>{value.toLocaleString()}</>;
+});
+SmoothCounter.displayName = 'SmoothCounter';
 
 function useCounter(target: number, started: boolean) {
   const [val, setVal] = useState(0);
@@ -69,25 +78,25 @@ const timeline = [
   {
     year: '2000',
     title: 'Founded in Hyderabad',
-    body: 'Operations began with a sharp focus on production-ready graphic machinery. From day one, Sai secured the exclusive HPM agency for India — making it the sole authorised source for HPM paper cutters in the country. Founded by Mr. S. Dayaker Reddy and Mr. G. Phani Kumar.',
+    body: 'Operations began with a sharp focus on production-ready graphic machinery. From day one, Sai secured the exclusive HPM agency for India, making it the sole authorised source for HPM paper cutters in the country. Founded by Mr. S. Dayaker Reddy and Mr. G. Phani Kumar.',
     accent: '#3B82F6',
   },
   {
     year: '2010',
     title: 'National Presence Built',
-    body: 'Regional support expanded to New Delhi, Pune, and Vijayawada. Sales partners were established in Kolkata, Mumbai, Ahmedabad, Jaipur, Bangalore, Coimbatore and Goa — shortening response time and deepening client relationships across India.',
+    body: 'Regional support expanded to New Delhi, Pune, and Vijayawada. Sales partners were established in Kolkata, Mumbai, Ahmedabad, Jaipur, Bangalore, Coimbatore and Goa, shortening response time and deepening client relationships across India.',
     accent: '#6366F1',
   },
   {
     year: '2015',
-    title: 'Nairobi Office — Africa Entry',
+    title: 'Nairobi Office, Africa Entry',
     body: 'A dedicated Nairobi office strengthened East Africa support. Export relationships to Sri Lanka, Nepal, UAE, Oman, and multiple African markets cemented Sai as a pan-world machinery supplier built from Hyderabad.',
     accent: '#0EA5E9',
   },
   {
     year: '2026',
     title: 'One Partner, Every Production Stage',
-    body: '4000+ machines placed. 2000+ customers served across commercial printers, packaging converters, newspaper groups, and stationery manufacturers. 490+ programmable HPM paper cutters sold — 90% market share in fully automatic paper cutters across India. One supplier for the entire production chain.',
+    body: '4000+ machines placed. 2000+ customers served across commercial printers, packaging converters, newspaper groups, and stationery manufacturers. 490+ programmable HPM paper cutters sold, 90% market share in fully automatic paper cutters across India. One supplier for the entire production chain.',
     accent: '#10B981',
   },
 ];
@@ -210,14 +219,14 @@ const TimelineProgress = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-/* ── Timeline — cinematic spine ── */
+/* ── Timeline, cinematic spine ── */
 const TimelineItem = ({ ch, i, total }: { ch: typeof timeline[0]; i: number; total: number }) => {
   const isLast = i === total - 1;
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '88px 44px 1fr' }}
       className="max-[767px]:!grid-cols-[36px_1fr]"
     >
-      {/* Year — desktop */}
+      {/* Year, desktop */}
       <motion.div
         initial={{ opacity: 0, x: -18 }}
         whileInView={{ opacity: 1, x: 0 }}
@@ -233,7 +242,7 @@ const TimelineItem = ({ ch, i, total }: { ch: typeof timeline[0]; i: number; tot
         }}>{ch.year}</span>
       </motion.div>
 
-      {/* Spine — dot only */}
+      {/* Spine, dot only */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 2 }}>
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
@@ -431,16 +440,12 @@ const TeamCard = ({ person, i }: { person: typeof team[0]; i: number }) => {
 const AboutPage = () => {
   const quoteReveal = useReveal(0.2);
   const foundersReveal = useReveal(0.1);
-  const [heroOn, setHeroOn] = useState(false);
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => setHeroOn(true));
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  const heroOn = true;
 
   useEffect(() => {
     setPageMeta(
-      'About Us | Sai Enterprises — Graphic Machinery Since 2000',
-      'Learn about Sai Enterprises — 24+ years of graphic machinery expertise. HPM sole agent in India, serving printers across India and East Africa.',
+      'About Us | Sai Enterprises, Graphic Machinery Since 2000',
+      'Learn about Sai Enterprises, 24+ years of graphic machinery expertise. HPM sole agent in India, serving printers across India and East Africa.',
     );
   }, []);
 
@@ -448,7 +453,7 @@ const AboutPage = () => {
     <PageTransition>
       <Header />
 
-      {/* ── HERO — premium redesign ── */}
+      {/* ── HERO, premium redesign ── */}
       <div style={{
         background: '#060A10',
         position: 'relative', overflow: 'hidden',
@@ -469,7 +474,7 @@ const AboutPage = () => {
           pointerEvents: 'none',
         }} />
 
-        {/* Ghost brand watermark — right bleed */}
+        {/* Ghost brand watermark, right bleed */}
         <motion.div
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
@@ -492,14 +497,14 @@ const AboutPage = () => {
           pointerEvents: 'none',
         }} />
 
-        {/* Main content — vertically centered */}
+        {/* Main content, vertically centered */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
         <div style={{ maxWidth: 1300, margin: '0 auto', width: '100%', padding: 'clamp(74px,8.5vh,88px) clamp(16px,5vw,80px) clamp(18px,3vh,32px)', position: 'relative', zIndex: 2 }}
           className="max-[767px]:!pt-16 max-[767px]:!pb-8"
         >
           <motion.div
-            initial={{ opacity: 1, y: -8 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 'clamp(16px,2.5vh,26px)' }}
           >
             <div style={{ width: 30, height: 1, background: '#3B82F6' }} />
@@ -514,8 +519,8 @@ const AboutPage = () => {
             className="max-[700px]:!grid-cols-[minmax(0,1fr)_90px] max-[700px]:!gap-4"
           >
             <motion.div
-              initial={{ opacity: 0.7, x: 22 }} animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, scale: 0.9, x: 28 }} animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 0.9, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -5 }}
               className="order-2 justify-self-end"
               style={{ width: '100%', position: 'relative', padding: '12px 0' }}
@@ -526,7 +531,7 @@ const AboutPage = () => {
               <img src={saiLogo} alt="Sai Enterprises" style={{ width: '100%', height: 'auto', display: 'block', position: 'relative', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.42))' }} />
             </motion.div>
 
-          {/* Headline — premium stacked treatment */}
+          {/* Headline, premium stacked treatment */}
           <div style={{ maxWidth: 1100, position: 'relative', order: 1 }}>
             {/* Vertical accent bar */}
             <motion.div
@@ -543,15 +548,15 @@ const AboutPage = () => {
             />
 
             {[
-              { text: 'Powering print.', size: 'clamp(35px,5.4vw,68px)', weight: 300, color: 'rgba(255,255,255,0.62)', italic: true, delay: 0 },
-              { text: 'Building trust.', size: 'clamp(48px,7.4vw,94px)', weight: 700, color: '#fff', italic: false, delay: 0.04 },
-              { text: 'Since 2000.', size: 'clamp(43px,6.7vw,84px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.08, glow: true },
+              { text: 'Machines move production.', size: 'clamp(28px,3.8vw,50px)', weight: 300, color: 'rgba(255,255,255,0.58)', italic: true, delay: 0.08 },
+              { text: 'Relationships move', size: 'clamp(46px,7vw,90px)', weight: 700, color: '#fff', italic: false, delay: 0.16 },
+              { text: 'business.', size: 'clamp(42px,6.4vw,82px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.24, glow: true },
             ].map((line) => (
               <motion.div
                 key={line.text}
-                initial={{ opacity: 1, x: 20 }}
+                initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.65, delay: line.delay, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 1, delay: line.delay, ease: [0.16, 1, 0.3, 1] }}
                 style={{
                   fontFamily: "'Manrope', sans-serif",
                   fontSize: line.size, fontWeight: line.weight,
@@ -570,9 +575,9 @@ const AboutPage = () => {
 
           {/* Sub-copy + CTAs */}
           <motion.div
-            initial={{ opacity: 0.72, y: 16 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.85, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
             style={{
               marginTop: 'clamp(14px,2.4vh,22px)',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 16,
@@ -584,7 +589,7 @@ const AboutPage = () => {
               color: 'rgba(255,255,255,0.42)', lineHeight: 1.65,
               maxWidth: 520, margin: 0,
             }}>
-              One trusted machinery partner—from the first production-floor conversation to installation, service and long-term growth across India and global markets.
+              One trusted machinery partner, from the first production-floor conversation to installation, service and long-term growth across India and global markets.
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <Link to="/contact" style={{
@@ -607,8 +612,11 @@ const AboutPage = () => {
             </div>
           </motion.div>
 
-          {/* Stats strip — premium card grid */}
-          <div
+          {/* Stats strip, premium card grid */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             style={{
               marginTop: 'clamp(18px,2.8vh,30px)',
               display: 'grid',
@@ -642,14 +650,17 @@ const AboutPage = () => {
                   opacity: 1,
                 }} />
                 {/* Top fill bar */}
-                <div
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: heroOn ? 1 : 0 }}
+                  transition={{ duration: 0.8, delay: 0.2 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                   style={{
                     position: 'absolute', top: 0, left: 0, right: 0, height: 2,
                     background: `linear-gradient(90deg, ${s.accent}, ${s.accent}60, transparent)`,
                     transformOrigin: 'left',
                   }}
                 />
-                {/* Ghost outlined number — depth layer */}
+                {/* Ghost outlined number, depth layer */}
                 <div style={{
                   position: 'absolute', bottom: -4, right: 8,
                   fontFamily: "'Manrope', sans-serif",
@@ -657,7 +668,7 @@ const AboutPage = () => {
                   color: `${s.accent}0C`, WebkitTextStroke: `1px ${s.accent}10`,
                   lineHeight: 1, letterSpacing: '-0.04em',
                   pointerEvents: 'none', userSelect: 'none', zIndex: 0,
-                  opacity: 1,
+                  opacity: heroOn ? 1 : 0, transition: 'opacity 0.7s ease 0.15s',
                 }}>
                   {s.target.toLocaleString()}{s.suffix}
                 </div>
@@ -668,7 +679,7 @@ const AboutPage = () => {
                   width: 6, height: 6, borderRadius: '50%',
                   background: s.accent,
                   boxShadow: `0 0 12px ${s.accent}AA`,
-                  opacity: 1,
+                  opacity: heroOn ? 1 : 0, transition: 'opacity 0.5s ease 0.25s',
                 }} />
 
                 {/* Eyebrow label */}
@@ -703,7 +714,10 @@ const AboutPage = () => {
                 </div>
 
                 {/* Accent underline */}
-                <div
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: heroOn ? 1 : 0 }}
+                  transition={{ duration: 0.65, delay: 0.35 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                   style={{
                     height: 1.5, width: '50%',
                     background: `linear-gradient(90deg, ${s.accent}, transparent)`,
@@ -733,13 +747,13 @@ const AboutPage = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
 
         </div>
         </div>
       </div>
 
-      {/* ── QUOTE — light ── */}
+      {/* ── QUOTE, light ── */}
       <div style={{
         background: '#F8FAFC',
         padding: 'clamp(48px,6vw,72px) 64px',
@@ -801,7 +815,7 @@ const AboutPage = () => {
         }} />
       </div>
 
-      {/* ── TIMELINE — DARK CINEMATIC ── */}
+      {/* ── TIMELINE, DARK CINEMATIC ── */}
       <div className="about-deferred" style={{
         background: '#060A10', padding: 'clamp(48px,6vw,72px) 0',
         borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden',
@@ -840,7 +854,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      {/* ── FOUNDERS — WHITE/LIGHT ── */}
+      {/* ── FOUNDERS, WHITE/LIGHT ── */}
       <div ref={foundersReveal.ref} style={{ background: '#fff', padding: 'clamp(48px,6vw,72px) 0', borderTop: '1px solid rgba(0,0,0,0.06)' }} className="about-deferred max-[767px]:!py-12">
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }}
           className="max-md:!px-7 max-[767px]:!px-4"
@@ -863,7 +877,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      {/* ── WORLD MAP — full dark ── */}
+      {/* ── WORLD MAP, full dark ── */}
       <div style={{ background: '#060A10', padding: 'clamp(32px,4vw,52px) 0 clamp(28px,3vw,44px)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 clamp(16px,5vw,64px)' }}>
 
@@ -894,7 +908,7 @@ const AboutPage = () => {
             </div>
           </div>
 
-          {/* Interactive globe — adapted to the Sai visual system */}
+          {/* Interactive globe, adapted to the Sai visual system */}
           <div style={{
             overflow: 'hidden',
             border: '1px solid rgba(255,255,255,0.06)',
@@ -927,7 +941,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      {/* ── CTA — light ── */}
+      {/* ── CTA, light ── */}
       <div style={{
         background: '#F8FAFC', padding: 'clamp(48px,6vw,72px) 64px', textAlign: 'center',
         borderTop: '1px solid rgba(0,0,0,0.07)',

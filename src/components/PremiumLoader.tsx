@@ -26,12 +26,6 @@ const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
           0%   { opacity: 0; transform: translateY(28px); letter-spacing: 0.4em; }
           100% { opacity: 1; transform: translateY(0); letter-spacing: 0.05em; }
         }
-        @keyframes pl-scan {
-          0%   { left: -8%; opacity: 0; }
-          12%  { opacity: 1; }
-          88%  { opacity: 1; }
-          100% { left: 108%; opacity: 0; }
-        }
         @keyframes pl-barcode-pulse {
           0%, 100% { opacity: 0.16; }
           50%      { opacity: 0.32; }
@@ -47,10 +41,6 @@ const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
         @keyframes pl-tag-in {
           0%   { opacity: 0; }
           100% { opacity: 1; }
-        }
-        @keyframes pl-corner-in {
-          0%   { opacity: 0; transform: scale(0.5); }
-          100% { opacity: 0.6; transform: scale(1); }
         }
       `}</style>
 
@@ -88,36 +78,6 @@ const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
           background: 'radial-gradient(ellipse, rgba(59,130,246,0.14) 0%, transparent 70%)',
           pointerEvents: 'none',
           filter: 'blur(40px)',
-        }} />
-
-        {/* Frame corners — premium aesthetic */}
-        <div style={{
-          position: 'absolute', top: 28, left: 28,
-          width: 22, height: 22,
-          borderTop: '1px solid rgba(255,255,255,0.32)',
-          borderLeft: '1px solid rgba(255,255,255,0.32)',
-          animation: 'pl-corner-in 0.7s ease 0.1s both',
-        }} />
-        <div style={{
-          position: 'absolute', top: 28, right: 28,
-          width: 22, height: 22,
-          borderTop: '1px solid rgba(255,255,255,0.32)',
-          borderRight: '1px solid rgba(255,255,255,0.32)',
-          animation: 'pl-corner-in 0.7s ease 0.15s both',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: 28, left: 28,
-          width: 22, height: 22,
-          borderBottom: '1px solid rgba(255,255,255,0.32)',
-          borderLeft: '1px solid rgba(255,255,255,0.32)',
-          animation: 'pl-corner-in 0.7s ease 0.2s both',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: 28, right: 28,
-          width: 22, height: 22,
-          borderBottom: '1px solid rgba(255,255,255,0.32)',
-          borderRight: '1px solid rgba(255,255,255,0.32)',
-          animation: 'pl-corner-in 0.7s ease 0.25s both',
         }} />
 
         {/* Logo */}
@@ -171,24 +131,6 @@ const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
             SAI ENTERPRISES
           </h1>
 
-          {/* Scanner sweep — blue glow */}
-          <div style={{
-            position: 'absolute', top: 4, bottom: 4,
-            width: 80,
-            background: 'linear-gradient(to right, transparent, rgba(96,165,250,0.55), transparent)',
-            filter: 'blur(14px)',
-            animation: 'pl-scan 2.1s cubic-bezier(0.55,0,0.45,1) 0.45s infinite',
-            pointerEvents: 'none',
-          }} />
-          {/* Scanner line — sharp */}
-          <div style={{
-            position: 'absolute', top: 4, bottom: 4,
-            width: 2,
-            background: '#60A5FA',
-            boxShadow: '0 0 16px rgba(96,165,250,0.85), 0 0 36px rgba(59,130,246,0.55)',
-            animation: 'pl-scan 2.1s cubic-bezier(0.55,0,0.45,1) 0.45s infinite',
-            pointerEvents: 'none',
-          }} />
         </div>
 
         {/* Tagline */}

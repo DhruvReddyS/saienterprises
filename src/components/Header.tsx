@@ -146,7 +146,7 @@ const Header = () => {
             </div>
           </Link>
 
-          {/* Desktop nav — 960px+ only */}
+          {/* Desktop nav, 960px+ only */}
           <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }} className="hidden min-[960px]:!flex">
             {navLinks.map((link) => (
               <Link
@@ -166,7 +166,8 @@ const Header = () => {
                   const el = e.currentTarget as HTMLElement;
                   if (link.to === '/contact') {
                     el.style.background = '#2563EB';
-                    el.style.transform = 'translateY(-1px)';
+                    el.style.transform = 'translateY(-2px) scale(1.035)';
+                    el.style.boxShadow = '0 16px 34px rgba(59,130,246,0.38)';
                   } else if (!isActive(link.to)) {
                     el.style.color = 'rgba(255,255,255,0.9)';
                   }
@@ -176,6 +177,7 @@ const Header = () => {
                   if (link.to === '/contact') {
                     el.style.background = '#3B82F6';
                     el.style.transform = 'translateY(0)';
+                    el.style.boxShadow = '0 12px 28px rgba(59,130,246,0.24)';
                   } else if (!isActive(link.to)) {
                     el.style.color = 'rgba(255,255,255,0.5)';
                   }
@@ -192,7 +194,7 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Mobile burger — tablet 768-959px only; <768px uses bottom nav */}
+          {/* Mobile burger, tablet 768-959px only; <768px uses bottom nav */}
           <button
             className="max-[767px]:!hidden min-[960px]:!hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -213,7 +215,7 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile full-screen menu — tablet 768-959px only */}
+      {/* Mobile full-screen menu, tablet 768-959px only */}
       <div
         className="max-[767px]:!hidden min-[960px]:!hidden"
         style={{

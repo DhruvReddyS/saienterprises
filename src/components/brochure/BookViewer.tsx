@@ -236,7 +236,7 @@ export default function BookViewer() {
           </div>
         </div>
 
-        {/* Controls — sits above the site's mobile bottom nav bar */}
+        {/* Controls, sits above the site's mobile bottom nav bar */}
         <div style={{
           position: 'fixed', bottom: 'calc(60px + env(safe-area-inset-bottom, 0px))', left: 0, right: 0,
           background: 'rgba(6,10,16,0.96)', backdropFilter: 'blur(12px)',
@@ -373,7 +373,7 @@ export default function BookViewer() {
               {staticLeft ? (
                 <PageImage src={staticLeft} alt="" priority style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
               ) : (
-                /* Empty left page — back cover side */
+                /* Empty left page, back cover side */
                 <div style={{
                   width: '100%', height: '100%',
                   background: 'linear-gradient(135deg, #0A1220 0%, #060A10 100%)',

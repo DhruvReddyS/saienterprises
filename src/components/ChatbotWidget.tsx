@@ -22,7 +22,7 @@ const WELCOME: Msg = {
   id: 'welcome',
   role: 'bot',
   ts: new Date(),
-  text: "Hi! I'm Sai Enterprises' sales assistant.\n\nTell me what you're producing and I'll recommend the right machine — or ask me to compare any two machines and I'll give you an honest breakdown.",
+  text: "Hi! I'm Sai Enterprises' sales assistant.\n\nTell me what you're producing and I'll recommend the right machine, or ask me to compare any two machines and I'll give you an honest breakdown.",
   suggestions: [
     { label: 'Machine for book finishing' },
     { label: 'Machine for carton packaging' },
@@ -190,7 +190,7 @@ const ChatbotWidget = () => {
         .sai-chat-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
       `}</style>
 
-      {/* Floating button — draggable */}
+      {/* Floating button, draggable */}
       <motion.div
         id="chatbot-anchor"
         drag
@@ -292,7 +292,7 @@ const ChatbotWidget = () => {
                 </button>
               </div>
 
-              {/* Quick starters — only if no user messages yet */}
+              {/* Quick starters, only if no user messages yet */}
               {msgs.length <= 1 && (
                 <div style={{
                   padding: '10px 12px 8px',
@@ -499,7 +499,7 @@ const ChatbotWidget = () => {
           )}
         </AnimatePresence>
 
-        {/* Drag handle — small grip at top of button area */}
+        {/* Drag handle, small grip at top of button area */}
         <div
           style={{
             position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)',
