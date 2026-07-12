@@ -53,12 +53,6 @@ const cleanPhoneHref = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
 const PresenceCityDetailContent = ({
   city,
 }: PresenceCityDetailContentProps) => {
-  const totalContactPoints = city.entries.reduce(
-    (sum, entry) =>
-      sum + entry.contacts.length + (entry.companyEmails?.length ?? 0),
-    0,
-  );
-
   return (
     <motion.div
       key={city.id}
@@ -86,24 +80,6 @@ const PresenceCityDetailContent = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:min-w-[180px]">
-            <div className="rounded-2xl border border-border/70 bg-secondary/20 px-3 py-3">
-              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                Entries
-              </p>
-              <p className="mt-1 text-lg font-semibold text-foreground">
-                {city.entries.length}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-border/70 bg-secondary/20 px-3 py-3">
-              <p className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-                Contacts
-              </p>
-              <p className="mt-1 text-lg font-semibold text-foreground">
-                {totalContactPoints}
-              </p>
-            </div>
-          </div>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">

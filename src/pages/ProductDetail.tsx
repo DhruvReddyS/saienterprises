@@ -308,7 +308,7 @@ const ProductDetail = () => {
               <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="caption mb-2">Recommended Machines</p>
-                  <h2 className="text-foreground">Related options with closer workflow fit.</h2>
+                  <h2 className="text-foreground">Machines that fit the next step in your line.</h2>
                   <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
                     These recommendations are based on category proximity, subcategory alignment, shared brochure details, and adjacent production use cases.
                   </p>

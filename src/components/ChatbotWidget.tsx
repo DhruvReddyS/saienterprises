@@ -240,7 +240,7 @@ const ChatbotWidget = () => {
                 <BotIcon />
                 <div style={{ flex: 1 }}>
                   <div style={{
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: "'Manrope', sans-serif",
                     fontSize: 13.5, fontWeight: 700, color: '#fff', lineHeight: 1.2,
                   }}>
                     Sai Enterprises
@@ -253,7 +253,7 @@ const ChatbotWidget = () => {
                       display: 'inline-block',
                     }} />
                     <span style={{
-                      fontFamily: "'DM Sans', sans-serif",
+                      fontFamily: "'Manrope', sans-serif",
                       fontSize: 10.5, color: 'rgba(255,255,255,0.4)', letterSpacing: '0.04em',
                     }}>
                       AI Assistant · Online
@@ -266,7 +266,7 @@ const ChatbotWidget = () => {
                   style={{
                     background: 'none', border: 'none', cursor: 'pointer',
                     color: 'rgba(255,255,255,0.28)', padding: '4px 6px',
-                    fontSize: 10, fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 10, fontFamily: "'Manrope', sans-serif",
                     letterSpacing: '0.06em', textTransform: 'uppercase',
                     transition: 'color 0.15s',
                   }}
@@ -307,7 +307,7 @@ const ChatbotWidget = () => {
                         background: 'rgba(255,255,255,0.05)',
                         border: '1px solid rgba(255,255,255,0.1)',
                         borderRadius: 20, padding: '5px 11px',
-                        fontFamily: "'DM Sans', sans-serif",
+                        fontFamily: "'Manrope', sans-serif",
                         fontSize: 11, color: 'rgba(255,255,255,0.6)',
                         cursor: 'pointer', transition: 'all 0.15s',
                       }}
@@ -347,7 +347,7 @@ const ChatbotWidget = () => {
                             ? 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)'
                             : 'rgba(255,255,255,0.06)',
                           border: isUser ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                          fontFamily: "'DM Sans', sans-serif",
+                          fontFamily: "'Manrope', sans-serif",
                           fontSize: 13, lineHeight: 1.6,
                           color: isUser ? '#fff' : 'rgba(255,255,255,0.88)',
                           whiteSpace: 'pre-wrap',
@@ -359,7 +359,7 @@ const ChatbotWidget = () => {
                       </div>
 
                       <div style={{
-                        fontFamily: "'DM Sans', sans-serif",
+                        fontFamily: "'Manrope', sans-serif",
                         fontSize: 9.5, color: 'rgba(255,255,255,0.2)',
                         paddingInline: isUser ? 4 : 40,
                         letterSpacing: '0.03em',
@@ -377,7 +377,7 @@ const ChatbotWidget = () => {
                                 background: 'rgba(59,130,246,0.08)',
                                 border: '1px solid rgba(59,130,246,0.25)',
                                 borderRadius: 20, padding: '5px 12px',
-                                fontFamily: "'DM Sans', sans-serif",
+                                fontFamily: "'Manrope', sans-serif",
                                 fontSize: 11, color: '#93c5fd',
                                 cursor: 'pointer', transition: 'all 0.15s',
                               }}
@@ -434,7 +434,7 @@ const ChatbotWidget = () => {
                     placeholder="Ask about machines, pricing, installation..."
                     style={{
                       flex: 1, background: 'none', border: 'none', outline: 'none', resize: 'none',
-                      fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+                      fontFamily: "'Manrope', sans-serif", fontSize: 13,
                       color: 'rgba(255,255,255,0.88)', lineHeight: 1.5,
                       minHeight: 22, maxHeight: 100,
                       scrollbarWidth: 'none',
@@ -486,7 +486,7 @@ const ChatbotWidget = () => {
                   </button>
                 </div>
                 <div style={{
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Manrope', sans-serif",
                   fontSize: 9.5,
                   color: listening ? '#f87171' : 'rgba(255,255,255,0.18)',
                   textAlign: 'center', marginTop: 7, letterSpacing: '0.02em',

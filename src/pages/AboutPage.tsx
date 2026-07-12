@@ -5,12 +5,15 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
-import WorldPresenceMap, { LEGEND } from '@/components/presence/WorldPresenceMap';
+import { LEGEND } from '@/components/presence/WorldPresenceMap';
+import RotatingEarth from '@/components/ui/wireframe-dotted-globe';
 import BrandImage from '@/components/BrandImage';
 import { BorderBeam } from '@/components/ui/border-beam';
 import { GlowCard } from '@/components/ui/spotlight-card';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
 import heroImage from '@/assets/hero-printing.jpg';
+import dayakerPhoto from '@/assets/founders/dayaker-reddy.jpg';
+import phaniPhoto from '@/assets/founders/phani-kumar.png';
 
 /* ── helpers ── */
 function useReveal(threshold = 0.12) {
@@ -25,6 +28,24 @@ function useReveal(threshold = 0.12) {
   }, [threshold]);
   return { ref, on };
 }
+
+const SmoothCounter = ({ target, started }: { target: number; started: boolean }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!started) return;
+    const startedAt = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - startedAt) / 1260);
+      const value = Math.round(target * (1 - Math.pow(1 - progress, 3)));
+      if (ref.current) ref.current.textContent = value.toLocaleString();
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [started, target]);
+  return <span ref={ref}>0</span>;
+};
 
 function useCounter(target: number, started: boolean) {
   const [val, setVal] = useState(0);
@@ -65,7 +86,7 @@ const timeline = [
   },
   {
     year: '2026',
-    title: 'Complete Workflow Stack',
+    title: 'One Partner, Every Production Stage',
     body: '4000+ machines placed. 2000+ customers served across commercial printers, packaging converters, newspaper groups, and stationery manufacturers. 490+ programmable HPM paper cutters sold — 90% market share in fully automatic paper cutters across India. One supplier for the entire production chain.',
     accent: '#10B981',
   },
@@ -82,11 +103,15 @@ const team = [
   {
     name: 'S. Dayaker Reddy',
     role: 'Founder & Director',
+    image: dayakerPhoto,
+    imagePosition: 'center 8%',
     desc: 'Leads strategic vision and key commercial relationships. Built the HPM partnership from 2000 and continues to drive national expansion.',
   },
   {
     name: 'G. Phani Kumar',
     role: 'Co-Founder & Director',
+    image: phaniPhoto,
+    imagePosition: 'center 12%',
     desc: 'Heads operations and service across all regions. Oversees technical machine placement, after-sales support, and partner network management.',
   },
 ];
@@ -134,7 +159,7 @@ const StatsRow = () => {
             }} />
             {on && <BorderBeam colorFrom={STAT_ACCENTS[i]} colorTo="transparent" duration={8 + i * 2} delay={i * 1.5} borderWidth={1} size={120} />}
             <div style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 'clamp(36px,4.5vw,58px)', fontWeight: 700,
               color: '#060A10', lineHeight: 1, letterSpacing: '-0.025em',
               position: 'relative',
@@ -142,7 +167,7 @@ const StatsRow = () => {
               {vals[i].toLocaleString()}{s.suffix}
             </div>
             <div style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 8.5, letterSpacing: '0.26em', textTransform: 'uppercase',
               color: STAT_ACCENTS[i], marginTop: 10, fontWeight: 700,
               position: 'relative',
@@ -202,7 +227,7 @@ const TimelineItem = ({ ch, i, total }: { ch: typeof timeline[0]; i: number; tot
         className="max-[767px]:!hidden"
       >
         <span style={{
-          fontFamily: "'Cormorant Garamond', serif",
+          fontFamily: "'Manrope', sans-serif",
           fontSize: 'clamp(18px,1.8vw,24px)', fontWeight: 700,
           color: ch.accent, letterSpacing: '-0.02em',
         }}>{ch.year}</span>
@@ -231,49 +256,97 @@ const TimelineItem = ({ ch, i, total }: { ch: typeof timeline[0]; i: number; tot
         transition={{ duration: 0.9, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
         style={{
           paddingLeft: 'clamp(20px,3vw,44px)',
-          paddingBottom: isLast ? 0 : 'clamp(60px,8vw,100px)',
-          position: 'relative', overflow: 'hidden',
+          paddingBottom: isLast ? 0 : 'clamp(44px,6vw,72px)',
+          position: 'relative',
         }}
       >
-        {/* Ghost year watermark */}
-        <div style={{
-          position: 'absolute', right: '-3%', top: '44%', transform: 'translateY(-50%)',
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(80px,13vw,190px)', fontWeight: 700, fontStyle: 'italic',
-          color: 'transparent', WebkitTextStroke: `1px ${ch.accent}12`,
-          pointerEvents: 'none', userSelect: 'none', lineHeight: 1, zIndex: 0,
-          letterSpacing: '-0.05em',
-        }}>{ch.year}</div>
-
-        {/* Mobile year */}
-        <div style={{ position: 'relative', zIndex: 1, marginBottom: 10 }} className="min-[768px]:!hidden">
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: ch.accent, fontWeight: 700 }}>{ch.year}</span>
-        </div>
-
-        <motion.h3
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.75, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        <motion.div
+          whileHover={{ y: -4 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(26px,3.6vw,50px)', fontWeight: 600,
-            color: '#fff', lineHeight: 1.05, letterSpacing: '-0.025em',
-            marginBottom: 16, position: 'relative', zIndex: 1,
+            position: 'relative',
+            overflow: 'hidden',
+            padding: 'clamp(20px,2.8vw,32px)',
+            borderRadius: 22,
+            background: `linear-gradient(135deg, ${ch.accent}12 0%, rgba(255,255,255,0.045) 42%, rgba(255,255,255,0.018) 100%)`,
+            border: `1px solid ${ch.accent}24`,
+            boxShadow: '0 26px 80px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.055)',
           }}
-        >{ch.title}</motion.h3>
+        >
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '42%',
+              height: 2,
+              background: `linear-gradient(90deg, ${ch.accent}, transparent)`,
+              transformOrigin: 'left',
+            }}
+          />
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.75, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 'clamp(13px,1.3vw,15px)', color: 'rgba(255,255,255,0.42)',
-            lineHeight: 1.9, maxWidth: 580, margin: 0, position: 'relative', zIndex: 1,
-          }}
-        >{ch.body}</motion.p>
+          {/* Ghost year watermark */}
+          <div style={{
+            position: 'absolute', right: 18, top: 14,
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 'clamp(54px,8vw,112px)', fontWeight: 800, fontStyle: 'italic',
+            color: `${ch.accent}09`, WebkitTextStroke: `1px ${ch.accent}10`,
+            pointerEvents: 'none', userSelect: 'none', lineHeight: 1, zIndex: 0,
+            letterSpacing: '-0.05em',
+          }}>{ch.year}</div>
+
+          <div style={{
+            position: 'relative',
+            zIndex: 1,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '8px 12px',
+            marginBottom: 18,
+            borderRadius: 999,
+            background: `${ch.accent}14`,
+            border: `1px solid ${ch.accent}26`,
+            color: ch.accent,
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 9,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            fontWeight: 800,
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: ch.accent, boxShadow: `0 0 14px ${ch.accent}` }} />
+            {ch.year} · Milestone {String(i + 1).padStart(2, '0')}
+          </div>
+
+          <motion.h3
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: 'clamp(24px,3vw,40px)', fontWeight: 700,
+              color: '#fff', lineHeight: 1.05, letterSpacing: '-0.025em',
+              marginBottom: 16, position: 'relative', zIndex: 1,
+              maxWidth: 680,
+            }}
+          >{ch.title}</motion.h3>
+
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.75, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: 'clamp(13px,1.3vw,15px)', color: 'rgba(255,255,255,0.58)',
+              lineHeight: 1.9, maxWidth: 650, margin: 0, position: 'relative', zIndex: 1,
+            }}
+          >{ch.body}</motion.p>
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -294,7 +367,7 @@ const TeamCard = ({ person, i }: { person: typeof team[0]; i: number }) => {
       <GlowCard
         glowColor="blue"
         customSize={true}
-        style={{ width: '100%', padding: 'clamp(24px,4vw,44px) clamp(20px,4vw,36px)' }}
+        style={{ width: '100%', padding: 0, overflow: 'hidden' }}
         onMouseEnter={() => setHov(true)}
         onMouseLeave={() => setHov(false)}
       >
@@ -308,7 +381,7 @@ const TeamCard = ({ person, i }: { person: typeof team[0]; i: number }) => {
         {/* Corner number */}
         <div style={{
           position: 'absolute', top: 20, right: 28,
-          fontFamily: "'Cormorant Garamond', serif",
+          fontFamily: "'Manrope', sans-serif",
           fontSize: 64, fontWeight: 700, color: '#3B82F6',
           opacity: hov ? 0.06 : 0.03, lineHeight: 1,
           transition: 'opacity 0.4s', userSelect: 'none',
@@ -317,21 +390,38 @@ const TeamCard = ({ person, i }: { person: typeof team[0]; i: number }) => {
           {String(i + 1).padStart(2, '0')}
         </div>
         {hov && <BorderBeam colorFrom="#3B82F6" colorTo="#60A5FA" duration={6} delay={0} borderWidth={1} size={160} />}
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 14, fontWeight: 700 }}>
-          Co-Founder
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(210px, 0.72fr) 1.28fr', minHeight: 320 }} className="max-[700px]:!grid-cols-1">
+          <div style={{ minHeight: 320, overflow: 'hidden', background: '#E9EEF5', position: 'relative' }} className="max-[700px]:!min-h-[370px]">
+            <img
+              src={person.image}
+              alt={`${person.name}, ${person.role} at Sai Enterprises`}
+              loading="lazy"
+              style={{
+                width: '100%', height: '100%', display: 'block', objectFit: 'cover',
+                objectPosition: person.imagePosition,
+                filter: hov ? 'saturate(1.03) contrast(1.02)' : 'saturate(0.94)',
+                transform: hov ? 'scale(1.09)' : 'scale(1.065)', transformOrigin: i === 0 ? '50% 8%' : '50% 12%',
+                transition: 'transform 0.7s cubic-bezier(0.16,1,0.3,1), filter 0.4s ease',
+              }}
+            />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,transparent 68%,rgba(6,10,16,0.18))', pointerEvents: 'none' }} />
+          </div>
+          <div style={{ padding: 'clamp(26px,4vw,44px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 18, fontWeight: 700 }}>
+              {i === 0 ? 'Founder' : 'Co-Founder'} · Leadership
+            </div>
+            <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(26px,2.7vw,36px)', fontWeight: 650, color: '#060A10', lineHeight: 1.05, marginBottom: 10, letterSpacing: '-0.025em' }}>
+              {person.name}
+            </h3>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.17em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.38)', marginBottom: 26 }}>
+              {person.role}
+            </div>
+            <div style={{ width: 34, height: 2, background: '#3B82F6', marginBottom: 24 }} />
+            <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, color: 'rgba(0,0,0,0.52)', lineHeight: 1.9, margin: 0, maxWidth: 520 }}>
+              {person.desc}
+            </p>
+          </div>
         </div>
-        <h3 style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: 'clamp(22px,2.5vw,32px)', fontWeight: 600, color: '#060A10', lineHeight: 1.1, marginBottom: 6,
-        }}>
-          {person.name}
-        </h3>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.38)', marginBottom: 20 }}>
-          {person.role}
-        </div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'rgba(0,0,0,0.50)', lineHeight: 1.85, margin: 0 }}>
-          {person.desc}
-        </p>
       </GlowCard>
     </div>
   );
@@ -342,11 +432,10 @@ const AboutPage = () => {
   const quoteReveal = useReveal(0.2);
   const foundersReveal = useReveal(0.1);
   const [heroOn, setHeroOn] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setHeroOn(true), 650); return () => clearTimeout(t); }, []);
-  const hc0 = useCounter(24, heroOn);
-  const hc1 = useCounter(4000, heroOn);
-  const hc2 = useCounter(2000, heroOn);
-  const hc3 = useCounter(15, heroOn);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setHeroOn(true));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     setPageMeta(
@@ -359,45 +448,42 @@ const AboutPage = () => {
     <PageTransition>
       <Header />
 
-      {/* ── HERO — redesigned ── */}
+      {/* ── HERO — premium redesign ── */}
       <div style={{
         background: '#060A10',
         position: 'relative', overflow: 'hidden',
-        padding: 'clamp(40px,6vw,80px) 0 0',
-      }}>
-        {/* Fine grid */}
+        height: '100dvh', minHeight: 680, display: 'flex', flexDirection: 'column',
+      }} className="max-[767px]:!h-auto max-[767px]:!min-h-0">
+        {/* Dot grid */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
+          backgroundImage: 'radial-gradient(circle, rgba(59,130,246,0.045) 1px, transparent 1px)',
+          backgroundSize: '36px 36px',
         }} />
 
-        {/* Big "24" ghost number — left bleed */}
-        <motion.div
-          initial={{ opacity: 0, x: -60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            position: 'absolute', left: '-2%', top: '50%', transform: 'translateY(-56%)',
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(260px,38vw,560px)', fontWeight: 700,
-            lineHeight: 1, letterSpacing: '-0.08em',
-            color: 'transparent',
-            WebkitTextStroke: '1px rgba(59,130,246,0.13)',
-            pointerEvents: 'none', userSelect: 'none',
-            zIndex: 1,
-          }}
-        >
-          24
-        </motion.div>
-
-        {/* Blue glow behind the 24 */}
+        {/* Center radial glow */}
         <div style={{
-          position: 'absolute', left: '-5%', top: '30%',
-          width: '50%', height: '70%',
-          background: 'radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.07) 0%, transparent 65%)',
+          position: 'absolute', top: '42%', left: '50%', transform: 'translate(-50%,-50%)',
+          width: '85vw', height: '60vw', maxWidth: 1200, maxHeight: 760,
+          background: 'radial-gradient(ellipse, rgba(59,130,246,0.10) 0%, transparent 65%)',
           pointerEvents: 'none',
         }} />
+
+        {/* Ghost brand watermark — right bleed */}
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            position: 'absolute', right: '-5%', top: '46%', transform: 'translateY(-52%)',
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 'clamp(180px,25vw,380px)', fontWeight: 700, fontStyle: 'italic',
+            color: 'transparent',
+            WebkitTextStroke: '1px rgba(59,130,246,0.065)',
+            pointerEvents: 'none', userSelect: 'none', zIndex: 1,
+            letterSpacing: '-0.06em', lineHeight: 1,
+          }}
+        >SAI</motion.div>
 
         {/* Top accent line */}
         <div style={{
@@ -406,75 +492,103 @@ const AboutPage = () => {
           pointerEvents: 'none',
         }} />
 
-        {/* Right-side vignette to keep ghost "24" from dominating */}
-        <div style={{
-          position: 'absolute', top: 0, right: 0, width: '35%', height: '100%',
-          background: 'linear-gradient(to left, rgba(6,10,16,0.55), transparent)',
-          pointerEvents: 'none',
-        }} />
-
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 clamp(16px,5vw,64px)', position: 'relative', zIndex: 2 }}>
-
-          {/* Top label row */}
+        {/* Main content — vertically centered */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
+        <div style={{ maxWidth: 1300, margin: '0 auto', width: '100%', padding: 'clamp(74px,8.5vh,88px) clamp(16px,5vw,80px) clamp(18px,3vh,32px)', position: 'relative', zIndex: 2 }}
+          className="max-[767px]:!pt-16 max-[767px]:!pb-8"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 'clamp(24px,4vw,48px)' }}
+            initial={{ opacity: 1, y: -8 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 'clamp(16px,2.5vh,26px)' }}
           >
-            <div style={{ width: 28, height: 1.5, background: '#3B82F6' }} />
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, letterSpacing: '0.32em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
-              Est. 2000 · Hyderabad, India
-            </span>
+            <div style={{ width: 30, height: 1, background: '#3B82F6' }} />
+            <div style={{ fontFamily: "'Manrope',sans-serif", fontSize: 9, fontWeight: 800, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#60A5FA' }}>
+              About Sai Enterprises
+            </div>
           </motion.div>
 
-          {/* Headline — split typographic treatment */}
-          <div style={{ maxWidth: 860, paddingLeft: 'clamp(0px,12vw,120px)' }} className="max-[767px]:!pl-0">
+          {/* Brand mark + headline */}
+          <div
+            style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) clamp(135px,16vw,215px)', alignItems: 'center', gap: 'clamp(28px,5vw,72px)' }}
+            className="max-[700px]:!grid-cols-[minmax(0,1fr)_90px] max-[700px]:!gap-4"
+          >
+            <motion.div
+              initial={{ opacity: 0.7, x: 22 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ y: -5 }}
+              className="order-2 justify-self-end"
+              style={{ width: '100%', position: 'relative', padding: '12px 0' }}
+            >
+              <div style={{ position: 'absolute', top: 0, right: 0, width: '72%', height: 1, background: 'linear-gradient(90deg,transparent,#3B82F6)' }} />
+              <div style={{ position: 'absolute', bottom: 0, right: 0, width: '42%', height: 1, background: 'linear-gradient(90deg,transparent,rgba(96,165,250,0.45))' }} />
+              <div style={{ position: 'absolute', inset: '-25%', background: 'radial-gradient(circle,rgba(59,130,246,0.12),transparent 64%)', pointerEvents: 'none' }} />
+              <img src={saiLogo} alt="Sai Enterprises" style={{ width: '100%', height: 'auto', display: 'block', position: 'relative', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.42))' }} />
+            </motion.div>
+
+          {/* Headline — premium stacked treatment */}
+          <div style={{ maxWidth: 1100, position: 'relative', order: 1 }}>
+            {/* Vertical accent bar */}
+            <motion.div
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 1.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                position: 'absolute', left: 'clamp(-20px,-2vw,-30px)', top: 8, bottom: 8,
+                width: 2,
+                background: 'linear-gradient(to bottom, transparent, #3B82F6 30%, #60A5FA 70%, transparent)',
+                transformOrigin: 'top',
+              }}
+              className="max-md:!hidden"
+            />
+
             {[
-              { text: 'Graphic machinery', size: 'clamp(40px,6vw,80px)', weight: 300, color: 'rgba(255,255,255,0.45)', italic: true, delay: 0.08 },
-              { text: 'trusted across', size: 'clamp(52px,8vw,108px)', weight: 700, color: '#fff', italic: false, delay: 0.16 },
-              { text: 'India & beyond.', size: 'clamp(44px,7vw,94px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.24 },
+              { text: 'Powering print.', size: 'clamp(35px,5.4vw,68px)', weight: 300, color: 'rgba(255,255,255,0.62)', italic: true, delay: 0 },
+              { text: 'Building trust.', size: 'clamp(48px,7.4vw,94px)', weight: 700, color: '#fff', italic: false, delay: 0.04 },
+              { text: 'Since 2000.', size: 'clamp(43px,6.7vw,84px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.08, glow: true },
             ].map((line) => (
               <motion.div
                 key={line.text}
-                initial={{ opacity: 0, x: 40 }}
+                initial={{ opacity: 1, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 1, delay: line.delay, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.65, delay: line.delay, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  fontFamily: "'Cormorant Garamond', serif",
+                  fontFamily: "'Manrope', sans-serif",
                   fontSize: line.size, fontWeight: line.weight,
                   fontStyle: line.italic ? 'italic' : 'normal',
                   color: line.color,
                   lineHeight: 1.0, letterSpacing: '-0.03em',
                   display: 'block',
+                  textShadow: line.glow ? '0 0 40px rgba(59,130,246,0.4), 0 0 80px rgba(59,130,246,0.18)' : 'none',
                 }}
               >
                 {line.text}
               </motion.div>
             ))}
           </div>
+          </div>
 
           {/* Sub-copy + CTAs */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0.72, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.75, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              marginTop: 'clamp(28px,4vw,52px)',
-              display: 'flex', alignItems: 'center', gap: 48, flexWrap: 'wrap',
+              marginTop: 'clamp(14px,2.4vh,22px)',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 16,
             }}
           >
             <p style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 14, fontWeight: 300,
-              color: 'rgba(255,255,255,0.38)', lineHeight: 1.85,
-              maxWidth: 480, margin: 0,
+              fontFamily: "'Manrope', sans-serif",
+              fontSize: 13, fontWeight: 300,
+              color: 'rgba(255,255,255,0.42)', lineHeight: 1.65,
+              maxWidth: 520, margin: 0,
             }}>
-              24+ years supplying, installing and servicing graphic machinery across India, Gulf, Africa and Asia.
+              One trusted machinery partner—from the first production-floor conversation to installation, service and long-term growth across India and global markets.
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <Link to="/contact" style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
+                fontFamily: "'Manrope', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
                 padding: '13px 28px', background: '#3B82F6', color: '#fff',
                 textDecoration: 'none', borderRadius: 4, transition: 'background 0.2s', whiteSpace: 'nowrap',
               }}
@@ -482,7 +596,7 @@ const AboutPage = () => {
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
               >Talk to us →</Link>
               <Link to="/machinery" style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
+                fontFamily: "'Manrope', sans-serif", fontSize: 10.5, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
                 padding: '13px 28px', background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.5)',
                 textDecoration: 'none', borderRadius: 4, transition: 'all 0.2s', whiteSpace: 'nowrap',
@@ -493,119 +607,146 @@ const AboutPage = () => {
             </div>
           </motion.div>
 
-          {/* Stats strip — animated count-up + glow */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          {/* Stats strip — premium card grid */}
+          <div
             style={{
-              marginTop: 'clamp(40px,6vw,72px)',
+              marginTop: 'clamp(18px,2.8vh,30px)',
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
-              borderTop: '1px solid rgba(255,255,255,0.07)',
+              gap: 12,
             }}
             className="max-[767px]:!grid-cols-2"
           >
             {[
-              { count: hc0, suffix: '+', label: 'Years in business', accent: '#3B82F6' },
-              { count: hc1, suffix: '+', label: 'Machines placed', accent: '#60A5FA' },
-              { count: hc2, suffix: '+', label: 'Customers served', accent: '#3B82F6' },
-              { count: hc3, suffix: '+', label: 'Countries reached', accent: '#60A5FA' },
+              { suffix: '+', label: 'Years in business', hint: 'Since the year 2000', accent: '#3B82F6', target: 24 },
+              { suffix: '+', label: 'Machines placed', hint: 'Pre-press to packaging', accent: '#60A5FA', target: 4000 },
+              { suffix: '+', label: 'Customers served', hint: 'Across every print floor', accent: '#A78BFA', target: 2000 },
+              { suffix: '+', label: 'Countries reached', hint: 'India · Gulf · Africa · Asia', accent: '#34D399', target: 15 },
             ].map((s, i) => (
-              <motion.div
+              <div
                 key={s.label}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.6 + i * 0.08, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  padding: 'clamp(20px,3vw,36px) clamp(16px,2vw,28px)',
-                  borderRight: i < 3 ? '1px solid rgba(255,255,255,0.07)' : 'none',
-                  borderBottom: '1px solid rgba(255,255,255,0.07)',
+                  padding: 'clamp(14px,2vh,20px) clamp(15px,1.9vw,24px)',
                   position: 'relative', overflow: 'hidden',
+                  background: `${s.accent}0A`,
+                  border: `1px solid ${s.accent}22`,
+                  borderRadius: 0,
+                  cursor: 'default',
                 }}
-                className="max-[767px]:!border-r-0 max-[767px]:!border-b"
               >
                 {/* Background glow */}
                 <div style={{
                   position: 'absolute', inset: 0,
-                  background: `radial-gradient(ellipse at 20% 50%, ${s.accent}1A 0%, transparent 68%)`,
+                  background: `radial-gradient(ellipse at 30% 50%, ${s.accent}1F 0%, transparent 70%)`,
                   pointerEvents: 'none',
-                  opacity: heroOn ? 1 : 0, transition: 'opacity 1.4s ease',
+                  opacity: 1,
                 }} />
                 {/* Top fill bar */}
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: heroOn ? 1 : 0 }}
-                  transition={{ duration: 1.3, delay: 0.7 + i * 0.14, ease: [0.16, 1, 0.3, 1] }}
+                <div
                   style={{
                     position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-                    background: `linear-gradient(90deg, ${s.accent}, ${s.accent}50, transparent)`,
+                    background: `linear-gradient(90deg, ${s.accent}, ${s.accent}60, transparent)`,
                     transformOrigin: 'left',
                   }}
                 />
                 {/* Ghost outlined number — depth layer */}
                 <div style={{
-                  position: 'absolute', bottom: -8, right: -4,
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: 'clamp(72px,10vw,130px)', fontWeight: 700,
-                  color: 'transparent', WebkitTextStroke: `1px ${s.accent}18`,
+                  position: 'absolute', bottom: -4, right: 8,
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: 'clamp(34px,4vw,56px)', fontWeight: 800,
+                  color: `${s.accent}0C`, WebkitTextStroke: `1px ${s.accent}10`,
                   lineHeight: 1, letterSpacing: '-0.04em',
                   pointerEvents: 'none', userSelect: 'none', zIndex: 0,
-                  opacity: heroOn ? 1 : 0, transition: 'opacity 1.2s ease 0.4s',
+                  opacity: 1,
                 }}>
-                  {[24, 4000, 2000, 15][i]}{s.suffix}
+                  {s.target.toLocaleString()}{s.suffix}
                 </div>
+
+                {/* Small dot indicator */}
+                <div style={{
+                  position: 'absolute', top: 14, right: 16,
+                  width: 6, height: 6, borderRadius: '50%',
+                  background: s.accent,
+                  boxShadow: `0 0 12px ${s.accent}AA`,
+                  opacity: 1,
+                }} />
+
+                {/* Eyebrow label */}
+                <div style={{
+                  position: 'relative', zIndex: 1,
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: 8.5, letterSpacing: '0.3em', textTransform: 'uppercase',
+                  color: `${s.accent}DD`, fontWeight: 700,
+                  marginBottom: 7,
+                }}>
+                  0{i + 1}
+                </div>
+
                 {/* Live counter */}
-                <div style={{ position: 'relative', zIndex: 1, lineHeight: 1, marginBottom: 6, display: 'inline-flex', alignItems: 'baseline', gap: 3 }}>
+                <div style={{ position: 'relative', zIndex: 1, lineHeight: 1, marginBottom: 12, display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
                   <span style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: 'clamp(46px,5.8vw,80px)', fontWeight: 700,
+                    fontFamily: "'Manrope', sans-serif",
+                    fontSize: 'clamp(34px,4vw,56px)', fontWeight: 700,
                     color: '#fff', letterSpacing: '-0.04em',
-                    textShadow: `0 0 40px ${s.accent}65, 0 0 8px ${s.accent}35`,
+                    textShadow: `0 0 40px ${s.accent}75, 0 0 12px ${s.accent}45`,
                   }}>
-                    {s.count.toLocaleString()}
+                    <SmoothCounter target={s.target} started={heroOn} />
                   </span>
                   <span style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: 'clamp(24px,3vw,40px)', fontWeight: 600,
+                    fontFamily: "'Manrope', sans-serif",
+                    fontSize: 'clamp(19px,2.3vw,29px)', fontWeight: 600,
                     color: s.accent, letterSpacing: '-0.02em',
-                    textShadow: `0 0 20px ${s.accent}90`,
+                    textShadow: `0 0 24px ${s.accent}`,
                   }}>
                     {s.suffix}
                   </span>
                 </div>
+
                 {/* Accent underline */}
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: heroOn ? 1 : 0 }}
-                  transition={{ duration: 0.8, delay: 0.9 + i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                <div
                   style={{
-                    height: 1.5, width: '60%',
+                    height: 1.5, width: '50%',
                     background: `linear-gradient(90deg, ${s.accent}, transparent)`,
-                    transformOrigin: 'left', marginBottom: 10, position: 'relative', zIndex: 1,
+                    transformOrigin: 'left', marginBottom: 7, position: 'relative', zIndex: 1,
                   }}
                 />
+
+                {/* Label */}
                 <div style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: 8.5, letterSpacing: '0.26em', textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.32)', fontWeight: 700, position: 'relative', zIndex: 1,
+                  position: 'relative', zIndex: 1,
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
+                  color: '#fff', fontWeight: 700,
+                  marginBottom: 2,
                 }}>
                   {s.label}
                 </div>
-              </motion.div>
+
+                {/* Hint */}
+                <div style={{
+                  position: 'relative', zIndex: 1,
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: 10.5, color: 'rgba(255,255,255,0.4)',
+                  fontStyle: 'italic', lineHeight: 1.4,
+                }}>
+                  {s.hint}
+                </div>
+              </div>
             ))}
-          </motion.div>
+          </div>
+
+        </div>
         </div>
       </div>
 
       {/* ── QUOTE — light ── */}
       <div style={{
         background: '#F8FAFC',
-        padding: 'clamp(64px,8vw,100px) 64px',
+        padding: 'clamp(48px,6vw,72px) 64px',
         textAlign: 'center', position: 'relative', overflow: 'hidden',
         borderTop: '1px solid rgba(0,0,0,0.07)',
       }}
-        className="max-md:!px-7 max-[767px]:!px-5"
+        className="about-deferred max-md:!px-7 max-[767px]:!px-5"
       >
         {/* Subtle decorative lines */}
         <div style={{
@@ -614,23 +755,41 @@ const AboutPage = () => {
           opacity: quoteReveal.on ? 1 : 0, transition: 'opacity 0.6s',
         }} />
         <div ref={quoteReveal.ref} style={{ maxWidth: 820, margin: '48px auto 0' }}>
-          <blockquote style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(28px,4vw,58px)', fontWeight: 300, fontStyle: 'italic',
-            color: '#060A10', lineHeight: 1.2, letterSpacing: '-0.01em',
-            opacity: quoteReveal.on ? 1 : 0, transform: quoteReveal.on ? 'none' : 'translateY(20px)',
-            transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s',
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 24,
+            fontFamily: "'Manrope', sans-serif", fontSize: 9, fontWeight: 800,
+            letterSpacing: '0.25em', textTransform: 'uppercase', color: '#3B82F6',
+            opacity: quoteReveal.on ? 1 : 0, transition: 'opacity 0.6s 0.05s',
           }}>
-            "We don't sell machines.<br />
-            <span style={{ color: '#3B82F6' }}>We build print floors."</span>
-          </blockquote>
+            <span style={{ width: 28, height: 1, background: '#3B82F6', display: 'inline-block' }} />
+            What We Stand For
+            <span style={{ width: 28, height: 1, background: '#3B82F6', display: 'inline-block' }} />
+          </div>
+          <motion.blockquote
+            initial={false}
+            animate={{ opacity: quoteReveal.on ? 1 : 0, y: quoteReveal.on ? 0 : 20 }}
+            whileHover={{ y: -6, scale: 1.015 }}
+            transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 'clamp(30px,4.4vw,62px)', fontWeight: 500,
+            color: '#060A10', lineHeight: 1.2, letterSpacing: '-0.01em',
+            cursor: 'default',
+          }}>
+            “We believe in<br />
+            <span style={{
+              display: 'inline-block', color: '#fff', background: '#3B82F6',
+              padding: '0.04em 0.22em 0.1em', marginTop: 8,
+              boxShadow: '0 14px 42px rgba(59,130,246,0.22)',
+            }}>long-term relationships.</span>”
+          </motion.blockquote>
           <div style={{
             marginTop: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16,
             opacity: quoteReveal.on ? 1 : 0, transition: 'opacity 0.6s 0.3s',
           }}>
             <div style={{ width: 32, height: 1, background: 'rgba(0,0,0,0.18)' }} />
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.4)' }}>
-              S. Dayaker Reddy · Founder
+            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(0,0,0,0.4)' }}>
+              Sai Enterprises · Our Guiding Principle
             </span>
             <div style={{ width: 32, height: 1, background: 'rgba(0,0,0,0.18)' }} />
           </div>
@@ -643,8 +802,8 @@ const AboutPage = () => {
       </div>
 
       {/* ── TIMELINE — DARK CINEMATIC ── */}
-      <div style={{
-        background: '#060A10', padding: 'clamp(64px,8vw,100px) 0 clamp(64px,8vw,100px)',
+      <div className="about-deferred" style={{
+        background: '#060A10', padding: 'clamp(48px,6vw,72px) 0',
         borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden',
       }}>
         {/* Subtle ambient glow */}
@@ -652,18 +811,18 @@ const AboutPage = () => {
           position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)',
           width: '80%', height: '60%',
           background: 'radial-gradient(ellipse, rgba(59,130,246,0.04) 0%, transparent 70%)',
-          pointerEvents: 'none', filter: 'blur(80px)',
+          pointerEvents: 'none',
         }} />
 
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 clamp(16px,5vw,64px)', position: 'relative' }}>
           {/* Section header */}
           <div style={{ marginBottom: 72 }}>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
               Our Story
             </div>
             <h2 style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 'clamp(32px,4.5vw,56px)', fontWeight: 600, lineHeight: 1.0,
               letterSpacing: '-0.02em', color: '#fff',
             }}>
@@ -682,23 +841,21 @@ const AboutPage = () => {
       </div>
 
       {/* ── FOUNDERS — WHITE/LIGHT ── */}
-      <div ref={foundersReveal.ref} style={{ background: '#fff', padding: '80px 0 100px', borderTop: '1px solid rgba(0,0,0,0.06)' }} className="max-[767px]:!py-12">
+      <div ref={foundersReveal.ref} style={{ background: '#fff', padding: 'clamp(48px,6vw,72px) 0', borderTop: '1px solid rgba(0,0,0,0.06)' }} className="about-deferred max-[767px]:!py-12">
         <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 64px' }}
           className="max-md:!px-7 max-[767px]:!px-4"
         >
           <div style={{ marginBottom: 52 }}>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
               Leadership
             </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 600, lineHeight: 1.0, letterSpacing: '-0.02em', color: '#060A10' }}>
+            <h2 style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 600, lineHeight: 1.0, letterSpacing: '-0.02em', color: '#060A10' }}>
               The people behind Sai.
             </h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}
-            className="max-lg:!grid-cols-1"
-          >
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 20, maxWidth: 960, margin: '0 auto' }}>
             {team.map((person, i) => (
               <TeamCard key={person.name} person={person} i={i} />
             ))}
@@ -713,11 +870,11 @@ const AboutPage = () => {
           {/* Header row */}
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
                 Global Presence
               </div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(28px,4vw,52px)', fontWeight: 600, lineHeight: 1.0, letterSpacing: '-0.02em', color: '#fff', margin: 0 }}>
+              <h2 style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(28px,4vw,52px)', fontWeight: 600, lineHeight: 1.0, letterSpacing: '-0.02em', color: '#fff', margin: 0 }}>
                 Offices across India,<br />
                 <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.38)' }}>Africa & Asia.</span>
               </h2>
@@ -730,16 +887,24 @@ const AboutPage = () => {
                   borderRight: si < 2 ? '1px solid rgba(255,255,255,0.08)' : 'none',
                   background: 'rgba(255,255,255,0.03)',
                 }}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700, color: '#fff', lineHeight: 1 }}>{s.val}</div>
-                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, marginTop: 4 }}>{s.label}</div>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 28, fontWeight: 700, color: '#fff', lineHeight: 1 }}>{s.val}</div>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, marginTop: 4 }}>{s.label}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Map */}
-          <div style={{ overflow: 'hidden', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <WorldPresenceMap />
+          {/* Interactive globe — adapted to the Sai visual system */}
+          <div style={{
+            overflow: 'hidden',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: 28,
+            maxWidth: 980,
+            margin: '0 auto',
+            background: 'radial-gradient(circle at 50% 45%, rgba(59,130,246,0.10), transparent 65%)',
+            boxShadow: '0 32px 90px rgba(0,0,0,0.28)',
+          }}>
+            <RotatingEarth />
           </div>
 
           {/* Legend row */}
@@ -753,8 +918,8 @@ const AboutPage = () => {
                   border: l.color === '#ffffff' ? '1px solid rgba(255,255,255,0.3)' : 'none',
                 }} />
                 <div>
-                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)' }}>{l.label}</div>
-                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(255,255,255,0.28)', marginTop: 1 }}>{l.desc}</div>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)' }}>{l.label}</div>
+                  <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(255,255,255,0.28)', marginTop: 1 }}>{l.desc}</div>
                 </div>
               </div>
             ))}
@@ -764,7 +929,7 @@ const AboutPage = () => {
 
       {/* ── CTA — light ── */}
       <div style={{
-        background: '#F8FAFC', padding: '100px 64px', textAlign: 'center',
+        background: '#F8FAFC', padding: 'clamp(48px,6vw,72px) 64px', textAlign: 'center',
         borderTop: '1px solid rgba(0,0,0,0.07)',
       }}
         className="max-md:!px-7 max-md:!py-16 max-[767px]:!px-5 max-[767px]:!py-12"
@@ -772,13 +937,13 @@ const AboutPage = () => {
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 22 }}>
             <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
+            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
               Let's Talk
             </span>
             <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
           </div>
           <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
+            fontFamily: "'Manrope', sans-serif",
             fontSize: 'clamp(32px,4.5vw,60px)', fontWeight: 300,
             color: '#060A10', lineHeight: 1.08, marginBottom: 44,
             letterSpacing: '-0.02em',
@@ -787,7 +952,7 @@ const AboutPage = () => {
           </h2>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/contact" style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
+              fontFamily: "'Manrope', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
               padding: '14px 36px', background: '#3B82F6', color: '#fff',
               textDecoration: 'none', transition: 'background 0.2s',
             }}
@@ -797,7 +962,7 @@ const AboutPage = () => {
               Start a Conversation →
             </Link>
             <Link to="/machinery" style={{
-              fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
+              fontFamily: "'Manrope', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 600,
               padding: '14px 36px', background: 'transparent',
               border: '1px solid rgba(0,0,0,0.15)', color: 'rgba(0,0,0,0.5)',
               textDecoration: 'none', transition: 'all 0.2s',

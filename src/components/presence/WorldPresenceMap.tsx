@@ -104,7 +104,7 @@ export default function WorldPresenceMap() {
         paddingBottom: 8, borderBottom: "1px solid rgba(255,255,255,0.1)",
       }}>
         <div style={{
-          fontFamily: "'Cormorant Garamond', serif",
+          fontFamily: "'Manrope', sans-serif",
           fontSize: "clamp(18px, 2.4vw, 32px)", fontWeight: 700,
           color: "#fff", lineHeight: 1, letterSpacing: "-0.01em",
         }}>
@@ -113,7 +113,7 @@ export default function WorldPresenceMap() {
         <div style={{
           marginTop: 5, fontSize: 9, letterSpacing: "0.28em",
           color: "#3B82F6", textTransform: "uppercase",
-          fontFamily: "'DM Sans', sans-serif", fontWeight: 700,
+          fontFamily: "'Manrope', sans-serif", fontWeight: 700,
         }}>
           4000+ Machines · 20+ Countries · Since 2000
         </div>

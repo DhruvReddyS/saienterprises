@@ -83,7 +83,7 @@ const TestimonialCard = ({ t, dark }: { t: Testimonial; dark: boolean }) => (
     {/* Quote watermark */}
     <div style={{
       position: 'absolute', top: 10, right: 14,
-      fontSize: 56, lineHeight: 1, fontFamily: 'Georgia, serif',
+      fontSize: 56, lineHeight: 1, fontFamily: ''Manrope', sans-serif',
       color: dark ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.05)',
       userSelect: 'none', pointerEvents: 'none',
     }}>
@@ -93,7 +93,7 @@ const TestimonialCard = ({ t, dark }: { t: Testimonial; dark: boolean }) => (
     <StarRating rating={t.rating} />
 
     <p style={{
-      fontFamily: "'DM Sans', sans-serif",
+      fontFamily: "'Manrope', sans-serif",
       fontSize: 13, lineHeight: 1.75,
       color: dark ? 'rgba(255,255,255,0.78)' : 'rgba(255,255,255,0.52)',
       marginBottom: 18, fontStyle: 'italic', position: 'relative',
@@ -126,13 +126,13 @@ const TestimonialCard = ({ t, dark }: { t: Testimonial; dark: boolean }) => (
       </div>
       <div>
         <div style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 700, lineHeight: 1.2,
+          fontFamily: "'Manrope', sans-serif", fontSize: 13, fontWeight: 700, lineHeight: 1.2,
           color: '#FFFFFF',
         }}>
           {t.name}
         </div>
         <div style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: 10, lineHeight: 1.4,
+          fontFamily: "'Manrope', sans-serif", fontSize: 10, lineHeight: 1.4,
           color: dark ? 'rgba(255,255,255,0.42)' : 'rgba(255,255,255,0.30)',
           letterSpacing: '0.01em',
         }}>

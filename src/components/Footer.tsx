@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { productCategories } from '@/data/products';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
+import hpmLogo from '@/assets/hpm-logo.png';
 
 const IcoPhone = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -46,7 +47,7 @@ const AccordionSection = ({ title, children }: { title: string; children: React.
           color: '#fff',
         }}
       >
-        <span style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, fontFamily: "'DM Sans', sans-serif" }}>
+        <span style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>
           {title}
         </span>
         <motion.span
@@ -147,7 +148,7 @@ const Footer = () => (
           <div style={{ fontSize: 9, letterSpacing: '0.26em', textTransform: 'uppercase', color: '#3B82F6', marginBottom: 22, fontWeight: 700 }}>Machinery</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {productCategories.map((cat) => (
-              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
+              <Link key={cat.slug} to={`/machinery?category=${cat.slug}`} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'color 0.2s' }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#fff'; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)'; }}
               >
@@ -156,11 +157,28 @@ const Footer = () => (
               </Link>
             ))}
           </div>
-          <div style={{ marginTop: 28, padding: '18px 20px', background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)' }}>
-            <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 5, fontWeight: 700 }}>Exclusive Partnership</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>HPM Sole Agent<br />in India</div>
-            <Link to="/partners" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, marginTop: 10, fontSize: 10, color: '#60A5FA', textDecoration: 'none', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Learn More →
+          <div style={{
+            marginTop: 28,
+            padding: '16px 0 0',
+            borderTop: '1px solid rgba(96,165,250,0.20)',
+          }}>
+            <Link to="/partners" aria-label="Learn more about HPM partnership" style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              color: 'inherit',
+              textDecoration: 'none',
+              padding: 0,
+            }}>
+              <span style={{
+                flexShrink: 0,
+              }}>
+                <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ width: 58, height: 'auto', objectFit: 'contain' }} />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 12.5, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>Sole Agent — India</span>
+                <span style={{ display: 'block', marginTop: 3, fontSize: 8.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#60A5FA', fontWeight: 800 }}>Partners →</span>
+              </span>
             </Link>
           </div>
         </div>
@@ -232,13 +250,15 @@ const Footer = () => (
       </div>
 
       {/* HPM badge */}
-      <div style={{ marginBottom: 4, padding: '16px', background: 'linear-gradient(135deg, rgba(59,130,246,0.12), rgba(59,130,246,0.05))', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div>
-          <div style={{ fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#60A5FA', marginBottom: 4, fontWeight: 700 }}>Exclusive Partnership</div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>HPM Sole Agent in India</div>
-        </div>
-        <Link to="/partners" style={{ fontSize: 10, color: '#60A5FA', textDecoration: 'none', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0, paddingLeft: 12 }}>
-          View →
+      <div style={{ marginBottom: 4, padding: '15px 0', borderTop: '1px solid rgba(96,165,250,0.20)', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Link to="/partners" style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0, color: 'inherit', textDecoration: 'none' }}>
+          <span style={{ flexShrink: 0 }}>
+            <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ width: 58, height: 'auto', objectFit: 'contain' }} />
+          </span>
+          <span style={{ minWidth: 0 }}>
+            <span style={{ display: 'block', fontSize: 14, fontWeight: 800, color: '#fff' }}>Sole Agent — India</span>
+            <span style={{ display: 'block', marginTop: 3, fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#60A5FA', fontWeight: 700 }}>Partners →</span>
+          </span>
         </Link>
       </div>
 
@@ -258,7 +278,7 @@ const Footer = () => (
         <AccordionSection title="Machinery">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, paddingTop: 4 }}>
             {productCategories.map((cat) => (
-              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{
+              <Link key={cat.slug} to={`/machinery?category=${cat.slug}`} style={{
                 fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
                 padding: '10px 12px', background: 'rgba(255,255,255,0.02)',
                 border: '1px solid rgba(255,255,255,0.06)', borderRadius: 8,

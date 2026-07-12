@@ -66,7 +66,7 @@ const SectionNav = ({ sections }: SectionNavProps) => {
                     ? 'opacity-100 text-primary' 
                     : 'opacity-0 group-hover:opacity-100 text-muted-foreground'
                 }`}
-                style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}
+                style={{ fontFamily: "'Manrope', sans-serif" }}
               >
                 {section.label}
               </span>

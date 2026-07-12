@@ -1,5 +1,21 @@
+# https://saienterprises.in robots.txt
+# Allow all reputable crawlers
 User-agent: *
 Allow: /
 Disallow: /404
+Disallow: /api/
+
+# Block scraper / SEO bots
+User-agent: AhrefsBot
+Disallow: /
+User-agent: SemrushBot
+Disallow: /
+User-agent: MJ12bot
+Disallow: /
+User-agent: DotBot
+Disallow: /
+
+# Crawl politeness
+Crawl-delay: 1
 
 Sitemap: https://saienterprises.in/sitemap.xml

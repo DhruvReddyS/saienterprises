@@ -17,7 +17,7 @@ const AboutSection = () => (
         {[...items, ...items].map((item, i) => (
           <span key={i} style={{
             display: 'inline-flex', alignItems: 'center', gap: 18, padding: '0 28px',
-            fontFamily: "'Cormorant Garamond', serif",
+            fontFamily: "'Manrope', sans-serif",
             fontSize: 18, fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase',
             color: 'rgba(255,255,255,0.5)', cursor: 'default',
             transition: 'color 0.2s',
@@ -34,7 +34,7 @@ const AboutSection = () => (
     <p style={{
       maxWidth: 660, margin: '20px auto 0',
       textAlign: 'center',
-      fontFamily: "'DM Sans', sans-serif",
+      fontFamily: "'Manrope', sans-serif",
       fontSize: 13, fontWeight: 300,
       color: 'rgba(255,255,255,0.35)', lineHeight: 1.8,
       padding: '0 24px 12px',

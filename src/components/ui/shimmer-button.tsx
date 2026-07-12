@@ -37,7 +37,7 @@ export function ShimmerButton({
         "px-7 py-[14px]",
         "text-[10px] font-[800] tracking-[0.20em] uppercase text-white",
         "[border-radius:var(--radius)] [background:var(--bg)]",
-        "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        "transition-all duration-300 ease-out",
         "hover:-translate-y-[2px] hover:shadow-[0_18px_42px_rgba(37,99,235,0.28)]",
         "before:absolute before:inset-0 before:rounded-[inherit]",
         "before:bg-[radial-gradient(ellipse_80%_50%_at_50%_120%,var(--shimmer-color),transparent)]",

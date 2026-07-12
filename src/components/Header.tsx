@@ -9,7 +9,7 @@ const navLinks = [
   { label: 'About',     to: '/about' },
   { label: 'Partners',  to: '/partners' },
   { label: 'Brochure',  to: '/brochure' },
-  { label: 'Contact',   to: '/contact' },
+  { label: 'Contact Us', to: '/contact' },
 ];
 
 const Header = () => {
@@ -90,7 +90,7 @@ const Header = () => {
               )}
               {icons[link.to]}
               <span style={{
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Manrope', sans-serif",
                 fontSize: 9, letterSpacing: '0.06em',
                 fontWeight: active ? 700 : 400,
                 lineHeight: 1,
@@ -131,7 +131,7 @@ const Header = () => {
             />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <span style={{
-                fontFamily: "'Cormorant Garamond', serif",
+                fontFamily: "'Manrope', sans-serif",
                 fontSize: 17, fontWeight: 700, letterSpacing: '0.02em',
                 color: '#fff', lineHeight: 1,
               }}>
@@ -139,7 +139,7 @@ const Header = () => {
               </span>
               <span style={{
                 fontSize: 7.5, letterSpacing: '0.22em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.38)', fontFamily: "'DM Sans', sans-serif",
+                color: 'rgba(255,255,255,0.38)', fontFamily: "'Manrope', sans-serif",
               }}>
                 Graphic Machinery
               </span>
@@ -153,17 +153,36 @@ const Header = () => {
                 key={link.to}
                 to={link.to}
                 style={{
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Manrope', sans-serif",
                   fontSize: 10, letterSpacing: '0.16em', textTransform: 'uppercase', fontWeight: 600,
                   textDecoration: 'none', padding: '8px 13px', position: 'relative',
-                  color: isActive(link.to) ? '#fff' : 'rgba(255,255,255,0.5)',
-                  transition: 'color 0.2s',
+                  color: link.to === '/contact' || isActive(link.to) ? '#fff' : 'rgba(255,255,255,0.5)',
+                  background: link.to === '/contact' ? '#3B82F6' : 'transparent',
+                  borderRadius: link.to === '/contact' ? 999 : 0,
+                  boxShadow: link.to === '/contact' ? '0 12px 28px rgba(59,130,246,0.24)' : 'none',
+                  transition: 'color 0.2s, background 0.2s, transform 0.2s',
                 }}
-                onMouseEnter={(e) => { if (!isActive(link.to)) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.9)'; }}
-                onMouseLeave={(e) => { if (!isActive(link.to)) (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.5)'; }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  if (link.to === '/contact') {
+                    el.style.background = '#2563EB';
+                    el.style.transform = 'translateY(-1px)';
+                  } else if (!isActive(link.to)) {
+                    el.style.color = 'rgba(255,255,255,0.9)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  if (link.to === '/contact') {
+                    el.style.background = '#3B82F6';
+                    el.style.transform = 'translateY(0)';
+                  } else if (!isActive(link.to)) {
+                    el.style.color = 'rgba(255,255,255,0.5)';
+                  }
+                }}
               >
                 {link.label}
-                {isActive(link.to) && (
+                {isActive(link.to) && link.to !== '/contact' && (
                   <span style={{
                     position: 'absolute', bottom: 3, left: 13, right: 13,
                     height: 1.5, background: '#3B82F6', display: 'block',
@@ -171,21 +190,6 @@ const Header = () => {
                 )}
               </Link>
             ))}
-            <Link
-              to="/contact"
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 700,
-                textDecoration: 'none', padding: '9px 20px', marginLeft: 10,
-                background: '#3B82F6',
-                color: '#fff',
-                transition: 'all 0.2s',
-              }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = '#2563EB'; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = '#3B82F6'; }}
-            >
-              Get Quote
-            </Link>
           </nav>
 
           {/* Mobile burger — tablet 768-959px only; <768px uses bottom nav */}
@@ -230,8 +234,8 @@ const Header = () => {
           <div style={{ marginBottom: 36, paddingBottom: 20, borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 12 }}>
             <BrandImage src={saiLogo} alt="Sai Enterprises" style={{ height: 32 }} />
             <div>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 700, color: '#fff' }}>Sai Enterprises</div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>Graphic Machinery · Est. 2000</div>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 18, fontWeight: 700, color: '#fff' }}>Sai Enterprises</div>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>Graphic Machinery · Est. 2000</div>
             </div>
           </div>
 
@@ -248,47 +252,39 @@ const Header = () => {
               <Link
                 to={link.to}
                 style={{
-                  fontFamily: "'Cormorant Garamond', serif",
+                  fontFamily: "'Manrope', sans-serif",
                   fontSize: 'clamp(30px,7vw,46px)', fontWeight: 700,
-                  color: isActive(link.to) ? '#3B82F6' : '#fff',
-                  textDecoration: 'none', padding: '11px 0',
+                  color: link.to === '/contact' || isActive(link.to) ? '#3B82F6' : '#fff',
+                  textDecoration: 'none',
+                  padding: link.to === '/contact' ? '14px 18px' : '11px 0',
                   borderBottom: '1px solid rgba(255,255,255,0.05)',
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  background: link.to === '/contact' ? 'rgba(59,130,246,0.12)' : 'transparent',
+                  borderRadius: link.to === '/contact' ? 16 : 0,
+                  border: link.to === '/contact' ? '1px solid rgba(59,130,246,0.28)' : undefined,
                 }}
               >
                 <span>
-                  {isActive(link.to) && (
+                  {(isActive(link.to) || link.to === '/contact') && (
                     <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#3B82F6', marginRight: 10, verticalAlign: 'middle' }} />
                   )}
                   {link.label}
                 </span>
-                <span style={{ fontSize: 18, color: isActive(link.to) ? '#3B82F6' : 'rgba(255,255,255,0.2)' }}>→</span>
+                <span style={{ fontSize: 18, color: link.to === '/contact' || isActive(link.to) ? '#3B82F6' : 'rgba(255,255,255,0.2)' }}>→</span>
               </Link>
             </div>
           ))}
 
-          {/* CTA & contact */}
+          {/* Quick contact */}
           <div style={{
-            marginTop: 32,
+            marginTop: 22,
             transform: mobileOpen ? 'translateY(0)' : 'translateY(20px)',
             opacity: mobileOpen ? 1 : 0,
             transition: 'all 0.5s cubic-bezier(0.16,1,0.3,1) 0.46s',
           }}>
-            <Link to="/contact" style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: 700,
-              color: '#fff', textDecoration: 'none',
-              background: 'linear-gradient(135deg, #2563EB, #3B82F6)',
-              padding: '15px 24px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8,
-              borderRadius: 10,
-              boxShadow: '0 8px 24px rgba(59,130,246,0.25)',
-            }}>
-              Get a Quote →
-            </Link>
-
-            <div style={{ marginTop: 20, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               <a href="tel:+919312175513" style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                fontFamily: "'Manrope', sans-serif", fontSize: 12,
                 color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
                 padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8,
@@ -297,7 +293,7 @@ const Header = () => {
                 📞 Call India
               </a>
               <a href="mailto:msrao@saienterprises.info" style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 12,
+                fontFamily: "'Manrope', sans-serif", fontSize: 12,
                 color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
                 padding: '10px 12px', background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.07)', borderRadius: 8,

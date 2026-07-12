@@ -123,7 +123,7 @@ export default function CTAWithVerticalMarquee() {
               <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 28, objectFit: 'contain' }} />
               <div style={{ width: 1, height: 22, background: 'rgba(13,20,33,0.12)' }} />
               <span style={{
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Manrope', sans-serif",
                 fontSize: 9, letterSpacing: '0.32em', textTransform: 'uppercase',
                 color: '#2563EB', fontWeight: 800,
               }}>
@@ -132,7 +132,7 @@ export default function CTAWithVerticalMarquee() {
             </div>
 
             <h2 style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 'clamp(42px, 5vw, 72px)',
               fontWeight: 700,
               lineHeight: 0.98,
@@ -145,7 +145,7 @@ export default function CTAWithVerticalMarquee() {
             </h2>
 
             <p style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 15,
               lineHeight: 1.85,
               color: 'rgba(13,20,33,0.56)',
@@ -164,7 +164,7 @@ export default function CTAWithVerticalMarquee() {
                   padding: '15px 30px',
                   background: '#060A10',
                   color: '#FFFFFF',
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Manrope', sans-serif",
                   fontSize: 10, fontWeight: 800, letterSpacing: '0.20em', textTransform: 'uppercase',
                   textDecoration: 'none',
                   transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
@@ -196,7 +196,7 @@ export default function CTAWithVerticalMarquee() {
                   padding: '15px 28px',
                   background: 'transparent',
                   color: '#060A10',
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Manrope', sans-serif",
                   fontSize: 10, fontWeight: 800, letterSpacing: '0.20em', textTransform: 'uppercase',
                   textDecoration: 'none',
                   border: '1.5px solid rgba(13,20,33,0.15)',
@@ -218,7 +218,7 @@ export default function CTAWithVerticalMarquee() {
                   el.style.background = 'transparent';
                 }}
               >
-                Get a Quote
+                Contact Us
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </Link>
             </div>
@@ -247,7 +247,7 @@ export default function CTAWithVerticalMarquee() {
                   key={i}
                   className="marquee-item"
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Manrope', sans-serif",
                     fontSize: 'clamp(24px, 2.7vw, 40px)',
                     fontWeight: 500,
                     letterSpacing: '-0.02em',

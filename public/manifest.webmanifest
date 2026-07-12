@@ -1,0 +1,27 @@
+{
+  "name": "Sai Enterprises — Graphic Machinery Suppliers",
+  "short_name": "Sai Enterprises",
+  "description": "Premium graphic machinery suppliers since 2000. HPM sole agent in India.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#060A10",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait-primary",
+  "lang": "en-IN",
+  "categories": ["business", "industrial"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

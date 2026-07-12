@@ -9,7 +9,6 @@ import BrandPartnersSection from '@/components/home/BrandPartnersSection';
 import GlobalPresenceSection from '@/components/home/GlobalPresenceSection';
 import WhySaiSection from '@/components/home/WhySaiSection';
 import ClientsSection from '@/components/home/ClientsSection';
-import TestimonialsSection from '@/components/home/TestimonialsSection';
 import CTAWithVerticalMarquee from '@/components/ui/cta-with-text-marquee';
 import { setPageMeta } from '@/lib/seo';
 
@@ -34,7 +33,6 @@ const Index = () => {
         <GlobalPresenceSection />
         <WhySaiSection />
         <ClientsSection />
-        <TestimonialsSection />
         <CTAWithVerticalMarquee />
       </main>
 

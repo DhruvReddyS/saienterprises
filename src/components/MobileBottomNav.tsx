@@ -126,7 +126,7 @@ const MobileBottomNav = () => {
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               fontWeight: active ? 700 : 500,
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Manrope', sans-serif",
               lineHeight: 1,
             }}>
               {tab.label}

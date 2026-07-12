@@ -15,7 +15,6 @@ import Index from "./pages/Index";
 // Lazy load pages for better performance
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const MachineryHub = lazy(() => import("./pages/MachineryHub"));
-const MachineryCategory = lazy(() => import("./pages/MachineryCategory"));
 const PartnersPage = lazy(() => import("./pages/PartnersPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const BrochurePage = lazy(() => import("./pages/BrochurePage"));
@@ -25,7 +24,12 @@ const queryClient = new QueryClient();
 
 const ProductPreviewRedirect = () => {
   const { categorySlug = "", productId = "" } = useParams();
-  return <Navigate replace to={`/machinery/${categorySlug}?preview=${productId}`} />;
+  return <Navigate replace to={`/machinery?category=${categorySlug}&preview=${productId}`} />;
+};
+
+const MachineryCategoryRedirect = () => {
+  const { categorySlug = "" } = useParams();
+  return <Navigate replace to={`/machinery?category=${categorySlug}`} />;
 };
 
 const AnimatedRoutes = () => {
@@ -39,7 +43,7 @@ const AnimatedRoutes = () => {
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/machinery" element={<MachineryHub />} />
-          <Route path="/machinery/:categorySlug" element={<MachineryCategory />} />
+          <Route path="/machinery/:categorySlug" element={<MachineryCategoryRedirect />} />
           <Route path="/machinery/:categorySlug/:productId" element={<ProductPreviewRedirect />} />
           <Route path="/partners" element={<PartnersPage />} />
           <Route path="/contact" element={<ContactPage />} />

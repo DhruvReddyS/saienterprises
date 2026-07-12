@@ -37,8 +37,22 @@ Overseas / International Offices:
 Export Reach: 30+ markets globally; all international shipments are coordinated from Hyderabad.
 
 ## CONTACT DETAILS
-Phones: +91 939 767 8950 / +91 931 217 5513
-Emails: venkat@saienterprises.info / msrao@saienterprises.info
+Headquarters Contact:
+  VENKAT — General Manager
+  M/s SAI ENTERPRISES, SAI ARCADE, Plot No 99,
+  H.No 7-1-307/14/G/6/5, Near A.K Goud Gardens,
+  Lingaiah Nagar, Balkampet, Hyderabad-500018, Telangana, India
+  Mobile: +91 9397678950
+  Email: venkat@saienterprises.info
+
+Delhi Branch Office Contact:
+  M.S. RAO
+  M/s SAI ENTERPRISES, Graphic Machinery Suppliers
+  G-20, Vikas Surya Janak Plaza, Plot: C-6B Market,
+  Janakpuri, New Delhi-110058
+  Cell: +91 9312175513
+  Email: msrao@saienterprises.info
+
 Facebook: www.facebook.com/saienterprises2003
 For price quotes or machine enquiries, customers should use the Contact page on the website.
 
@@ -60,14 +74,14 @@ Key machines:
 - Mini Offset 16"×22" — helical gears, centralised lubrication, chain delivery
 - Sheet Fed Offset — Heidelberg, Komori, manroland options; new and pre-owned
 - Web Offset Printing Machine — cutoff sizes 508/546/578/600 mm; optional numbering and sheeter
-- Automatic High Speed Window Patching Machine — for carton/packaging film windows
 - Business Forms Press — continuous forms, carbonless paper, newspapers; with numbering/perforating options
 - Variable-Data Printing Machine — up to 25"×25"/25"×30", 5000 sheets/hr, 1–20 heads
+
+### 3. POST-PRESS (largest category)
+- Automatic High Speed Window Patching Machine — for carton/packaging film windows
 - Automatic Cards Matching Machine — with hole drilling system
 - Automatic Cards Collating Machine
 - Automatic Card Crafting Machine
-
-### 3. POST-PRESS (largest category)
 Cutting, lamination, binding, sewing, punching, rigid-box and finishing machines.
 
 HPM Paper Cutters (flagship — exclusive India agent):
@@ -162,7 +176,6 @@ Other Finishing:
 - Slitting & Rewinding Machine — 24"/42"/62"/80"; converts jumbo reels to small-width reels
 - Reel to Sheeting Machine — 36"/48"; for pre-press feed preparation
 - Edge Squaring Machine — 65/85 cm
-- V Grooving Machine
 - Roller Pressing Machine
 - Bundling Press
 - Dampener Roller Cleaner — 60"

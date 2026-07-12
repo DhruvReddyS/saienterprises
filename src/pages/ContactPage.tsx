@@ -89,12 +89,12 @@ const FloatField = ({
           width: '100%', background: 'transparent', border: 'none',
           borderBottom: `1.5px solid ${focused ? '#3B82F6' : 'rgba(6,10,16,0.13)'}`,
           padding: '14px 0 9px', fontSize: 15, color: '#060A10',
-          fontFamily: "'DM Sans', sans-serif", outline: 'none', transition: 'border-color 0.25s',
+          fontFamily: "'Manrope', sans-serif", outline: 'none', transition: 'border-color 0.25s',
         }}
       />
       <label style={{
         position: 'absolute', top: active ? 0 : 14, left: 0,
-        fontFamily: "'DM Sans', sans-serif", fontSize: active ? 9 : 13,
+        fontFamily: "'Manrope', sans-serif", fontSize: active ? 9 : 13,
         letterSpacing: active ? '0.18em' : '0.04em', textTransform: 'uppercase',
         color: focused ? '#3B82F6' : 'rgba(6,10,16,0.35)',
         pointerEvents: 'none', transition: 'all 0.2s cubic-bezier(0.16,1,0.3,1)', fontWeight: 600,
@@ -113,7 +113,7 @@ const CategoryPicker = ({ value, onChange }: { value: string; onChange: (v: stri
   return (
     <div style={{ marginBottom: 24, position: 'relative' }}>
       <div style={{
-        fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em',
+        fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.2em',
         textTransform: 'uppercase', color: value ? '#3B82F6' : 'rgba(6,10,16,0.38)',
         fontWeight: 700, marginBottom: 8, transition: 'color 0.2s',
       }}>
@@ -133,7 +133,7 @@ const CategoryPicker = ({ value, onChange }: { value: string; onChange: (v: stri
         }}
       >
         <span style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: 14,
+          fontFamily: "'Manrope', sans-serif", fontSize: 14,
           color: selected ? '#060A10' : 'rgba(6,10,16,0.35)',
         }}>
           {selected ? selected.name : 'Select a category'}
@@ -181,7 +181,7 @@ const CategoryPicker = ({ value, onChange }: { value: string; onChange: (v: stri
                   onMouseLeave={(e) => { if (!isSel) (e.currentTarget as HTMLElement).style.background = '#fff'; }}
                 >
                   <span style={{
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 12.5,
+                    fontFamily: "'Manrope', sans-serif", fontSize: 12.5,
                     color: isSel ? '#3B82F6' : '#060A10', fontWeight: isSel ? 700 : 400,
                   }}>
                     {cat.name}
@@ -214,14 +214,14 @@ const MachinePicker = ({
     return (
       <div style={{ marginBottom: 28 }}>
         <div style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em',
+          fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.2em',
           textTransform: 'uppercase', color: 'rgba(6,10,16,0.3)', fontWeight: 700, marginBottom: 10,
         }}>
           Machine of Interest
         </div>
         <div style={{
           padding: '14px 16px', border: '1.5px dashed rgba(6,10,16,0.1)',
-          fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'rgba(6,10,16,0.3)',
+          fontFamily: "'Manrope', sans-serif", fontSize: 13, color: 'rgba(6,10,16,0.3)',
         }}>
           Select a category above to see machines
         </div>
@@ -232,7 +232,7 @@ const MachinePicker = ({
   return (
     <div style={{ marginBottom: 28 }}>
       <div style={{
-        fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em',
+        fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.2em',
         textTransform: 'uppercase', color: value ? '#3B82F6' : 'rgba(6,10,16,0.38)',
         fontWeight: 700, marginBottom: 10, transition: 'color 0.2s',
       }}>
@@ -247,7 +247,7 @@ const MachinePicker = ({
               type="button"
               onClick={() => onChange(isSel ? '' : m)}
               style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 11.5,
+                fontFamily: "'Manrope', sans-serif", fontSize: 11.5,
                 padding: '8px 14px',
                 background: isSel ? '#3B82F6' : '#fff',
                 border: `1.5px solid ${isSel ? '#3B82F6' : 'rgba(6,10,16,0.11)'}`,
@@ -281,14 +281,14 @@ const MessageField = ({ value, onChange }: { value: string; onChange: (v: string
           width: '100%', background: 'transparent', border: 'none',
           borderBottom: `1.5px solid ${focused ? '#3B82F6' : 'rgba(6,10,16,0.13)'}`,
           padding: '22px 0 9px', fontSize: 15, color: '#060A10',
-          fontFamily: "'DM Sans', sans-serif", outline: 'none', resize: 'none',
+          fontFamily: "'Manrope', sans-serif", outline: 'none', resize: 'none',
           transition: 'border-color 0.25s',
         }}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
       />
       <label style={{
         position: 'absolute', top: active ? 0 : 22, left: 0,
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: "'Manrope', sans-serif",
         fontSize: active ? 9 : 13, letterSpacing: active ? '0.18em' : '0.04em',
         textTransform: 'uppercase',
         color: focused ? '#3B82F6' : 'rgba(6,10,16,0.35)',
@@ -301,23 +301,25 @@ const MessageField = ({ value, onChange }: { value: string; onChange: (v: string
 };
 
 /* ── Submit button ── */
-const SubmitButton = () => {
+const SubmitButton = ({ isSubmitting }: { isSubmitting: boolean }) => {
   const [hov, setHov] = useState(false);
   return (
     <button
       type="submit"
+      disabled={isSubmitting}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
-        background: hov ? '#2563EB' : '#060A10', border: 'none', cursor: 'pointer',
+        background: hov ? '#2563EB' : '#060A10', border: 'none', cursor: isSubmitting ? 'wait' : 'pointer',
         padding: '16px 36px', display: 'inline-flex', alignItems: 'center', gap: 12,
-        fontFamily: "'DM Sans', sans-serif", fontSize: 10, fontWeight: 800,
+        fontFamily: "'Manrope', sans-serif", fontSize: 10, fontWeight: 800,
         letterSpacing: '0.2em', textTransform: 'uppercase', color: '#fff',
         transition: 'all 0.28s cubic-bezier(0.16,1,0.3,1)',
         transform: hov ? 'translateY(-2px)' : 'none',
         boxShadow: hov ? '0 20px 48px rgba(37,99,235,0.28)' : '0 8px 28px rgba(6,10,16,0.18)',
+        opacity: isSubmitting ? 0.7 : 1,
       }}
     >
-      Send Inquiry
+      {isSubmitting ? 'Sending…' : 'Send Inquiry'}
       <span style={{ transform: hov ? 'translateX(3px)' : 'none', transition: 'transform 0.2s' }}>
         <IcoArrow />
       </span>
@@ -347,16 +349,16 @@ const SuccessState = ({ onReset }: { onReset: () => void }) => (
         fill="none" strokeDasharray="60"
         style={{ animation: 'draw-check 0.5s ease 0.35s forwards', strokeDashoffset: 60 }} />
     </svg>
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, fontWeight: 600, color: '#fff', lineHeight: 1, marginBottom: 14 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 48, fontWeight: 600, color: '#fff', lineHeight: 1, marginBottom: 14 }}>
       Inquiry sent.
     </div>
-    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13.5, color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, marginBottom: 40 }}>
+    <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13.5, color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, marginBottom: 40 }}>
       We'll respond within 24 business hours.
     </p>
     <button onClick={onReset} style={{
       background: 'none', border: '1px solid rgba(59,130,246,0.4)',
       color: '#60A5FA', cursor: 'pointer', padding: '11px 22px',
-      fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.18em',
+      fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.18em',
       textTransform: 'uppercase', fontWeight: 700, transition: 'all 0.2s',
     }}
       onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.background = 'rgba(59,130,246,0.1)'; }}
@@ -393,11 +395,11 @@ const ContactRow = ({ icon, label, lines, href, delay, on }: {
         {icon}
       </div>
       <div>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 4, fontWeight: 700 }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8.5, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 4, fontWeight: 700 }}>
           {label}
         </div>
         {lines.map((l) => (
-          <div key={l} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: hov ? '#fff' : 'rgba(255,255,255,0.62)', lineHeight: 1.55, transition: 'color 0.2s' }}>
+          <div key={l} style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: hov ? '#fff' : 'rgba(255,255,255,0.62)', lineHeight: 1.55, transition: 'color 0.2s' }}>
             {l}
           </div>
         ))}
@@ -442,7 +444,7 @@ const OfficesStrip = () => {
       <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28,
-          fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.3em',
+          fontFamily: "'Manrope', sans-serif", fontSize: 8.5, letterSpacing: '0.3em',
           textTransform: 'uppercase', color: 'rgba(255,255,255,0.22)', fontWeight: 700,
         }}>
           <div style={{ width: 20, height: 1, background: 'rgba(255,255,255,0.2)' }} />
@@ -458,13 +460,13 @@ const OfficesStrip = () => {
               opacity: on ? 1 : 0, transform: on ? 'none' : 'translateY(14px)',
               transition: `all 0.65s cubic-bezier(0.16,1,0.3,1) ${i * 0.05}s`,
             }}>
-              <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 17, fontWeight: 600, color: o.isHQ ? '#fff' : 'rgba(255,255,255,0.7)', marginBottom: 4, lineHeight: 1.1 }}>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 17, fontWeight: 600, color: o.isHQ ? '#fff' : 'rgba(255,255,255,0.7)', marginBottom: 4, lineHeight: 1.1 }}>
                 {o.name}
               </div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 7.5, letterSpacing: '0.2em', textTransform: 'uppercase', color: o.isHQ ? '#FACC15' : o.accent === '#3B82F6' ? '#60A5FA' : 'rgba(255,255,255,0.28)', marginBottom: 2 }}>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 7.5, letterSpacing: '0.2em', textTransform: 'uppercase', color: o.isHQ ? '#FACC15' : o.accent === '#3B82F6' ? '#60A5FA' : 'rgba(255,255,255,0.28)', marginBottom: 2 }}>
                 {o.role}
               </div>
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(255,255,255,0.18)' }}>
+              <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(255,255,255,0.18)' }}>
                 {o.country}
               </div>
             </div>
@@ -479,6 +481,8 @@ const OfficesStrip = () => {
 const ContactPage = () => {
   const [params] = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [on, setOn] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -515,13 +519,52 @@ const ContactPage = () => {
     setForm((f) => ({ ...f, category: id, machine: machineStillValid ? f.machine : '' }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    const categoryName = INQUIRY_CATS.find((category) => category.id === form.category)?.name || 'Not selected';
+    const endpoint = import.meta.env.VITE_CONTACT_FORM_ENDPOINT
+      || 'https://formsubmit.co/ajax/venkat@saienterprises.info';
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 12000);
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          _replyto: form.email,
+          _cc: 'msrao@saienterprises.info',
+          company: form.company || 'Not provided',
+          phone: form.phone || 'Not provided',
+          category: categoryName,
+          machine: form.machine || 'Not selected',
+          message: form.message || 'No additional message',
+          _subject: `New website inquiry from ${form.name}`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Submission failed (${response.status})`);
+
+      const result = await response.json().catch(() => null);
+      if (result && result.success === false) throw new Error(result.message || 'Email provider rejected the inquiry');
+
+      setSubmitted(true);
       setForm({ name: '', email: '', company: '', phone: '', category: '', machine: '', message: '' });
-    }, 5000);
+    } catch (error) {
+      console.error('Contact form submission failed:', error);
+      setSubmitError('We could not send your inquiry. Please try again, or email venkat@saienterprises.info directly.');
+    } finally {
+      window.clearTimeout(timeout);
+      setIsSubmitting(false);
+    }
   };
 
   /* if arriving from a machine page, scroll form into view */
@@ -551,34 +594,35 @@ const ContactPage = () => {
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', backgroundImage: 'radial-gradient(circle, rgba(59,130,246,0.06) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 10% 40%, rgba(59,130,246,0.12) 0%, transparent 55%)' }} />
           <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 1, background: 'linear-gradient(to bottom, transparent, rgba(59,130,246,0.2) 30%, rgba(59,130,246,0.08) 70%, transparent)', pointerEvents: 'none' }} />
-          <div style={{ position: 'absolute', bottom: -30, right: -10, fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(120px,18vw,260px)', fontWeight: 700, color: 'rgba(255,255,255,0.018)', lineHeight: 0.85, letterSpacing: '-0.05em', pointerEvents: 'none', userSelect: 'none' }}>
+          <div style={{ position: 'absolute', bottom: -30, right: -10, fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(120px,18vw,260px)', fontWeight: 700, color: 'rgba(255,255,255,0.018)', lineHeight: 0.85, letterSpacing: '-0.05em', pointerEvents: 'none', userSelect: 'none' }}>
             SAI
           </div>
 
           <div style={{ position: 'relative', zIndex: 1 }}>
             <motion.div initial={{ opacity: 0, y: 10 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }}
-              style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32, fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
+              style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32, fontFamily: "'Manrope', sans-serif", fontSize: 9.5, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
               <div style={{ width: 24, height: 1, background: '#3B82F6' }} />
               Reach Sai Enterprises
             </motion.div>
 
             <motion.h1 initial={{ opacity: 0, y: 28 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.06 }}
-              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(40px,7vw,96px)', fontWeight: 600, lineHeight: 0.9, letterSpacing: '-0.03em', color: '#fff', marginBottom: 36 }}>
+              style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(40px,7vw,96px)', fontWeight: 600, lineHeight: 0.9, letterSpacing: '-0.03em', color: '#fff', marginBottom: 36 }}>
               Let's talk<br />
               <span style={{ fontStyle: 'italic', fontWeight: 300, color: '#3B82F6' }}>machinery.</span>
             </motion.h1>
 
             <motion.p initial={{ opacity: 0, y: 14 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.14 }}
-              style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 300, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, maxWidth: 380, marginBottom: 56 }}>
+              style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 300, color: 'rgba(255,255,255,0.38)', lineHeight: 1.85, maxWidth: 380, marginBottom: 56 }}>
               Machine inquiry, spares request, installation, or service — we respond within 24 hours, every time.
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 16 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.8, delay: 0.22 }}
               style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
               {[
-                { icon: <IcoPhone />, label: 'Call', lines: ['+91 939 767 8950', '+91 931 217 5513'], href: 'tel:+919397678950' },
+                { icon: <IcoPhone />, label: 'Call', lines: ['+91 939 767 8950 (Venkat)', '+91 931 217 5513 (M.S. Rao)'], href: 'tel:+919397678950' },
                 { icon: <IcoMail />, label: 'Email', lines: ['venkat@saienterprises.info', 'msrao@saienterprises.info'], href: 'mailto:venkat@saienterprises.info' },
-                { icon: <IcoPin />, label: 'Visit', lines: ['SAI ARCADE, Balkampet,', 'Hyderabad — 500018'], href: undefined },
+                { icon: <IcoPin />, label: 'Head Office', lines: ['SAI ARCADE, Plot No 99,', 'Near A.K Goud Gardens, Balkampet,', 'Hyderabad — 500018, Telangana'], href: undefined },
+                { icon: <IcoPin />, label: 'Delhi Branch', lines: ['G-20, Vikas Surya Janak Plaza,', 'Janakpuri, New Delhi — 110058'], href: undefined },
               ].map((m, mi) => (
                 <ContactRow key={m.label} {...m} delay={0.24 + mi * 0.07} on={on} />
               ))}
@@ -593,13 +637,13 @@ const ContactPage = () => {
                 <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: '#22C55E', animation: 'ctc-pulse 2.2s ease-in-out infinite' }} />
                 <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22C55E' }} />
               </div>
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.32)', letterSpacing: '0.06em' }}>
+              <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.32)', letterSpacing: '0.06em' }}>
                 Available Mon–Sat · Response within 24 hrs
               </span>
             </div>
             <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
               {[{ label: 'South Asia', time: 'IST +5:30' }, { label: 'East Africa', time: 'EAT +3:00' }, { label: 'Middle East', time: 'GST +4:00' }].map((z) => (
-                <div key={z.label} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.1em', padding: '5px 12px', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', color: 'rgba(255,255,255,0.28)', display: 'flex', alignItems: 'center', gap: 7 }}>
+                <div key={z.label} style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8.5, letterSpacing: '0.1em', padding: '5px 12px', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)', color: 'rgba(255,255,255,0.28)', display: 'flex', alignItems: 'center', gap: 7 }}>
                   <span style={{ color: '#3B82F6', fontWeight: 700 }}>{z.label}</span>
                   <span style={{ color: 'rgba(255,255,255,0.15)' }}>·</span>
                   {z.time}
@@ -619,13 +663,13 @@ const ContactPage = () => {
 
           <div style={{ position: 'relative', maxWidth: 520, width: '100%' }}>
             <motion.div initial={{ opacity: 0, x: 16 }} animate={on ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.7, delay: 0.3 }}
-              style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22 }}>
+              style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9.5, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22 }}>
               <div style={{ width: 22, height: 1, background: '#3B82F6' }} />
               Send an Inquiry
             </motion.div>
 
             <motion.h2 initial={{ opacity: 0, y: 18 }} animate={on ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.36 }}
-              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 600, lineHeight: 1.0, color: '#060A10', letterSpacing: '-0.025em', marginBottom: 28 }}>
+              style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 600, lineHeight: 1.0, color: '#060A10', letterSpacing: '-0.025em', marginBottom: 28 }}>
               Start a machinery<br />
               <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(6,10,16,0.38)' }}>conversation.</span>
             </motion.h2>
@@ -643,7 +687,7 @@ const ContactPage = () => {
                   }}
                 >
                   <IcoCheck />
-                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11.5, color: '#3B82F6', fontWeight: 600 }}>
+                  <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11.5, color: '#3B82F6', fontWeight: 600 }}>
                     Machine details pre-filled from your selection
                   </span>
                 </motion.div>
@@ -654,7 +698,7 @@ const ContactPage = () => {
             <motion.div initial={{ opacity: 0 }} animate={on ? { opacity: 1 } : {}} transition={{ duration: 0.6, delay: 0.46 }}
               style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 36 }}>
               {['24-hr response', 'Genuine HPM spares', 'Install + service'].map((t) => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'DM Sans', sans-serif", fontSize: 9.5, color: 'rgba(6,10,16,0.48)', background: '#fff', border: '1px solid rgba(6,10,16,0.07)', padding: '5px 12px', boxShadow: '0 1px 3px rgba(6,10,16,0.04)' }}>
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontFamily: "'Manrope', sans-serif", fontSize: 9.5, color: 'rgba(6,10,16,0.48)', background: '#fff', border: '1px solid rgba(6,10,16,0.07)', padding: '5px 12px', boxShadow: '0 1px 3px rgba(6,10,16,0.04)' }}>
                   <IcoCheck />
                   {t}
                 </div>
@@ -687,7 +731,16 @@ const ContactPage = () => {
                   />
 
                   <MessageField value={form.message} onChange={(v) => setForm({ ...form, message: v })} />
-                  <SubmitButton />
+                  {submitError && (
+                    <div role="alert" style={{
+                      marginBottom: 18, padding: '12px 14px', color: '#B91C1C',
+                      background: '#FEF2F2', border: '1px solid #FECACA',
+                      fontFamily: "'Manrope', sans-serif", fontSize: 12, lineHeight: 1.6,
+                    }}>
+                      {submitError}
+                    </div>
+                  )}
+                  <SubmitButton isSubmitting={isSubmitting} />
                 </motion.form>
               )}
             </AnimatePresence>

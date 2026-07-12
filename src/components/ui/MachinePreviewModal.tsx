@@ -297,7 +297,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.85'; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
                 >
-                  Request Quote →
+                  Contact Us →
                 </Link>
                 {p.categorySlug && (
                   <Link

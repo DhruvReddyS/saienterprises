@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { productCategories } from '@/data/products';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
+import hpmLogo from '@/assets/hpm-logo.png';
 
 const MARQUEE = [
   'Production Ready', 'Machine Sourcing', 'Installation Support', 'HPM Authorized',
@@ -74,7 +75,7 @@ export const CinematicFooter = () => {
       style={{
         background: 'linear-gradient(180deg, #05070B 0%, #060A10 48%, #02040A 100%)',
         color: '#fff',
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: "'Manrope', sans-serif",
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -177,7 +178,7 @@ export const CinematicFooter = () => {
 
           <div
             style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 'clamp(32px, 9vw, 130px)',
               fontWeight: 700,
               letterSpacing: '-0.03em',
@@ -190,13 +191,13 @@ export const CinematicFooter = () => {
               transition: 'WebkitTextStroke 0.4s, text-shadow 0.4s',
             }}
             onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLElement;
-              (el.style as any).webkitTextStroke = '1px rgba(96,165,250,0.35)';
+              const el = e.currentTarget as HTMLElement & { style: CSSStyleDeclaration & { webkitTextStroke?: string } };
+              el.style.webkitTextStroke = '1px rgba(96,165,250,0.35)';
               el.style.textShadow = '0 0 80px rgba(59,130,246,0.12), 0 0 160px rgba(59,130,246,0.06)';
             }}
             onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLElement;
-              (el.style as any).webkitTextStroke = '1px rgba(255,255,255,0.07)';
+              const el = e.currentTarget as HTMLElement & { style: CSSStyleDeclaration & { webkitTextStroke?: string } };
+              el.style.webkitTextStroke = '1px rgba(255,255,255,0.07)';
               el.style.textShadow = 'none';
             }}
           >
@@ -311,7 +312,7 @@ export const CinematicFooter = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
             {productCategories.map((cat) => (
-              <Link key={cat.slug} to={`/machinery/${cat.slug}`} style={{
+              <Link key={cat.slug} to={`/machinery?category=${cat.slug}`} style={{
                 fontSize: 12.5, color: 'rgba(255,255,255,0.32)', textDecoration: 'none',
                 transition: 'color 0.2s, transform 0.2s',
                 letterSpacing: '0.01em',
@@ -335,26 +336,27 @@ export const CinematicFooter = () => {
 
           {/* HPM badge */}
           <div style={{
-            padding: '12px 14px',
-            background: 'rgba(59,130,246,0.05)',
-            border: '1px solid rgba(59,130,246,0.14)',
-            borderLeft: '2px solid rgba(59,130,246,0.5)',
+            padding: '15px 0 0',
+            borderTop: '1px solid rgba(96,165,250,0.20)',
             transition: 'transform 0.25s cubic-bezier(0.16,1,0.3,1), border-color 0.25s, background 0.25s',
           }}>
-            <div style={{ fontSize: 7.5, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(59,130,246,0.7)', marginBottom: 4, fontWeight: 700 }}>
-              Exclusive
-            </div>
-            <div style={{ fontSize: 12.5, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>HPM Sole Agent — India</div>
             <Link to="/partners" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              marginTop: 6, fontSize: 9, color: 'rgba(59,130,246,0.7)', textDecoration: 'none',
-              letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 600,
-              transition: 'color 0.2s',
-            }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = '#60A5FA'; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'rgba(59,130,246,0.7)'; }}
-            >
-              Learn More →
+              display: 'flex',
+              alignItems: 'center',
+              gap: 13,
+              color: 'inherit',
+              textDecoration: 'none',
+              padding: 0,
+            }}>
+              <span style={{
+                flexShrink: 0,
+              }}>
+                <img src={hpmLogo} alt="HPM" loading="lazy" decoding="async" style={{ width: 55, height: 'auto', objectFit: 'contain' }} />
+              </span>
+              <span>
+                <span style={{ display: 'block', fontSize: 12.5, fontWeight: 800, color: '#fff', lineHeight: 1.2 }}>Sole Agent — India</span>
+                <span style={{ display: 'block', marginTop: 3, fontSize: 8.5, color: 'rgba(96,165,250,0.94)', letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 800 }}>Partners →</span>
+              </span>
             </Link>
           </div>
         </motion.div>

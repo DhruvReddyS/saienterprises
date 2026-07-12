@@ -32,6 +32,10 @@ const postPressGroups = [
       'screen-printing-machine',
       'book-edge-gilding-machine',
       'cylindrical-round-box-making-machine',
+      'automatic-high-speed-window-patching-machine',
+      'automatic-cards-matching-machine',
+      'automatic-cards-collating-machine',
+      'automatic-card-crafting-machine',
     ],
   },
   {
@@ -463,7 +467,7 @@ const MachineryCategory = () => {
               className="text-center mb-12"
             >
               <h2 className="font-serif text-2xl sm:text-3xl text-foreground">
-                Machine previews.
+                Find the machine that keeps production moving.
               </h2>
             </motion.div>
 
@@ -539,7 +543,7 @@ const MachineryCategory = () => {
                 to="/contact"
                 className="inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 hover:bg-primary/90 transition-colors group rounded-full"
               >
-                <span className="font-medium">Request Quote</span>
+                <span className="font-medium">Contact Us</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>

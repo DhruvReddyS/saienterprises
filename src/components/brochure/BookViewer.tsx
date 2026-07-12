@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import type { CSSProperties } from 'react';
 
 /* ── Load all brochure images in order ── */
 const imageModules = import.meta.glob(
@@ -48,7 +49,27 @@ const ThumbsIcon = () => (
 );
 
 /* ── FLIP DURATION ── */
-const FLIP_MS = 700;
+const FLIP_MS = 420;
+
+const PageImage = ({
+  src,
+  alt = '',
+  priority = false,
+  style,
+}: {
+  src: string;
+  alt?: string;
+  priority?: boolean;
+  style?: CSSProperties;
+}) => (
+  <img
+    src={src}
+    alt={alt}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    style={style}
+  />
+);
 
 export default function BookViewer() {
   const [spread, setSpread] = useState(0);
@@ -103,8 +124,14 @@ export default function BookViewer() {
   // Keyboard
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') isMobile ? mobileGoFwd() : goFwd();
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') isMobile ? mobileGoBwd() : goBwd();
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        if (isMobile) mobileGoFwd();
+        else goFwd();
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        if (isMobile) mobileGoBwd();
+        else goBwd();
+      }
       if (e.key === 'Escape') setIsFullscreen(false);
     };
     window.addEventListener('keydown', handler);
@@ -115,7 +142,10 @@ export default function BookViewer() {
   const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd = (e: React.TouchEvent) => {
     const dx = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(dx) > 40) dx > 0 ? mobileGoFwd() : mobileGoBwd();
+    if (Math.abs(dx) > 40) {
+      if (dx > 0) mobileGoFwd();
+      else mobileGoBwd();
+    }
   };
 
   // Fullscreen toggle
@@ -141,6 +171,22 @@ export default function BookViewer() {
       active?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     }
   }, [spread, showThumbs]);
+
+  // Preload only the next/previous pages so the brochure responds fast
+  // without making the browser decode every large page at once.
+  useEffect(() => {
+    const indexes = isMobile
+      ? [mobilePage - 1, mobilePage, mobilePage + 1]
+      : [spread * 2 - 2, spread * 2 - 1, spread * 2, spread * 2 + 1, spread * 2 + 2];
+
+    indexes
+      .filter((idx) => idx >= 0 && idx < TOTAL)
+      .forEach((idx) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = PAGES[idx];
+      });
+  }, [isMobile, mobilePage, spread]);
 
   const current = getSpread(spread);
   const from = getSpread(fromSpread);
@@ -178,11 +224,11 @@ export default function BookViewer() {
           boxShadow: '0 32px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.06)',
           position: 'relative',
         }}>
-          <img src={PAGES[mobilePage]} alt={`Page ${mobilePage + 1}`} loading="lazy" decoding="async" style={{ width: '100%', display: 'block' }} />
+          <PageImage src={PAGES[mobilePage]} alt={`Page ${mobilePage + 1}`} priority style={{ width: '100%', display: 'block' }} />
           {/* Page number */}
           <div style={{
             position: 'absolute', bottom: 10, right: 12,
-            fontFamily: "'DM Sans', sans-serif", fontSize: 9,
+            fontFamily: "'Manrope', sans-serif", fontSize: 9,
             letterSpacing: '0.14em', color: 'rgba(255,255,255,0.35)',
             background: 'rgba(0,0,0,0.5)', padding: '3px 8px',
           }}>
@@ -206,7 +252,7 @@ export default function BookViewer() {
           }}>
             <ChevLeft />
           </button>
-          <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>
+          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>
             Page <strong style={{ color: '#fff' }}>{mobilePage + 1}</strong> of {TOTAL}
           </span>
           <button onClick={mobileGoFwd} disabled={mobilePage === TOTAL - 1} style={{
@@ -253,7 +299,7 @@ export default function BookViewer() {
           marginBottom: 24, paddingBottom: 16,
           borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}>
-          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)' }}>
+          <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)' }}>
             Sai Enterprises · Catalogue 2026
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -309,7 +355,7 @@ export default function BookViewer() {
             width: '100%', maxWidth: isFullscreen ? '84vw' : 1100,
             aspectRatio: '2 / 1.42',
             transformStyle: 'preserve-3d',
-            filter: 'drop-shadow(0 40px 60px rgba(0,0,0,0.7))',
+            filter: 'drop-shadow(0 28px 46px rgba(0,0,0,0.55))',
           }}>
 
             {/* ─── LEFT HALF ─── */}
@@ -325,7 +371,7 @@ export default function BookViewer() {
               onClick={() => !isFlipping && canGoBwd && goBwd()}
             >
               {staticLeft ? (
-                <img src={staticLeft} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+                <PageImage src={staticLeft} alt="" priority style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
               ) : (
                 /* Empty left page — back cover side */
                 <div style={{
@@ -333,7 +379,7 @@ export default function BookViewer() {
                   background: 'linear-gradient(135deg, #0A1220 0%, #060A10 100%)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 48, color: 'rgba(255,255,255,0.03)', fontWeight: 700 }}>SAI</div>
+                  <div style={{ width: 70, height: 1, background: 'rgba(96,165,250,0.12)' }} />
                 </div>
               )}
               {/* Left page edge shadow (right edge of left page) */}
@@ -346,7 +392,7 @@ export default function BookViewer() {
               {leftPageNum && (
                 <div style={{
                   position: 'absolute', bottom: 10, left: 14,
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 8,
+                  fontFamily: "'Manrope', sans-serif", fontSize: 8,
                   letterSpacing: '0.1em', color: 'rgba(0,0,0,0.3)',
                 }}>
                   {leftPageNum}
@@ -386,7 +432,7 @@ export default function BookViewer() {
               onClick={() => !isFlipping && canGoFwd && goFwd()}
             >
               {staticRight ? (
-                <img src={staticRight} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', background: '#F7F4EE' }} />
+                <PageImage src={staticRight} alt="" priority style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', background: '#F7F4EE' }} />
               ) : (
                 <div style={{
                   width: '100%', height: '100%',
@@ -403,7 +449,7 @@ export default function BookViewer() {
               {rightPageNum && (
                 <div style={{
                   position: 'absolute', bottom: 10, right: 14,
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 8,
+                  fontFamily: "'Manrope', sans-serif", fontSize: 8,
                   letterSpacing: '0.1em', color: 'rgba(0,0,0,0.3)',
                 }}>
                   {rightPageNum}
@@ -450,7 +496,7 @@ export default function BookViewer() {
                   overflow: 'hidden',
                   background: '#F7F4EE',
                 }}>
-                  {flipFrontPage && <img src={flipFrontPage} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
+                  {flipFrontPage && <PageImage src={flipFrontPage} alt="" priority style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
                   {/* Gradient shadow on spine side */}
                   <div style={{
                     position: 'absolute', top: 0,
@@ -470,7 +516,7 @@ export default function BookViewer() {
                   overflow: 'hidden',
                   background: '#F7F4EE',
                 }}>
-                  {flipBackPage && <img src={flipBackPage} alt="" loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
+                  {flipBackPage && <PageImage src={flipBackPage} alt="" priority style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />}
                   {/* Gradient shadow on spine side */}
                   <div style={{
                     position: 'absolute', top: 0,
@@ -538,7 +584,7 @@ export default function BookViewer() {
           {/* Page counter */}
           <div style={{ textAlign: 'center' }}>
             <div style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 18, fontWeight: 600, color: '#fff',
               letterSpacing: '0.04em', lineHeight: 1,
             }}>
@@ -549,7 +595,7 @@ export default function BookViewer() {
                   : `${2 * spread} – ${2 * spread + 1}`}
             </div>
             <div style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Manrope', sans-serif",
               fontSize: 8, letterSpacing: '0.2em', textTransform: 'uppercase',
               color: 'rgba(255,255,255,0.25)', marginTop: 4,
             }}>
@@ -609,6 +655,7 @@ export default function BookViewer() {
             {Array.from({ length: TOTAL_SPREADS }, (_, i) => {
               const sp = getSpread(i);
               const isActive = i === spread;
+              const shouldRenderThumbs = Math.abs(i - spread) <= 2 || i === 0 || i === TOTAL_SPREADS - 1;
               return (
                 <div
                   key={i}
@@ -624,13 +671,17 @@ export default function BookViewer() {
                     outlineOffset: 2,
                   }}
                 >
-                  {sp.left ? (
-                    <img src={sp.left} alt="" loading="lazy" decoding="async" style={{ height: 72, width: 'auto', display: 'block' }} />
+                  {sp.left && shouldRenderThumbs ? (
+                    <PageImage src={sp.left} alt="" style={{ height: 72, width: 'auto', display: 'block' }} />
+                  ) : sp.left ? (
+                    <div style={{ height: 72, width: 50, background: 'rgba(255,255,255,0.04)' }} />
                   ) : (
                     <div style={{ height: 72, width: 50, background: 'rgba(255,255,255,0.03)' }} />
                   )}
-                  {sp.right ? (
-                    <img src={sp.right} alt="" loading="lazy" decoding="async" style={{ height: 72, width: 'auto', display: 'block' }} />
+                  {sp.right && shouldRenderThumbs ? (
+                    <PageImage src={sp.right} alt="" style={{ height: 72, width: 'auto', display: 'block' }} />
+                  ) : sp.right ? (
+                    <div style={{ height: 72, width: 50, background: 'rgba(255,255,255,0.04)' }} />
                   ) : (
                     <div style={{ height: 72, width: 50, background: 'rgba(255,255,255,0.03)' }} />
                   )}

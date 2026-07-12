@@ -65,7 +65,7 @@ export const indiaPresenceCities: PresenceCity[] = [
             email: 'reddydayaker@gmail.com',
           },
           {
-            name: 'S. Venkat',
+            name: 'S. Venkat (General Manager)',
             phone: '+91-9397678950',
             email: 'venkat@saienterprises.info',
           },

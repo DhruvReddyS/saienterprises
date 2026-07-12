@@ -49,7 +49,7 @@
 @layer base {
   :root {
     /* ── BLACK / BLUE / WHITE SYSTEM ── */
-    --font-site: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-site: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
     --ink:        4 8% 4%;       /* #060A10 */
     --ink-2:      216 28% 10%;   /* #0D1421 */
@@ -108,6 +108,10 @@
     box-sizing: border-box;
     margin: 0; padding: 0;
     @apply border-border;
+  }
+
+  * {
+    font-family: var(--font-site) !important;
   }
 
   html {
@@ -212,6 +216,29 @@
 }
 
 @layer components {
+  /* Shared route surface: carries the landing page's restrained navy/blue atmosphere. */
+  .sai-page-shell {
+    position: relative;
+    isolation: isolate;
+    background: #060A10;
+  }
+
+  .sai-page-shell::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 12% 12%, rgba(59,130,246,0.055), transparent 27%),
+      radial-gradient(circle at 88% 72%, rgba(14,165,233,0.035), transparent 24%);
+  }
+
+  .about-deferred {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 760px;
+  }
+
   /* ── FONT UTILITIES ── */
   .font-serif {
     font-family: var(--font-site) !important;

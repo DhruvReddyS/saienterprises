@@ -57,22 +57,22 @@ const CoverPage = () => (
       width: '60%', height: '2px',
       background: 'linear-gradient(90deg, transparent, #3B82F6, transparent)',
     }} />
-    <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em', color: '#3B82F6', marginBottom: 24, textTransform: 'uppercase' }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.3em', color: '#3B82F6', marginBottom: 24, textTransform: 'uppercase' }}>
       Established 2000 · Hyderabad
     </div>
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(36px,5vw,56px)', fontWeight: 700, color: '#fff', lineHeight: 0.9, marginBottom: 8 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(36px,5vw,56px)', fontWeight: 700, color: '#fff', lineHeight: 0.9, marginBottom: 8 }}>
       SAI
     </div>
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(18px,2.5vw,26px)', fontWeight: 300, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 40 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(18px,2.5vw,26px)', fontWeight: 300, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 40 }}>
       Enterprises
     </div>
     <div style={{ width: 48, height: 1, background: '#3B82F6', marginBottom: 32 }} />
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(22px,3vw,32px)', fontWeight: 300, fontStyle: 'italic', color: 'rgba(255,255,255,0.6)', lineHeight: 1.3 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(22px,3vw,32px)', fontWeight: 300, fontStyle: 'italic', color: 'rgba(255,255,255,0.6)', lineHeight: 1.3 }}>
       Graphic Machinery<br />Catalogue 2026
     </div>
     <div style={{
       position: 'absolute', bottom: 32,
-      fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em',
+      fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.2em',
       color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase',
     }}>
       4000+ Machines · 2000+ Clients · 24 Years
@@ -85,10 +85,10 @@ const TocPage = () => (
     height: '100%', background: '#F8FAFE',
     display: 'flex', flexDirection: 'column', padding: '40px 36px', overflow: 'hidden',
   }}>
-    <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.28em', color: '#3B82F6', marginBottom: 8, textTransform: 'uppercase' }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.28em', color: '#3B82F6', marginBottom: 8, textTransform: 'uppercase' }}>
       Contents
     </div>
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 600, color: '#060A10', marginBottom: 32 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 32, fontWeight: 600, color: '#060A10', marginBottom: 32 }}>
       Categories
     </div>
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -96,13 +96,13 @@ const TocPage = () => (
         <div key={cat.id} style={{ display: 'flex', alignItems: 'center', gap: 12, paddingBottom: 12, borderBottom: '1px solid rgba(0,0,0,0.07)' }}>
           <div style={{ width: 4, height: 28, background: ACCENT[cat.id] ?? '#3B82F6', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 600, color: '#060A10' }}>{cat.name}</div>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(0,0,0,0.4)', marginTop: 1 }}>{cat.products.length} machines</div>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 18, fontWeight: 600, color: '#060A10' }}>{cat.name}</div>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, color: 'rgba(0,0,0,0.4)', marginTop: 1 }}>{cat.products.length} machines</div>
           </div>
         </div>
       ))}
     </div>
-    <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(0,0,0,0.3)', marginTop: 16, letterSpacing: '0.15em' }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(0,0,0,0.3)', marginTop: 16, letterSpacing: '0.15em' }}>
       SAI ENTERPRISES · CATALOGUE 2026
     </div>
   </div>
@@ -129,17 +129,17 @@ const CategoryIntroPage = ({ category }: { category: ProductCategory }) => {
         </div>
       )}
       <div style={{ position: 'relative', zIndex: 2 }}>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.28em', color: accent, marginBottom: 12, textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.28em', color: accent, marginBottom: 12, textTransform: 'uppercase' }}>
           Section
         </div>
-        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 700, color: '#fff', lineHeight: 0.9, marginBottom: 20 }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 700, color: '#fff', lineHeight: 0.9, marginBottom: 20 }}>
           {category.name}
         </div>
         <div style={{ width: 32, height: 2, background: accent, marginBottom: 20 }} />
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: 280 }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, maxWidth: 280 }}>
           {category.description}
         </div>
-        <div style={{ marginTop: 24, fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.3)' }}>
+        <div style={{ marginTop: 24, fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.3)' }}>
           {category.products.length} MACHINES IN THIS SECTION
         </div>
       </div>
@@ -158,10 +158,10 @@ const MachinePage = ({ product, category }: { product: Product; category: Produc
 
       {/* Header */}
       <div style={{ padding: '16px 24px 12px', borderBottom: '1px solid rgba(0,0,0,0.06)', flexShrink: 0 }}>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.24em', textTransform: 'uppercase', color: accent, marginBottom: 4 }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.24em', textTransform: 'uppercase', color: accent, marginBottom: 4 }}>
           {category.name}
         </div>
-        <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 600, color: '#060A10', lineHeight: 1.1 }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 18, fontWeight: 600, color: '#060A10', lineHeight: 1.1 }}>
           {product.name}
         </div>
       </div>
@@ -181,7 +181,7 @@ const MachinePage = ({ product, category }: { product: Product; category: Produc
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           borderBottom: '1px solid rgba(0,0,0,0.04)',
         }}>
-          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(0,0,0,0.25)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+          <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(0,0,0,0.25)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             Image on request
           </div>
         </div>
@@ -190,20 +190,20 @@ const MachinePage = ({ product, category }: { product: Product; category: Produc
       {/* Content */}
       <div style={{ flex: 1, padding: '12px 24px 16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 8 }}>
         {product.description && (
-          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10.5, color: 'rgba(0,0,0,0.55)', lineHeight: 1.65, margin: 0 }}>
+          <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10.5, color: 'rgba(0,0,0,0.55)', lineHeight: 1.65, margin: 0 }}>
             {product.description}
           </p>
         )}
 
         {product.sizes && product.sizes.length > 0 && (
           <div>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: accent, marginBottom: 5 }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: accent, marginBottom: 5 }}>
               Available Sizes
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
               {product.sizes.map((s) => (
                 <span key={s} style={{
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 9,
+                  fontFamily: "'Manrope', sans-serif", fontSize: 9,
                   padding: '2px 8px', border: `1px solid ${accent}33`,
                   color: '#060A10', background: `${accent}0A`,
                 }}>
@@ -216,12 +216,12 @@ const MachinePage = ({ product, category }: { product: Product; category: Produc
 
         {product.features && product.features.length > 0 && (
           <div>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: accent, marginBottom: 5 }}>
+            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: accent, marginBottom: 5 }}>
               Key Features
             </div>
             <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 3 }}>
               {product.features.slice(0, 4).map((f) => (
-                <li key={f} style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(0,0,0,0.6)', display: 'flex', gap: 6 }}>
+                <li key={f} style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, color: 'rgba(0,0,0,0.6)', display: 'flex', gap: 6 }}>
                   <span style={{ color: accent, flexShrink: 0, marginTop: 1 }}>◆</span>
                   <span>{f}</span>
                 </li>
@@ -234,8 +234,8 @@ const MachinePage = ({ product, category }: { product: Product; category: Produc
           <div>
             {Object.entries(product.specifications).slice(0, 3).map(([k, v]) => (
               <div key={k} style={{ display: 'flex', gap: 8, paddingBottom: 3, borderBottom: '1px solid rgba(0,0,0,0.05)', marginBottom: 3 }}>
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(0,0,0,0.4)', minWidth: 80, flexShrink: 0 }}>{k}</span>
-                <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: '#060A10', fontWeight: 500 }}>{v}</span>
+                <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(0,0,0,0.4)', minWidth: 80, flexShrink: 0 }}>{k}</span>
+                <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: '#060A10', fontWeight: 500 }}>{v}</span>
               </div>
             ))}
           </div>
@@ -244,11 +244,11 @@ const MachinePage = ({ product, category }: { product: Product; category: Produc
 
       {/* Footer */}
       <div style={{ padding: '8px 24px', borderTop: '1px solid rgba(0,0,0,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.15em', color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.15em', color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase' }}>
           Sai Enterprises · 2026
         </div>
         {product.brand && (
-          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.12em', color: accent }}>
+          <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 8, letterSpacing: '0.12em', color: accent }}>
             {product.brand}
           </div>
         )}
@@ -265,11 +265,11 @@ const BackPage = () => (
     padding: 48, textAlign: 'center', position: 'relative',
   }}>
     <div style={{ width: 48, height: 1, background: '#3B82F6', marginBottom: 32 }} />
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(28px,4vw,40px)', fontWeight: 300, fontStyle: 'italic', color: '#fff', lineHeight: 1.3, marginBottom: 32 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 'clamp(28px,4vw,40px)', fontWeight: 300, fontStyle: 'italic', color: '#fff', lineHeight: 1.3, marginBottom: 32 }}>
       "We Believe in<br /><em style={{ color: '#3B82F6' }}>Long-Term Relationships"</em>
     </div>
     <div style={{ width: 48, height: 1, background: '#3B82F6', marginBottom: 40 }} />
-    <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', lineHeight: 2 }}>
+    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', lineHeight: 2 }}>
       Sai Enterprises, Hyderabad<br />
       +91-9312175513 · +91-9397678950<br />
       msrao@saienterprises.info
@@ -400,7 +400,7 @@ const BrochureViewer = () => {
               width: '100%', background: 'rgba(255,255,255,0.05)',
               border: '1px solid rgba(255,255,255,0.1)',
               padding: '9px 12px 9px 34px',
-              fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+              fontFamily: "'Manrope', sans-serif", fontSize: 13,
               color: '#fff', outline: 'none',
               transition: 'border-color 0.2s',
             }}
@@ -416,7 +416,7 @@ const BrochureViewer = () => {
               key={cat.id}
               onClick={() => jumpToSpread(spread)}
               style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.16em',
+                fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.16em',
                 textTransform: 'uppercase', padding: '6px 12px',
                 background: currentSpread >= spread ? `${ACCENT[cat.id] ?? '#3B82F6'}22` : 'transparent',
                 border: `1px solid ${currentSpread >= spread ? (ACCENT[cat.id] ?? '#3B82F6') + '55' : 'rgba(255,255,255,0.12)'}`,
@@ -430,7 +430,7 @@ const BrochureViewer = () => {
         </div>
 
         {/* Page counter */}
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginLeft: 'auto', whiteSpace: 'nowrap' }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em', marginLeft: 'auto', whiteSpace: 'nowrap' }}>
           Spread {currentSpread + 1} / {spreadCount}
         </div>
       </div>
@@ -438,7 +438,7 @@ const BrochureViewer = () => {
       {/* Book */}
       <div style={{ padding: '48px 24px 64px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 32 }}>
         {/* Keyboard hint */}
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase' }}>
           Use ← → arrow keys or click the arrows to turn pages
         </div>
 
@@ -562,7 +562,7 @@ const BrochureViewer = () => {
             );
           })}
           {spreadCount > 40 && (
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
+            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}>
               +{spreadCount - 40} more
             </span>
           )}

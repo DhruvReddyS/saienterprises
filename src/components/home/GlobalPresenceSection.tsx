@@ -1,694 +1,238 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Building2, Mail, MapPin, Phone } from 'lucide-react';
 import IndiaPresenceMap from '@/components/presence/IndiaPresenceMap';
-import { indiaPresenceCities, presenceTypeLabels, type PresenceType } from '@/data/indiaPresence';
+import {
+  indiaPresenceCities,
+  presenceTypeLabels,
+  type PresenceType,
+} from '@/data/indiaPresence';
 
 const TYPE_COLORS: Record<PresenceType, string> = {
   headquarters: '#FACC15',
-  salesOffice:  '#EF4444',
-  serviceCentre:'#22C55E',
-  salesPartner: '#3B82F6',
+  salesOffice: '#F87171',
+  serviceCentre: '#34D399',
+  salesPartner: '#60A5FA',
 };
 
-const GLOBAL_REACH = [
-  { region: 'South Asia',   countries: ['Sri Lanka', 'Nepal', 'Bangladesh'], color: '#3B82F6' },
-  { region: 'Middle East',  countries: ['UAE', 'Oman', 'Qatar'],             color: '#0EA5E9' },
-  { region: 'East Africa',  countries: ['Kenya', 'Ethiopia', 'Tanzania'],    color: '#10B981' },
-  { region: 'West Africa',  countries: ['Nigeria', 'Ghana', 'Cameroon'],     color: '#F59E0B' },
-  { region: 'SE Asia',      countries: ['Singapore', 'Malaysia'],            color: '#8B5CF6' },
-];
-
-const INTERNATIONAL_OFFICES = [
-  { city: 'Nairobi', country: 'Kenya' },
-  { city: 'Addis Ababa', country: 'Ethiopia' },
-  { city: 'Colombo', country: 'Sri Lanka' },
-];
-
-// City detail panel content — shared between desktop sidebar and mobile bottom sheet
-const CityDetailContent = ({
+const CityDetails = ({
   city,
-  accent,
-  primaryType,
-  cityContactCount,
-  totalContacts,
 }: {
   city: (typeof indiaPresenceCities)[number];
-  accent: string;
-  primaryType: PresenceType;
-  cityContactCount: number;
-  totalContacts: number;
-}) => (
-  <>
-    <div style={{
-      background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}30`,
-      padding: '20px 20px 18px', position: 'relative', overflow: 'hidden',
-    }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${accent}, transparent)` }} />
-      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.24em', textTransform: 'uppercase', color: accent, fontWeight: 700, marginBottom: 10 }}>
-        Selected Location
-      </div>
-      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 32, fontWeight: 600, color: '#fff', lineHeight: 1, marginBottom: 10 }}>
-        {city.city}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.36)', fontWeight: 700 }}>
-          {city.state}
-        </span>
-        <span style={{ color: 'rgba(255,255,255,0.18)' }}>·</span>
-        <span style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.18em', textTransform: 'uppercase',
-          color: accent, fontWeight: 700, padding: '4px 9px', background: `${accent}14`, border: `1px solid ${accent}30`,
-        }}>
-          {presenceTypeLabels[primaryType]}
-        </span>
-      </div>
-    </div>
-
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10 }}>
-      {[
-        { value: `${city.entries.length}`, label: 'Entries' },
-        { value: `${cityContactCount}`, label: 'Contacts' },
-        { value: `${totalContacts}+`, label: 'Network calls' },
-      ].map((item) => (
-        <div
-          key={item.label}
-          style={{
-            padding: '16px 14px',
-            border: '1px solid rgba(255,255,255,0.08)',
-            background: 'rgba(255,255,255,0.025)',
-          }}
-        >
-          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700, color: '#fff', lineHeight: 1 }}>
-            {item.value}
-          </div>
-          <div style={{ marginTop: 8, fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.46)', fontWeight: 700 }}>
-            {item.label}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {city.entries.map((entry) => {
-        const ec = TYPE_COLORS[entry.type];
-        return (
-          <div
-            key={entry.id}
-            style={{
-              background: 'rgba(255,255,255,0.025)',
-              border: '1px solid rgba(255,255,255,0.07)',
-              padding: '16px 16px 14px',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: ec, display: 'inline-block', flexShrink: 0, boxShadow: `0 0 10px ${ec}55` }} />
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.2em', textTransform: 'uppercase', color: ec, fontWeight: 700 }}>
-                {presenceTypeLabels[entry.type]}
-              </span>
-            </div>
-            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 6 }}>
-              {entry.company}
-            </div>
-            {entry.territory ? (
-              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: 'rgba(255,255,255,0.34)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-                {entry.territory}
-              </div>
-            ) : null}
-            <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12.5, color: 'rgba(255,255,255,0.56)', lineHeight: 1.75, margin: 0 }}>
-              {entry.description}
-            </p>
-
-            {entry.contacts.length > 0 ? (
-              <div style={{
-                display: 'grid',
-                gap: 8,
-                marginTop: 12,
-                paddingTop: 12,
-                borderTop: '1px solid rgba(255,255,255,0.06)',
-              }}>
-                {entry.contacts.map((contact) => (
-                  <div key={`${entry.id}-${contact.name}`} style={{
-                    padding: '10px 12px',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    background: 'rgba(255,255,255,0.03)',
-                  }}>
-                    <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11.5, color: '#fff', fontWeight: 600, marginBottom: 4 }}>
-                      {contact.name}
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                      {contact.phone ? (
-                        <a
-                          href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                          style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: ec, textDecoration: 'none', fontWeight: 700 }}
-                        >
-                          {contact.phone}
-                        </a>
-                      ) : null}
-                      {contact.email ? (
-                        <a
-                          href={`mailto:${contact.email}`}
-                          style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11.5, color: 'rgba(255,255,255,0.64)', textDecoration: 'none' }}
-                        >
-                          {contact.email}
-                        </a>
-                      ) : null}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div style={{
-                marginTop: 12,
-                paddingTop: 12,
-                borderTop: '1px solid rgba(255,255,255,0.06)',
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 11.5,
-                color: 'rgba(255,255,255,0.42)',
-              }}>
-                Direct contact is coordinated through Sai Enterprises for this support point.
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  </>
-);
-
-const GlobalPresenceSection = () => {
-  const [selectedId, setSelectedId] = useState('hyderabad');
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const [revealed, setRevealed] = useState(false);
-
-  // Detect mobile
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setRevealed(true); obs.disconnect(); }
-    }, { threshold: 0.06 });
-    if (sectionRef.current) obs.observe(sectionRef.current);
-    return () => obs.disconnect();
-  }, []);
-
-  // Prevent body scroll when bottom sheet is open
-  useEffect(() => {
-    if (isMobile && sheetOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [isMobile, sheetOpen]);
-
-  const city = indiaPresenceCities.find((c) => c.id === selectedId) ?? indiaPresenceCities[0];
+}) => {
   const primaryType = city.entries[0]?.type ?? 'salesPartner';
   const accent = TYPE_COLORS[primaryType];
-  const totalCities = indiaPresenceCities.length;
-  const totalEntries = indiaPresenceCities.reduce((sum, item) => sum + item.entries.length, 0);
-  const totalContacts = indiaPresenceCities.reduce(
-    (sum, item) => sum + item.entries.reduce((entrySum, entry) => entrySum + entry.contacts.length, 0),
-    0,
-  );
-  const cityContactCount = city.entries.reduce((sum, entry) => sum + entry.contacts.length, 0);
-
-  const handleCitySelect = (id: string) => {
-    setSelectedId(id);
-    if (isMobile) setSheetOpen(true);
-  };
 
   return (
-    <section ref={sectionRef} style={{
-      background: 'linear-gradient(180deg, #060A10 0%, #09121F 52%, #060A10 100%)',
-      padding: 'clamp(60px,8vw,120px) 0 clamp(56px,7vw,100px)', overflow: 'hidden', position: 'relative',
-    }}>
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(circle, rgba(148,163,184,0.1) 1px, transparent 1px)',
-        backgroundSize: '30px 30px',
-        maskImage: 'linear-gradient(180deg, rgba(0,0,0,0.85), transparent 96%)',
-      }} />
-      <div style={{
-        position: 'absolute', top: '28%', left: '12%',
-        width: 420, height: 420,
-        background: 'radial-gradient(circle, rgba(59,130,246,0.14) 0%, rgba(59,130,246,0.03) 45%, transparent 72%)',
-        filter: 'blur(54px)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', right: '8%', bottom: '16%',
-        width: 360, height: 320,
-        background: 'radial-gradient(circle, rgba(14,165,233,0.12) 0%, rgba(14,165,233,0.02) 48%, transparent 76%)',
-        filter: 'blur(58px)',
-        pointerEvents: 'none',
-      }} />
-
-      <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }} className="max-md:!px-6 max-[767px]:!px-4">
-        {/* ── SECTION HEADER ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: revealed ? 1 : 0, y: revealed ? 0 : 24 }}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          style={{ marginBottom: 40 }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <div style={{ width: 28, height: 1, background: '#3B82F6' }} />
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
-              India Network
-            </span>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 24, alignItems: 'end' }}
-            className="max-lg:!grid-cols-1"
+    <motion.aside
+      key={city.id}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="h-full rounded-[32px] bg-white/[0.045] p-6 backdrop-blur-xl sm:p-8"
+    >
+      <div className="flex items-start justify-between gap-5 border-b border-white/[0.08] pb-6">
+        <div>
+          <p
+            className="text-[9px] font-bold uppercase tracking-[0.25em]"
+            style={{ color: accent }}
           >
-            <div>
-              <h2 style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 'clamp(36px,5vw,66px)',
-                fontWeight: 600, color: '#fff', lineHeight: 0.96, margin: 0,
-              }}>
-                Presence, simplified.
-                <br />
-                <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.36)' }}>
-                  explore city by city.
-                </span>
-              </h2>
-              <p style={{
-                marginTop: 18, maxWidth: 520,
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: 14, lineHeight: 1.85,
-                color: 'rgba(255,255,255,0.52)',
-              }}>
-                Headquarters in Hyderabad, with sales offices, service centres and partners across India — tap any city to see who to reach.
-              </p>
-            </div>
-
-            {/* Quick stats */}
-            <div style={{ display: 'flex', gap: 0, border: '1px solid rgba(255,255,255,0.08)', flexShrink: 0 }}
-              className="max-lg:!w-full max-lg:!grid max-lg:!grid-cols-3 max-[767px]:!grid-cols-3"
-            >
-              {[
-                { value: `${totalCities}`, label: 'Cities' },
-                { value: `${totalEntries}`, label: 'Support pts' },
-                { value: '30+',   label: 'Export markets' },
-              ].map((item) => (
-                <div key={item.label} style={{
-                  padding: '20px 22px', textAlign: 'center',
-                  borderRight: '1px solid rgba(255,255,255,0.08)',
-                  background: 'rgba(255,255,255,0.02)',
-                }}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 700, color: '#fff', lineHeight: 1 }}>
-                    {item.value}
-                  </div>
-                  <div style={{ marginTop: 6, fontFamily: "'DM Sans', sans-serif", fontSize: 8, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#60A5FA', fontWeight: 700 }}>
-                    {item.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* divider */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: revealed ? 1 : 0 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          style={{ marginBottom: 28 }}
+            Selected location
+          </p>
+          <h3 className="mt-3 text-3xl font-extrabold tracking-[-0.045em] text-white sm:text-4xl">
+            {city.city}
+          </h3>
+          <p className="mt-2 text-xs font-medium text-white/40">{city.state}, India</p>
+        </div>
+        <span
+          className="flex h-11 w-11 items-center justify-center rounded-full"
+          style={{ background: `${accent}18`, color: accent }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 21s-6-5.33-6-11a6 6 0 1 1 12 0c0 5.67-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/>
-              </svg>
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700 }}>
-                Select a city to explore
-              </span>
-            </div>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
-          </div>
-        </motion.div>
+          <MapPin className="h-5 w-5" />
+        </span>
+      </div>
 
-        {/* ── DESKTOP LAYOUT ── */}
-        {!isMobile && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: revealed ? 1 : 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.16fr) minmax(320px, 0.84fr)', gap: 26, alignItems: 'stretch', marginBottom: 30 }}
-            className="max-[980px]:!grid-cols-1"
-          >
-            {/* Map panel */}
-            <div style={{
-              opacity: revealed ? 1 : 0, transform: revealed ? 'none' : 'translateX(-24px)',
-              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.08s',
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02))',
-              backdropFilter: 'blur(14px)',
-              padding: 20,
-            }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: 18, alignItems: 'start', marginBottom: 18 }}
-                className="max-md:!grid-cols-1"
-              >
-                <div>
-                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#93C5FD', fontWeight: 700, marginBottom: 10 }}>
-                    India Network Map
-                  </div>
-                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 600, color: '#fff', lineHeight: 1.05, letterSpacing: '-0.03em', marginBottom: 0 }}>
-                    Select a city to explore.
-                  </h3>
-                </div>
-
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'flex-end' }}
-                  className="max-md:!justify-start"
+      <div className="divide-y divide-white/[0.07]">
+        {city.entries.map((entry) => {
+          const entryAccent = TYPE_COLORS[entry.type];
+          return (
+            <article key={entry.id} className="py-6">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-1.5 w-1.5 rounded-full"
+                  style={{ background: entryAccent, boxShadow: `0 0 10px ${entryAccent}` }}
+                />
+                <p
+                  className="text-[9px] font-bold uppercase tracking-[0.2em]"
+                  style={{ color: entryAccent }}
                 >
-                  {([
-                    {
-                      type: 'headquarters' as PresenceType, label: 'HQ',
-                      icon: (c: string) => (
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transition: 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)' }} className="legend-icon">
-                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                      ),
-                    },
-                    {
-                      type: 'salesOffice' as PresenceType, label: 'Sales',
-                      icon: (c: string) => (
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transition: 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)' }} className="legend-icon">
-                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
-                        </svg>
-                      ),
-                    },
-                    {
-                      type: 'serviceCentre' as PresenceType, label: 'Service',
-                      icon: (c: string) => (
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transition: 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)' }} className="legend-icon">
-                          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-                        </svg>
-                      ),
-                    },
-                    {
-                      type: 'salesPartner' as PresenceType, label: 'Partner',
-                      icon: (c: string) => (
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, transition: 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1)' }} className="legend-icon">
-                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                      ),
-                    },
-                  ]).map((item) => (
-                    <div
-                      key={item.type}
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 7,
-                        padding: '8px 10px',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        background: 'rgba(255,255,255,0.025)',
-                        transition: 'background 0.2s, border-color 0.2s',
-                        cursor: 'default',
-                      }}
-                      onMouseEnter={(e) => {
-                        const el = e.currentTarget;
-                        el.style.background = `${TYPE_COLORS[item.type]}15`;
-                        el.style.borderColor = `${TYPE_COLORS[item.type]}40`;
-                        const icon = el.querySelector('.legend-icon') as SVGElement | null;
-                        if (icon) icon.style.transform = 'scale(1.35) rotate(-8deg)';
-                      }}
-                      onMouseLeave={(e) => {
-                        const el = e.currentTarget;
-                        el.style.background = 'rgba(255,255,255,0.025)';
-                        el.style.borderColor = 'rgba(255,255,255,0.08)';
-                        const icon = el.querySelector('.legend-icon') as SVGElement | null;
-                        if (icon) icon.style.transform = 'scale(1) rotate(0deg)';
-                      }}
-                    >
-                      {item.icon(TYPE_COLORS[item.type])}
-                      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 8.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.58)', fontWeight: 700 }}>
-                        {item.label}
-                      </span>
+                  {presenceTypeLabels[entry.type]}
+                </p>
+              </div>
+
+              <h4 className="mt-3 text-base font-bold tracking-[-0.02em] text-white">
+                {entry.company}
+              </h4>
+              {entry.territory && (
+                <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/30">
+                  {entry.territory}
+                </p>
+              )}
+              <p className="mt-3 text-xs leading-6 text-white/52">{entry.description}</p>
+
+              {entry.contacts.length > 0 ? (
+                <div className="mt-4 space-y-3">
+                  {entry.contacts.map((contact) => (
+                    <div key={`${entry.id}-${contact.name}`}>
+                      <p className="text-xs font-semibold text-white/82">{contact.name}</p>
+                      <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-2">
+                        {contact.phone && (
+                          <a
+                            href={`tel:${contact.phone.replace(/\s/g, '')}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold transition-opacity hover:opacity-70"
+                            style={{ color: entryAccent }}
+                          >
+                            <Phone className="h-3.5 w-3.5" />
+                            {contact.phone}
+                          </a>
+                        )}
+                        {contact.email && (
+                          <a
+                            href={`mailto:${contact.email}`}
+                            className="inline-flex items-center gap-1.5 text-xs text-white/52 transition-colors hover:text-white"
+                          >
+                            <Mail className="h-3.5 w-3.5" />
+                            {contact.email}
+                          </a>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* City chips */}
-              <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 8, marginBottom: 18 }}>
-                {indiaPresenceCities.map((c) => {
-                  const isSel = selectedId === c.id;
-                  const cp = c.entries[0]?.type ?? 'salesPartner';
-                  const cc = TYPE_COLORS[cp];
-                  return (
-                    <button
-                      key={c.id}
-                      onClick={() => handleCitySelect(c.id)}
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: 9,
-                        letterSpacing: '0.16em',
-                        textTransform: 'uppercase',
-                        fontWeight: 700,
-                        padding: '10px 14px',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        background: isSel ? `${cc}22` : 'rgba(255,255,255,0.025)',
-                        border: `1px solid ${isSel ? `${cc}60` : 'rgba(255,255,255,0.08)'}`,
-                        color: isSel ? '#fff' : 'rgba(255,255,255,0.45)',
-                        transition: 'all 0.22s',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        flexShrink: 0,
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isSel) {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.borderColor = `${cc}50`;
-                          el.style.color = '#fff';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isSel) {
-                          const el = e.currentTarget as HTMLElement;
-                          el.style.borderColor = 'rgba(255,255,255,0.08)';
-                          el.style.color = 'rgba(255,255,255,0.45)';
-                        }
-                      }}
-                    >
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: cc, flexShrink: 0 }} />
-                      {c.city}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div style={{
-                minHeight: 'clamp(260px, 42vw, 580px)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                background: 'linear-gradient(180deg, rgba(7,12,22,0.72), rgba(7,12,22,0.44))',
-                padding: '16px 16px 10px',
-              }}>
-                <IndiaPresenceMap selectedCityId={selectedId} onSelectCity={handleCitySelect} />
-              </div>
-            </div>
-
-            {/* Desktop right panel */}
-            <div style={{
-              opacity: revealed ? 1 : 0, transform: revealed ? 'none' : 'translateX(24px)',
-              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.16s',
-              display: 'flex', flexDirection: 'column', gap: 14,
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02))',
-              backdropFilter: 'blur(14px)',
-              padding: 20,
-              maxHeight: 'clamp(400px, 60vw, 9999px)',
-              overflowY: 'auto',
-            }}>
-              <CityDetailContent
-                city={city}
-                accent={accent}
-                primaryType={primaryType}
-                cityContactCount={cityContactCount}
-                totalContacts={totalContacts}
-              />
-            </div>
-          </motion.div>
-        )}
-
-        {/* ── MOBILE LAYOUT ── */}
-        {isMobile && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: revealed ? 1 : 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            style={{ marginBottom: 30 }}
-          >
-            <div style={{
-              opacity: revealed ? 1 : 0, transform: revealed ? 'none' : 'translateY(16px)',
-              transition: 'all 0.9s cubic-bezier(0.16,1,0.3,1) 0.08s',
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02))',
-              backdropFilter: 'blur(14px)',
-              padding: 16,
-            }}>
-              <div style={{ marginBottom: 14 }}>
-                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#93C5FD', fontWeight: 700, marginBottom: 8 }}>
-                  India Network Map
-                </div>
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, fontWeight: 600, color: '#fff', lineHeight: 1.05, letterSpacing: '-0.03em', marginBottom: 0 }}>
-                  Tap a city to explore.
-                </h3>
-              </div>
-
-              {/* City selector chips — horizontal scroll */}
-              <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, marginBottom: 14 }}>
-                {indiaPresenceCities.map((c) => {
-                  const isSel = selectedId === c.id;
-                  const cp = c.entries[0]?.type ?? 'salesPartner';
-                  const cc = TYPE_COLORS[cp];
-                  return (
-                    <button
-                      key={c.id}
-                      onClick={() => handleCitySelect(c.id)}
-                      style={{
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontSize: 9,
-                        letterSpacing: '0.16em',
-                        textTransform: 'uppercase',
-                        fontWeight: 700,
-                        padding: '10px 12px',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                        background: isSel ? `${cc}22` : 'rgba(255,255,255,0.025)',
-                        border: `1px solid ${isSel ? `${cc}60` : 'rgba(255,255,255,0.08)'}`,
-                        color: isSel ? '#fff' : 'rgba(255,255,255,0.45)',
-                        transition: 'all 0.22s',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 6,
-                        flexShrink: 0,
-                      }}
-                    >
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: cc, flexShrink: 0 }} />
-                      {c.city}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Map — full width, at least 300px tall */}
-              <div style={{
-                minHeight: 300,
-                width: '100%',
-                border: '1px solid rgba(255,255,255,0.08)',
-                background: 'linear-gradient(180deg, rgba(7,12,22,0.72), rgba(7,12,22,0.44))',
-                padding: '12px 12px 8px',
-              }}>
-                <IndiaPresenceMap selectedCityId={selectedId} onSelectCity={handleCitySelect} />
-              </div>
-
-              {/* Hint to tap a city */}
-              {!sheetOpen && (
-                <div style={{
-                  marginTop: 12, textAlign: 'center',
-                  fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(255,255,255,0.35)',
-                  letterSpacing: '0.08em',
-                }}>
-                  Tap a city chip or pin to see details
-                </div>
+              ) : (
+                <p className="mt-4 text-[11px] leading-5 text-white/34">
+                  Contact is coordinated through Sai Enterprises.
+                </p>
               )}
-            </div>
-          </motion.div>
-        )}
+            </article>
+          );
+        })}
       </div>
+    </motion.aside>
+  );
+};
 
-      {/* ── MOBILE BOTTOM SHEET ── */}
-      <AnimatePresence>
-        {isMobile && sheetOpen && (
-          <>
-            {/* Backdrop overlay */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={() => setSheetOpen(false)}
-              style={{
-                position: 'fixed', inset: 0,
-                background: 'rgba(0,0,0,0.6)',
-                zIndex: 499,
-              }}
-            />
+const GlobalPresenceSection = () => {
+  const [selectedId, setSelectedId] = useState('hyderabad');
+  const sectionRef = useRef<HTMLElement>(null);
+  const [revealed, setRevealed] = useState(false);
 
-            {/* Sheet */}
-            <motion.div
-              key="sheet"
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              style={{
-                position: 'fixed', bottom: 0, left: 0, right: 0,
-                zIndex: 500,
-                background: '#0A1220',
-                borderRadius: '20px 20px 0 0',
-                borderTop: '1px solid rgba(255,255,255,0.1)',
-                padding: '24px 20px calc(env(safe-area-inset-bottom, 0px) + 80px)',
-                maxHeight: '80vh',
-                overflowY: 'auto',
-              }}
-            >
-              {/* Handle bar */}
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-                <div style={{
-                  width: 40, height: 4,
-                  borderRadius: 9999,
-                  background: 'rgba(255,255,255,0.2)',
-                }} />
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.08 },
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const city = indiaPresenceCities.find((item) => item.id === selectedId) ?? indiaPresenceCities[0];
+  const totalEntries = indiaPresenceCities.reduce((sum, item) => sum + item.entries.length, 0);
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative overflow-hidden bg-[linear-gradient(180deg,#050810,#091321_52%,#050810)] py-16 sm:py-20"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_22%,rgba(59,130,246,0.1),transparent_28%),radial-gradient(circle_at_88%_75%,rgba(14,165,233,0.08),transparent_25%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,rgba(148,163,184,0.09)_1px,transparent_1px)] bg-[size:30px_30px] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+
+      <div className="relative mx-auto max-w-[1380px] px-5 sm:px-8 lg:px-14">
+        <motion.header
+          initial={{ opacity: 0, y: 24 }}
+          animate={revealed ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="grid items-end gap-8 lg:grid-cols-[1fr_auto]"
+        >
+          <div>
+            <p className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.28em] text-blue-400">
+              <span className="h-px w-7 bg-blue-400" />
+              India Network
+            </p>
+            <h2 className="mt-5 max-w-3xl text-4xl font-extrabold leading-[0.95] tracking-[-0.055em] text-white sm:text-6xl">
+              Local teams. <span className="text-blue-600">National reach.</span>
+            </h2>
+            <p className="mt-5 max-w-xl text-sm leading-7 text-white/48">
+              Sales, service and machinery support connected across India from our Hyderabad headquarters.
+            </p>
+          </div>
+
+          <div className="flex divide-x divide-white/10">
+            {[
+              { value: indiaPresenceCities.length, label: 'Cities' },
+              { value: totalEntries, label: 'Support points' },
+              { value: '30+', label: 'Export markets' },
+            ].map((item) => (
+              <div key={item.label} className="px-4 text-center sm:px-7">
+                <p className="text-2xl font-extrabold tracking-[-0.04em] text-white sm:text-3xl">
+                  {item.value}
+                </p>
+                <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.19em] text-blue-300/65">
+                  {item.label}
+                </p>
               </div>
+            ))}
+          </div>
+        </motion.header>
 
-              {/* Close button */}
-              <button
-                onClick={() => setSheetOpen(false)}
-                style={{
-                  position: 'absolute', top: 20, right: 20,
-                  width: 32, height: 32,
-                  borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  color: 'rgba(255,255,255,0.7)',
-                  fontSize: 18,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer',
-                  lineHeight: 1,
-                }}
-                aria-label="Close"
-              >
-                ×
-              </button>
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={revealed ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-12 rounded-[38px] bg-[#07101d] p-4 shadow-[0_36px_100px_-54px_rgba(6,10,16,0.7)] sm:p-6"
+        >
+          <div className="flex gap-2 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {indiaPresenceCities.map((item) => {
+              const active = item.id === selectedId;
+              const type = item.entries[0]?.type ?? 'salesPartner';
+              const color = TYPE_COLORS[type];
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setSelectedId(item.id)}
+                  className="inline-flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] transition-all"
+                  style={{
+                    color: active ? '#fff' : 'rgba(255,255,255,0.42)',
+                    background: active ? `${color}25` : 'transparent',
+                    boxShadow: active ? `inset 0 0 0 1px ${color}55` : 'none',
+                  }}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+                  {item.city}
+                </button>
+              );
+            })}
+          </div>
 
-              {/* City detail content */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <CityDetailContent
-                  city={city}
-                  accent={accent}
-                  primaryType={primaryType}
-                  cityContactCount={cityContactCount}
-                  totalContacts={totalContacts}
-                />
+          <div className="mt-3 grid gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.55fr)]">
+            <div className="relative min-h-[430px] overflow-hidden rounded-[32px] bg-[linear-gradient(145deg,rgba(255,255,255,0.055),rgba(255,255,255,0.015))] p-3 sm:min-h-[600px] sm:p-5">
+              <div className="absolute left-7 top-7 z-10 hidden items-center gap-2 rounded-full bg-[#07101d]/70 px-4 py-2 text-[9px] font-bold uppercase tracking-[0.18em] text-white/58 backdrop-blur-md sm:flex">
+                <Building2 className="h-3.5 w-3.5 text-blue-400" />
+                Select a city or map pin
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+              <IndiaPresenceMap selectedCityId={selectedId} onSelectCity={setSelectedId} />
+            </div>
+
+            <CityDetails city={city} />
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 };

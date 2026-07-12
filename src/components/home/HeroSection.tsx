@@ -257,7 +257,7 @@ const HeroSection = () => {
                 color: '#93C5FD',
               }}
             >
-              Get a Quote <span className="arr">→</span>
+              Contact Us <span className="arr">→</span>
             </Link>
           </div>
         </div>
@@ -318,11 +318,11 @@ const HeroSection = () => {
           right: 0,
           zIndex: 5,
           overflow: 'hidden',
-          background: 'linear-gradient(180deg, rgba(8,12,18,0.92) 0%, rgba(5,9,14,0.98) 100%)',
-          backdropFilter: 'blur(12px)',
-          borderTop: '1px solid rgba(59,130,246,0.14)',
-          padding: '16px 0',
-          paddingBottom: 'clamp(16px, calc(16px + env(safe-area-inset-bottom, 0px)), 80px)',
+          background: 'linear-gradient(180deg, rgba(6,10,16,0.76) 0%, rgba(5,9,14,0.96) 100%)',
+          backdropFilter: 'blur(18px)',
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          padding: '13px 0',
+          paddingBottom: 'clamp(13px, calc(13px + env(safe-area-inset-bottom, 0px)), 72px)',
           opacity: revealed ? 1 : 0,
           transition: 'opacity 0.6s 0.9s',
         }}
@@ -333,52 +333,58 @@ const HeroSection = () => {
             alignItems: 'center',
             animation: 'ticker-scroll 42s linear infinite',
             width: 'max-content',
-            gap: 18,
+            gap: 0,
           }}
         >
           {[...stampItems, ...stampItems].map((item, i) => (
             <div
               key={`stamp-${i < stampItems.length ? 'a' : 'b'}-${i % stampItems.length}`}
               style={{
-                minWidth: 'clamp(200px, 28vw, 312px)',
+                minWidth: 'clamp(210px, 25vw, 292px)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 14,
-                padding: '18px 22px',
+                gap: 15,
+                padding: '10px 30px',
                 whiteSpace: 'nowrap',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: `inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 30px ${item.accent}14`,
+                borderRight: '1px solid rgba(255,255,255,0.09)',
+                position: 'relative',
               }}
             >
                 <div
                   style={{
-                    width: 54,
-                    height: 54,
+                    width: 46,
+                    height: 46,
                     flexShrink: 0,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: item.accent,
-                    background: `${item.accent}12`,
-                    border: `1px solid ${item.accent}22`,
+                    borderRadius: '50%',
+                    background: `radial-gradient(circle, ${item.accent}18 0%, ${item.accent}08 52%, transparent 72%)`,
                   }}
                 >
                   {item.badge}
                 </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 <span
                   style={{
-                    fontSize: 12,
-                    fontWeight: 800,
-                    letterSpacing: '0.14em',
-                    textTransform: 'uppercase',
-                    color: item.accent,
+                    fontFamily: "'Manrope', sans-serif",
+                    fontSize: 21,
+                    lineHeight: 1,
+                    fontWeight: 650,
+                    letterSpacing: '-0.01em',
+                    color: 'rgba(255,255,255,0.94)',
                   }}
                 >
                   {item.title}
                 </span>
-                <span style={{ fontSize: 16, color: 'rgba(255,255,255,0.9)', fontWeight: 700 }}>
+                <span style={{
+                  fontSize: 8.5,
+                  color: item.accent,
+                  fontWeight: 700,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                }}>
                   {item.subtitle}
                 </span>
               </div>

@@ -98,7 +98,7 @@ const FinalCtaSection = () => (
               onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#3B82F6'; el.style.color = '#3B82F6'; }}
               onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.14)'; el.style.color = 'rgba(255,255,255,0.7)'; }}
             >
-              Get a Quote <span style={{ fontSize: 14 }}>→</span>
+              Contact Us <span style={{ fontSize: 14 }}>→</span>
             </Link>
           </div>
         </div>

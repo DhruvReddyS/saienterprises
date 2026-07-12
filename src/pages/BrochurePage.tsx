@@ -32,24 +32,24 @@ const BrochurePage = () => {
           overflowX: 'hidden',
         }}>
           <div style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: 10, letterSpacing: '0.3em',
+            fontFamily: "'Manrope', sans-serif", fontSize: 10, letterSpacing: '0.3em',
             textTransform: 'uppercase', color: '#3B82F6', marginBottom: 16,
           }}>
             E-Brochure 2026
           </div>
           <h1 style={{
-            fontFamily: "'Cormorant Garamond', serif",
+            fontFamily: "'Manrope', sans-serif",
             fontSize: 'clamp(44px,6vw,80px)', fontWeight: 700,
             lineHeight: 0.9, letterSpacing: '-0.02em',
             color: '#fff', marginBottom: 24,
           }}>
-            Our Complete<br />
+            Every machine.<br />
             <span style={{ fontStyle: 'italic', fontWeight: 300, color: 'rgba(255,255,255,0.55)' }}>
-              Machinery Portfolio
+              One complete portfolio.
             </span>
           </h1>
           <p style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: 14,
+            fontFamily: "'Manrope', sans-serif", fontSize: 14,
             color: 'rgba(255,255,255,0.45)', lineHeight: 1.8, maxWidth: 560, marginBottom: 32,
           }}>
             Every press, cutter, laminator, and finishing machine we carry — organised by category, with full specifications and configurations.
@@ -60,7 +60,7 @@ const BrochurePage = () => {
               href={brochurePdf}
               download="Sai-Enterprises-Catalogue-2026.pdf"
               style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em',
+                fontFamily: "'Manrope', sans-serif", fontSize: 11, letterSpacing: '0.18em',
                 textTransform: 'uppercase', fontWeight: 600,
                 padding: '12px 28px', background: '#3B82F6',
                 border: 'none', color: '#fff', cursor: 'pointer',
@@ -75,7 +75,7 @@ const BrochurePage = () => {
             <Link
               to="/contact"
               style={{
-                fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em',
+                fontFamily: "'Manrope', sans-serif", fontSize: 11, letterSpacing: '0.18em',
                 textTransform: 'uppercase', fontWeight: 600,
                 padding: '12px 28px', background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.18)', color: 'rgba(255,255,255,0.7)',
@@ -85,7 +85,7 @@ const BrochurePage = () => {
               onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#3B82F6'; el.style.color = '#3B82F6'; }}
               onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(255,255,255,0.18)'; el.style.color = 'rgba(255,255,255,0.7)'; }}
             >
-              Request Quote
+              Contact Us
             </Link>
           </div>
         </div>

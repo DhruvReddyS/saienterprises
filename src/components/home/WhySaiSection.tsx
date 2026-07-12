@@ -83,7 +83,7 @@ const tiles: Tile[] = [
     icon: <IcoGlobe />,
     kicker: 'Global Reach',
     title: '15+ Countries',
-    subtitle: 'Sri Lanka, Nepal, UAE, Oman and across Africa. Export-ready from Hyderabad.',
+    subtitle: 'Sri Lanka, Nepal, UAE, Oman and key markets across Africa.',
     accent: '#22C55E',
     col: 'span 5',
     featured: true,
@@ -197,7 +197,7 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
         letterSpacing: '-0.025em',
         color: hov ? '#040810' : '#080E18',
         marginBottom: 10, lineHeight: 1.1, position: 'relative',
-        fontFamily: "'Cormorant Garamond', serif",
+        fontFamily: "'Manrope', sans-serif",
         transition: 'color 0.2s',
       }}>
         {item.title}
@@ -285,7 +285,7 @@ const WhySaiSection = () => {
             <p style={{
               fontSize: 15, color: 'rgba(13,20,33,0.52)', lineHeight: 1.8, maxWidth: 560, margin: 0,
             }}>
-              Market continuity, installed volume, client confidence, global reach, and brand authority — in one clear proof grid.
+              Built through 24+ years of dependable machines, responsive service and partnerships that keep growing.
             </p>
           </div>
 

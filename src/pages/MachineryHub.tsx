@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { setPageMeta } from '@/lib/seo';
 import Header from '@/components/Header';
@@ -18,7 +18,12 @@ const CATS = [
 ];
 
 const MachineryHub = () => {
-  const [filter, setFilter] = useState('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedCategory = searchParams.get('category') ?? 'all';
+  const initialCategory = CATS.some((category) => category.id === requestedCategory)
+    ? requestedCategory
+    : 'all';
+  const [filter, setFilter] = useState(initialCategory);
   const [search, setSearch] = useState('');
   const [selectedMachine, setSelectedMachine] = useState<Product | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -36,11 +41,34 @@ const MachineryHub = () => {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const allMachines = productCategories.flatMap((c) =>
-    c.products.map((p) => ({ ...p, categoryName: c.name, categorySlug: c.slug }))
+  const allMachines = useMemo(
+    () =>
+      productCategories.flatMap((c) =>
+        c.products.map((p) => ({ ...p, categoryName: c.name, categorySlug: c.slug })),
+      ),
+    [],
   );
 
   const countByCat = Object.fromEntries(productCategories.map((c) => [c.slug, c.products.length]));
+
+  useEffect(() => {
+    const nextCategory = searchParams.get('category') ?? 'all';
+    setFilter(CATS.some((category) => category.id === nextCategory) ? nextCategory : 'all');
+
+    const previewId = searchParams.get('preview');
+    if (previewId) {
+      setSelectedMachine(allMachines.find((machine) => machine.id === previewId) ?? null);
+    }
+  }, [allMachines, searchParams]);
+
+  const selectCategory = (categoryId: string) => {
+    setFilter(categoryId);
+    const next = new URLSearchParams(searchParams);
+    if (categoryId === 'all') next.delete('category');
+    else next.set('category', categoryId);
+    next.delete('preview');
+    setSearchParams(next, { replace: true });
+  };
 
   const filtered = allMachines.filter((m) => {
     const matchesCat = filter === 'all' || m.categorySlug === filter;
@@ -77,25 +105,39 @@ const MachineryHub = () => {
         }} />
 
         <div style={{ maxWidth: 1300, margin: '0 auto', position: 'relative' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}
+          >
             <div style={{ width: 24, height: 1.5, background: '#3B82F6' }} />
-            <span style={{ fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, fontFamily: "'DM Sans', sans-serif" }}>
+            <span style={{ fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 700, fontFamily: "'Manrope', sans-serif" }}>
               Machinery Catalogue
             </span>
-          </div>
+          </motion.div>
 
-          <h1 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(42px,8vw,96px)',
+          <motion.h1
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.95, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 'clamp(29px,7vw,90px)',
             fontWeight: 700, lineHeight: 0.92, color: '#fff',
-            letterSpacing: '-0.03em', marginBottom: 24,
+            letterSpacing: '-0.045em', marginBottom: 28,
+            whiteSpace: 'nowrap',
           }}>
-            Find your<br />
-            <span style={{ color: '#60A5FA', fontStyle: 'italic' }}>machine.</span>
-          </h1>
+            Find your <span style={{ color: '#60A5FA', fontStyle: 'italic', fontWeight: 400 }}>machine.</span>
+          </motion.h1>
 
           {/* Search bar */}
-          <div style={{ maxWidth: 560, position: 'relative' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            style={{ maxWidth: 560, position: 'relative' }}
+          >
             <svg style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)', pointerEvents: 'none' }}
               width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -113,7 +155,7 @@ const MachineryHub = () => {
                 borderRadius: 8,
                 padding: '14px 44px 14px 44px',
                 fontSize: 14, color: '#fff',
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "'Manrope', sans-serif",
                 outline: 'none', transition: 'all 0.25s',
               }}
               onFocus={(e) => { e.target.style.borderColor = '#3B82F6'; e.target.style.background = 'rgba(59,130,246,0.07)'; }}
@@ -131,7 +173,7 @@ const MachineryHub = () => {
                 </svg>
               </button>
             )}
-          </div>
+          </motion.div>
 
         </div>
       </div>
@@ -156,7 +198,7 @@ const MachineryHub = () => {
               return (
                 <button
                   key={cat.id}
-                  onClick={() => setFilter(cat.id)}
+                  onClick={() => selectCategory(cat.id)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 8,
                     padding: '9px 18px',
@@ -170,7 +212,7 @@ const MachineryHub = () => {
                   onMouseLeave={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.08)'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)'; } }}
                 >
                   <span style={{
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: "'Manrope', sans-serif",
                     fontSize: 11, fontWeight: 700, letterSpacing: '0.06em',
                     color: isActive ? '#fff' : 'rgba(255,255,255,0.5)',
                     transition: 'color 0.2s',
@@ -178,7 +220,7 @@ const MachineryHub = () => {
                     {cat.label}
                   </span>
                   <span style={{
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: "'Manrope', sans-serif",
                     fontSize: 10, fontWeight: 700,
                     color: isActive ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
                     background: isActive ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.06)',
@@ -204,14 +246,14 @@ const MachineryHub = () => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 3, height: 16, background: activeCat.color, borderRadius: 2 }} />
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(6,10,16,0.45)', fontWeight: 700 }}>
+              <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(6,10,16,0.45)', fontWeight: 700 }}>
                 {filtered.length} {filter !== 'all' ? activeCat.label : 'machines'}
                 {search && ` · "${search}"`}
               </span>
             </div>
             {(filter !== 'all' || search) && (
               <button onClick={() => { setFilter('all'); setSearch(''); }} style={{
-                display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'DM Sans', sans-serif",
+                display: 'flex', alignItems: 'center', gap: 5, fontFamily: "'Manrope', sans-serif",
                 fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase',
                 color: '#2563EB', background: 'rgba(59,130,246,0.07)', border: '1px solid rgba(59,130,246,0.18)',
                 cursor: 'pointer', fontWeight: 700, padding: '6px 12px', borderRadius: 6,
@@ -225,10 +267,10 @@ const MachineryHub = () => {
             {filtered.length === 0 ? (
               <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 style={{ padding: '80px 0', textAlign: 'center' }}>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 36, color: 'rgba(6,10,16,0.18)', marginBottom: 12 }}>
+                <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 36, color: 'rgba(6,10,16,0.18)', marginBottom: 12 }}>
                   No machines found.
                 </div>
-                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(6,10,16,0.3)' }}>
+                <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 12, color: 'rgba(6,10,16,0.3)' }}>
                   Try a different search or category
                 </div>
               </motion.div>
@@ -243,7 +285,18 @@ const MachineryHub = () => {
                 className="max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-[767px]:!grid-cols-2 max-[767px]:!gap-3 max-[420px]:!grid-cols-1"
               >
                 {filtered.map((m, i) => (
-                  <MachineCard key={m.id} m={m} i={i} onSelect={setSelectedMachine} />
+                  <MachineCard
+                    key={m.id}
+                    m={m}
+                    i={i}
+                    onSelect={(machine) => {
+                      setSelectedMachine(machine);
+                      const next = new URLSearchParams(searchParams);
+                      next.set('category', m.categorySlug);
+                      next.set('preview', machine.id);
+                      setSearchParams(next, { replace: true });
+                    }}
+                  />
                 ))}
               </motion.div>
             )}
@@ -252,7 +305,15 @@ const MachineryHub = () => {
       </div>
 
       {selectedMachine && (
-        <MachinePreviewModal product={selectedMachine} onClose={() => setSelectedMachine(null)} />
+        <MachinePreviewModal
+          product={selectedMachine}
+          onClose={() => {
+            setSelectedMachine(null);
+            const next = new URLSearchParams(searchParams);
+            next.delete('preview');
+            setSearchParams(next, { replace: true });
+          }}
+        />
       )}
 
       <CinematicFooter />
@@ -333,7 +394,7 @@ const MachineCard = ({
                 <path d="m21 15-5-5L5 21"/>
               </svg>
             </div>
-            <span style={{ fontSize: 8, color: 'rgba(6,10,16,0.25)', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'DM Sans', sans-serif" }}>
+            <span style={{ fontSize: 8, color: 'rgba(6,10,16,0.25)', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Manrope', sans-serif" }}>
               On request
             </span>
           </div>
@@ -348,14 +409,14 @@ const MachineCard = ({
           fontSize: 8, letterSpacing: '0.16em', textTransform: 'uppercase',
           color: accent, background: `${accent}12`, borderRadius: 4,
           padding: '3px 8px', marginBottom: 8,
-          fontFamily: "'DM Sans', sans-serif", fontWeight: 700,
+          fontFamily: "'Manrope', sans-serif", fontWeight: 700,
         }}>
           {m.categoryName}
         </div>
 
         {/* Name */}
         <div style={{
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "'Manrope', sans-serif",
           fontSize: 'clamp(12px,2.5vw,14px)', fontWeight: 700,
           color: '#060A10', lineHeight: 1.3, marginBottom: 6,
           letterSpacing: '-0.01em',
@@ -366,7 +427,7 @@ const MachineCard = ({
         {/* Description — 2 lines */}
         {m.description && (
           <p style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "'Manrope', sans-serif",
             fontSize: 11, color: 'rgba(6,10,16,0.44)', lineHeight: 1.55,
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const,
             overflow: 'hidden', margin: '0 0 8px', flex: 1,
@@ -378,12 +439,12 @@ const MachineCard = ({
         {/* Footer */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: 8, borderTop: '1px solid rgba(6,10,16,0.06)' }}>
           {m.sizes && m.sizes.length > 0 ? (
-            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: 'rgba(6,10,16,0.35)', letterSpacing: '0.08em' }}>
+            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(6,10,16,0.35)', letterSpacing: '0.08em' }}>
               {m.sizes.length} size{m.sizes.length > 1 ? 's' : ''}
             </span>
           ) : <span />}
           <span style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: 9, fontWeight: 700,
+            fontFamily: "'Manrope', sans-serif", fontSize: 9, fontWeight: 700,
             letterSpacing: '0.14em', textTransform: 'uppercase',
             color: accent, opacity: hov ? 1 : 0.5, transition: 'opacity 0.2s',
             display: 'flex', alignItems: 'center', gap: 4,

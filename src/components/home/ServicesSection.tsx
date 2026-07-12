@@ -53,6 +53,23 @@ const ServicesSection = () => {
   const [revealed, setRevealed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [ringRotation, setRingRotation] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const c = () => setIsMobile(window.innerWidth < 1024);
+    c();
+    window.addEventListener('resize', c);
+    return () => window.removeEventListener('resize', c);
+  }, []);
+
+  /* SVG text scales with viewBox (920) — bump sizes on mobile for readability */
+  const FS_TITLE  = isMobile ? 32 : 21;
+  const FS_DETAIL = isMobile ? 20 : 13;
+  const FS_NUM    = isMobile ? 26 : 18;
+  const FS_BRAND  = isMobile ? 38 : 28;
+  const FS_TAG    = isMobile ? 16 : 11;
+  const DOT_R     = isMobile ? 42 : 30;
+  const DOT_R_ACT = isMobile ? 46 : 34;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -214,41 +231,6 @@ const ServicesSection = () => {
               transition: 'all 1s cubic-bezier(0.16,1,0.3,1) 0.12s',
             }}
           >
-            {/* Mobile fallback: 2-col step grid */}
-            <div
-              className="lg:!hidden"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2,1fr)',
-                gap: 8,
-              }}
-            >
-              {serviceSteps.map((step) => (
-                <div
-                  key={step.number}
-                  style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: 10,
-                    padding: '14px 16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 6,
-                  }}
-                >
-                  <span style={{ fontSize: 10, fontWeight: 800, color: '#60A5FA', letterSpacing: '0.1em' }}>
-                    {step.number}
-                  </span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#fff', lineHeight: 1.2 }}>
-                    {step.titleLines.join(' ')}
-                  </span>
-                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>
-                    {step.detailLines.join(' ')}
-                  </span>
-                </div>
-              ))}
-            </div>
-
             <div
               style={{
                 position: 'relative',
@@ -257,7 +239,6 @@ const ServicesSection = () => {
                 maxWidth: 760,
                 margin: '0 auto',
               }}
-              className="max-lg:!hidden"
             >
               <svg viewBox="0 0 920 920" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
                 <defs>
@@ -349,7 +330,7 @@ const ServicesSection = () => {
                         <circle
                           cx={dotX}
                           cy={dotY}
-                          r={isActive ? 34 : 30}
+                          r={isActive ? DOT_R_ACT : DOT_R}
                           fill={isActive ? 'rgba(13,21,36,0.98)' : 'rgba(8,14,24,0.94)'}
                           stroke={isActive ? 'rgba(96,165,250,0.68)' : 'rgba(59,130,246,0.28)'}
                           strokeWidth={isActive ? 1.8 : 1.2}
@@ -357,10 +338,10 @@ const ServicesSection = () => {
                         />
                         <text
                           x={dotX}
-                          y={dotY + 6}
+                          y={dotY + (isMobile ? 9 : 6)}
                           textAnchor="middle"
                           fill={isActive ? '#93C5FD' : '#60A5FA'}
-                          fontSize="18"
+                          fontSize={FS_NUM}
                           fontWeight="800"
                           letterSpacing="1.4"
                           style={{ userSelect: 'none', pointerEvents: 'none' }}
@@ -391,7 +372,7 @@ const ServicesSection = () => {
                             y={labelY + titleStartY + lineIndex * 22}
                             textAnchor={anchor}
                             fill="#FFFFFF"
-                            fontSize="21"
+                            fontSize={FS_TITLE}
                             fontWeight={isActive ? 800 : 720}
                             style={{ userSelect: 'none', pointerEvents: 'none' }}
                           >
@@ -406,7 +387,7 @@ const ServicesSection = () => {
                             y={labelY + titleStartY + step.titleLines.length * 22 + 10 + lineIndex * 16}
                             textAnchor={anchor}
                             fill={isActive ? 'rgba(255,255,255,0.76)' : 'rgba(255,255,255,0.48)'}
-                            fontSize="13"
+                            fontSize={FS_DETAIL}
                             fontWeight="500"
                             style={{ userSelect: 'none', pointerEvents: 'none' }}
                           >
@@ -426,7 +407,7 @@ const ServicesSection = () => {
                 >
                   <circle cx={cx} cy={cy} r="122" fill="rgba(12,19,32,0.98)" stroke="rgba(59,130,246,0.24)" strokeWidth="1.4" />
                   <image href={saiLogo} x={cx - 54} y={cy - 86} width="108" height="108" preserveAspectRatio="xMidYMid meet" />
-                  <text x={cx} y={cy + 36} textAnchor="middle" fill="#FFFFFF" fontSize="28" fontWeight="800">
+                  <text x={cx} y={cy + 36} textAnchor="middle" fill="#FFFFFF" fontSize={FS_BRAND} fontWeight="800">
                     Sai Enterprises
                   </text>
                   <text
@@ -434,7 +415,7 @@ const ServicesSection = () => {
                     y={cy + 70}
                     textAnchor="middle"
                     fill="rgba(96,165,250,0.78)"
-                    fontSize="11"
+                    fontSize={FS_TAG}
                     fontWeight="700"
                     letterSpacing="4.2"
                   >

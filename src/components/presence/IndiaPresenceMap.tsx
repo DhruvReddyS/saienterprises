@@ -208,7 +208,7 @@ const IndiaPresenceMap = ({ selectedCityId, onSelectCity }: Props) => {
                     y={cy + (city.mapOffset?.y ?? 4) + 1.5}
                     fill="#fff"
                     fontSize="7.8"
-                    fontFamily="'DM Sans', sans-serif"
+                    fontFamily="'Manrope', sans-serif"
                     fontWeight="700"
                     letterSpacing="0.05em"
                     style={{
