@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { productCategories } from '@/data/products';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
-import hpmLogo from '@/assets/hpm-logo.png';
+import hpmLogo from '@/assets/optimized/hpm-logo.webp';
 
 const MARQUEE = [
   'Production Ready', 'Machine Sourcing', 'Installation Support', 'HPM Authorized',

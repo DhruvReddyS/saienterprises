@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import badge24 from '@/assets/24-years-badge.png';
-import hpmLogo from '@/assets/hpm-logo.png';
-import largestSellingBadge from '@/assets/largest-selling-badge.png';
+import badge24 from '@/assets/optimized/badge-24.webp';
+import hpmLogo from '@/assets/optimized/hpm-logo.webp';
+import largestSellingBadge from '@/assets/optimized/badge-largest.webp';
 
 /* ── SVG icons ── */
 const IcoMachines = () => (

@@ -11,9 +11,8 @@ import BrandImage from '@/components/BrandImage';
 import { BorderBeam } from '@/components/ui/border-beam';
 import { GlowCard } from '@/components/ui/spotlight-card';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
-import heroImage from '@/assets/hero-printing.jpg';
-import dayakerPhoto from '@/assets/founders/dayaker-reddy.jpg';
-import phaniPhoto from '@/assets/founders/phani-kumar.png';
+import dayakerPhoto from '@/assets/optimized/dayaker-reddy.webp';
+import phaniPhoto from '@/assets/optimized/phani-kumar.webp';
 
 /* ── helpers ── */
 function useReveal(threshold = 0.12) {
@@ -516,13 +515,13 @@ const AboutPage = () => {
           {/* Brand mark + headline */}
           <div
             style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) clamp(135px,16vw,215px)', alignItems: 'center', gap: 'clamp(28px,5vw,72px)' }}
-            className="max-[700px]:!grid-cols-[minmax(0,1fr)_90px] max-[700px]:!gap-4"
+            className="max-[700px]:!grid-cols-1 max-[700px]:!gap-4"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.9, x: 28 }} animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ duration: 0.9, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ y: -5 }}
-              className="order-2 justify-self-end"
+              className="order-2 justify-self-end max-[700px]:!hidden"
               style={{ width: '100%', position: 'relative', padding: '12px 0' }}
             >
               <div style={{ position: 'absolute', top: 0, right: 0, width: '72%', height: 1, background: 'linear-gradient(90deg,transparent,#3B82F6)' }} />

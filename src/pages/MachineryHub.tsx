@@ -377,7 +377,7 @@ const MachineCard = ({
       }}>
         {m.image ? (
           <img
-            src={m.image} alt={m.name} loading="lazy"
+            src={m.image} alt={m.name} loading="lazy" decoding="async"
             style={{
               width: '100%', height: '100%',
               objectFit: m.image.endsWith('.png') ? 'contain' : 'cover',

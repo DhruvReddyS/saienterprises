@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import hpmLogo from '@/assets/hpm-logo.png';
+import hpmLogo from '@/assets/optimized/hpm-logo.webp';
 import hpmMachine from '@/assets/hpm-machine.png';
-import largestSellingBadge from '@/assets/largest-selling-badge.png';
+import largestSellingBadge from '@/assets/optimized/badge-largest.webp';
 import BrandImage from '@/components/BrandImage';
 
 const hpmStats = [

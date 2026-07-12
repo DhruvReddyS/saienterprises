@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '@/assets/hero-printing.jpg';
-import largestSellingBadge from '@/assets/largest-selling-badge.png';
-import badge24 from '@/assets/24-years-badge.png';
-import hpmLogo from '@/assets/hpm-logo.png';
+import heroImage from '@/assets/optimized/hero-printing.webp';
+import largestSellingBadge from '@/assets/optimized/badge-largest.webp';
+import badge24 from '@/assets/optimized/badge-24.webp';
+import hpmLogo from '@/assets/optimized/hpm-logo.webp';
 import BrandImage from '@/components/BrandImage';
 
 const IcoGlobe = () => (

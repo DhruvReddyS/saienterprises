@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import yearsBadge from '@/assets/24-years-badge.png';
+import yearsBadge from '@/assets/optimized/badge-24.webp';
 
 type AboutHeroProps = {
   experience: string;

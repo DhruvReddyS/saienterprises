@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import ScrollStack, { ScrollStackItem } from '@/components/ui/ScrollStack';
-import { getMachineImage } from '@/data/machineAssets';
+import prepressImage from '@/assets/optimized/offering-prepress.webp';
+import pressImage from '@/assets/optimized/offering-press.webp';
+import postpressImage from '@/assets/optimized/offering-postpress.webp';
+import corrugationImage from '@/assets/optimized/offering-corrugation.webp';
 
 const categories = [
   {
@@ -10,7 +13,7 @@ const categories = [
     name: 'Pre-Press',
     kicker: 'Prepare with precision',
     description: 'Plate imaging, exposure and processing systems that make every production run press-ready.',
-    image: getMachineImage(['PRE PRESS'], ['CTCP']),
+    image: prepressImage,
     accent: '#8B5CF6',
     glow: 'rgba(139,92,246,0.24)',
   },
@@ -20,7 +23,7 @@ const categories = [
     name: 'Press',
     kicker: 'Put ideas into production',
     description: 'Offset and variable-data machinery engineered for dependable commercial print output at scale.',
-    image: getMachineImage(['PRESS'], ['Komori']),
+    image: pressImage,
     accent: '#3B82F6',
     glow: 'rgba(59,130,246,0.26)',
   },
@@ -30,7 +33,7 @@ const categories = [
     name: 'Post-Press',
     kicker: 'Finish every detail',
     description: 'Cutting, binding, lamination, card processing and finishing solutions that turn print into a finished product.',
-    image: getMachineImage(['Sai & HPM'], ['HPM Cutting Machine']),
+    image: postpressImage,
     accent: '#06B6D4',
     glow: 'rgba(6,182,212,0.24)',
   },
@@ -40,7 +43,7 @@ const categories = [
     name: 'Corrugation',
     kicker: 'Built for packaging volume',
     description: 'Corrugating, laminating, cutting and handling equipment for consistent packaging production.',
-    image: getMachineImage(['Corrugation Machinery'], ['FULLY AUTOMATIC FLUTE LAMINATOR']),
+    image: corrugationImage,
     accent: '#22C55E',
     glow: 'rgba(34,197,94,0.22)',
   },

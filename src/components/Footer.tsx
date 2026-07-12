@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { productCategories } from '@/data/products';
 import saiLogo from '@/assets/sai-logo-cmyk.png';
-import hpmLogo from '@/assets/hpm-logo.png';
+import hpmLogo from '@/assets/optimized/hpm-logo.webp';
 
 const IcoPhone = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
