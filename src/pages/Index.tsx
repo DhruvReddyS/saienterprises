@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
 import HeroSection from '@/components/home/HeroSection';
+import ProofScrollerSection from '@/components/home/ProofScrollerSection';
 import OfferingsSection from '@/components/home/OfferingsSection';
 import ServicesSection from '@/components/home/ServicesSection';
 import BrandPartnersSection from '@/components/home/BrandPartnersSection';
@@ -27,6 +28,7 @@ const Index = () => {
 
       <main>
         <HeroSection />
+        <ProofScrollerSection />
         <OfferingsSection />
         <ServicesSection />
         <BrandPartnersSection />

@@ -50,7 +50,7 @@ const categories = [
 ];
 
 const OfferingsSection = () => (
-  <section className="relative overflow-clip bg-[#050810]">
+  <section id="offerings" className="relative overflow-clip bg-[#050810]">
     <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(59,130,246,0.14),transparent_28%)]" />
 
     <div className="relative mx-auto max-w-7xl px-6 pt-16 text-center sm:px-8 sm:pt-20">
