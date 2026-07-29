@@ -208,7 +208,7 @@ const ChatbotWidget = () => {
           touchAction: 'none',
           cursor: 'grab',
         }}
-        className="sm:!bottom-6"
+        className="max-[767px]:!hidden sm:!bottom-6"
       >
         <AnimatePresence>
           {open && (

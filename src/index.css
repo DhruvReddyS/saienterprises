@@ -586,6 +586,17 @@ html, body {
 
 /* ── MOBILE FIXES ── */
 @media (max-width: 767px) {
+  .sai-page-shell {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .container-editorial,
+  .container-wide,
+  .container-narrow {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
   /* Sticky filter bar: no header so stick to top 0 */
   .sticky-filter-bar {
     top: 0 !important;
@@ -615,10 +626,10 @@ html, body {
     overflow-wrap: break-word;
   }
 
-  /* Machine grid: 2 columns on phones */
+  /* Machine cards need enough width for useful names and controls. */
   .machine-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
   }
 
   /* Partners offices grid: 2 cols */
@@ -629,6 +640,12 @@ html, body {
   /* About stats: 2 cols */
   .about-stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .about-deferred,
+  main > section:nth-of-type(n + 3) {
+    content-visibility: auto;
+    contain-intrinsic-size: 760px;
   }
 }
 

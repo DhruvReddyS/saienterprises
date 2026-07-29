@@ -9,7 +9,7 @@ const navLinks = [
   { label: 'About',     to: '/about' },
   { label: 'Partners',  to: '/partners' },
   { label: 'Brochure',  to: '/brochure' },
-  { label: 'Contact Us', to: '/contact' },
+  { label: 'Contact Us', shortLabel: 'Contact', to: '/contact' },
 ];
 
 const Header = () => {
@@ -95,7 +95,7 @@ const Header = () => {
                 fontWeight: active ? 700 : 400,
                 lineHeight: 1,
               }}>
-                {link.label}
+                {'shortLabel' in link ? link.shortLabel : link.label}
               </span>
             </Link>
           );
@@ -147,7 +147,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop nav, 960px+ only */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }} className="hidden min-[960px]:!flex">
+          <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }} className="!hidden min-[960px]:!flex">
             {navLinks.map((link) => (
               <Link
                 key={link.to}

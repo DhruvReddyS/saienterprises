@@ -1,4 +1,4 @@
-import { useState, Suspense, lazy } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +8,6 @@ import { AnimatePresence } from "framer-motion";
 import { useScrollToTop } from "./hooks/useScrollToTop";
 import PremiumLoader from "./components/PremiumLoader";
 import PageSkeleton from "./components/PageSkeleton";
-import ChatbotWidget from "./components/ChatbotWidget";
 import SocialZone from "./components/SocialZone";
 import Index from "./pages/Index";
 
@@ -19,6 +18,7 @@ const PartnersPage = lazy(() => import("./pages/PartnersPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const BrochurePage = lazy(() => import("./pages/BrochurePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const ChatbotWidget = lazy(() => import("./components/ChatbotWidget"));
 
 const queryClient = new QueryClient();
 
@@ -60,6 +60,13 @@ const AppContent = () => {
     if (typeof window === "undefined") return false;
     return !sessionStorage.getItem("sai-loader-seen");
   });
+  const [showChatbot, setShowChatbot] = useState(false);
+
+  useEffect(() => {
+    if (!window.matchMedia('(min-width: 768px)').matches) return;
+    const timer = window.setTimeout(() => setShowChatbot(true), 1800);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const handleLoaderComplete = () => {
     if (typeof window !== "undefined") {
@@ -82,7 +89,11 @@ const AppContent = () => {
       >
         <AnimatedRoutes />
         <SocialZone />
-        <ChatbotWidget />
+        {showChatbot ? (
+          <Suspense fallback={null}>
+            <ChatbotWidget />
+          </Suspense>
+        ) : null}
       </div>
     </>
   );

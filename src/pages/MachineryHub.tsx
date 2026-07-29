@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Download, FileText } from 'lucide-react';
 import { setPageMeta } from '@/lib/seo';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
 import { productCategories, type Product } from '@/data/products';
+import { getCatalogueDocument } from '@/data/catalogueDocuments';
 import MachinePreviewModal from '@/components/ui/MachinePreviewModal';
 
 const CATS = [
@@ -27,6 +29,7 @@ const MachineryHub = () => {
   const [search, setSearch] = useState('');
   const [selectedMachine, setSelectedMachine] = useState<Product | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const categoryStripRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setPageMeta(
@@ -61,6 +64,12 @@ const MachineryHub = () => {
     }
   }, [allMachines, searchParams]);
 
+  useEffect(() => {
+    categoryStripRef.current
+      ?.querySelector<HTMLButtonElement>('[aria-selected="true"]')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [filter]);
+
   const selectCategory = (categoryId: string) => {
     setFilter(categoryId);
     const next = new URLSearchParams(searchParams);
@@ -91,7 +100,7 @@ const MachineryHub = () => {
         background: 'linear-gradient(160deg, #060A10 0%, #0A1628 60%, #060A10 100%)',
         padding: 'clamp(40px,8vw,110px) clamp(16px,5vw,64px) clamp(32px,5vw,64px)',
         position: 'relative', overflow: 'hidden',
-      }}>
+      }} className="min-[768px]:!pt-32">
         {/* Grid overlay */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -127,7 +136,7 @@ const MachineryHub = () => {
             fontWeight: 700, lineHeight: 0.92, color: '#fff',
             letterSpacing: '-0.045em', marginBottom: 28,
             whiteSpace: 'nowrap',
-          }}>
+          }} className="max-[767px]:!whitespace-normal max-[767px]:!text-[42px]">
             Find your <span style={{ color: '#60A5FA', fontStyle: 'italic', fontWeight: 400 }}>machine.</span>
           </motion.h1>
 
@@ -191,13 +200,15 @@ const MachineryHub = () => {
             display: 'flex', gap: 6, overflowX: 'auto',
             padding: '14px 0',
             scrollbarWidth: 'none',
-          }} className="hide-scrollbar">
+          }} className="hide-scrollbar" ref={categoryStripRef} role="tablist" aria-label="Machinery categories">
             {CATS.map((cat) => {
               const isActive = filter === cat.id;
               const count = cat.id === 'all' ? allMachines.length : (countByCat[cat.id] ?? 0);
               return (
                 <button
                   key={cat.id}
+                  role="tab"
+                  aria-selected={isActive}
                   onClick={() => selectCategory(cat.id)}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 8,
@@ -282,7 +293,7 @@ const MachineryHub = () => {
                   gridTemplateColumns: 'repeat(4, 1fr)',
                   gap: 16,
                 }}
-                className="max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-[767px]:!grid-cols-2 max-[767px]:!gap-3 max-[420px]:!grid-cols-1"
+                className="machine-grid max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-[767px]:!grid-cols-1 max-[767px]:!gap-4"
               >
                 {filtered.map((m, i) => (
                   <MachineCard
@@ -336,6 +347,8 @@ const MachineCard = ({
 }) => {
   const [hov, setHov] = useState(false);
   const accent = CAT_COLORS[m.categorySlug] ?? '#3B82F6';
+  const catalogue = getCatalogueDocument(m.id);
+  const cardDescription = catalogue?.summary ?? m.description;
 
   return (
     <motion.div
@@ -374,6 +387,7 @@ const MachineCard = ({
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
         borderBottom: '1px solid rgba(6,10,16,0.05)',
+        position: 'relative',
       }}>
         {m.image ? (
           <img
@@ -397,6 +411,24 @@ const MachineCard = ({
             <span style={{ fontSize: 8, color: 'rgba(6,10,16,0.25)', letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Manrope', sans-serif" }}>
               On request
             </span>
+          </div>
+        )}
+
+        {catalogue && (
+          <div style={{
+            position: 'absolute', top: 10, right: 10, zIndex: 2,
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '7px 9px', borderRadius: 999,
+            color: '#fff', background: 'rgba(9,24,43,.88)',
+            border: '1px solid rgba(255,255,255,.18)',
+            boxShadow: '0 8px 20px rgba(6,10,16,.18)',
+            backdropFilter: 'blur(10px)',
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 8, fontWeight: 800, letterSpacing: '.13em',
+            textTransform: 'uppercase',
+          }}>
+            <FileText size={12} />
+            Technical PDF
           </div>
         )}
       </div>
@@ -425,32 +457,80 @@ const MachineCard = ({
         </div>
 
         {/* Description, 2 lines */}
-        {m.description && (
+        {cardDescription && (
           <p style={{
             fontFamily: "'Manrope', sans-serif",
             fontSize: 11, color: 'rgba(6,10,16,0.44)', lineHeight: 1.55,
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const,
             overflow: 'hidden', margin: '0 0 8px', flex: 1,
           }}>
-            {m.description}
+            {cardDescription}
           </p>
         )}
 
+        {catalogue && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 7,
+            marginBottom: 9, padding: '7px 9px',
+            border: `1px solid ${accent}18`,
+            borderRadius: 8, background: `${accent}08`,
+            color: 'rgba(6,10,16,.52)',
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: 8.5, fontWeight: 650, letterSpacing: '.05em',
+          }}>
+            <FileText size={12} color={accent} />
+            Official specifications available
+          </div>
+        )}
+
         {/* Footer */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: 8, borderTop: '1px solid rgba(6,10,16,0.06)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginTop: 'auto', paddingTop: 8, borderTop: '1px solid rgba(6,10,16,0.06)' }}>
           {m.sizes && m.sizes.length > 0 ? (
             <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 9, color: 'rgba(6,10,16,0.35)', letterSpacing: '0.08em' }}>
               {m.sizes.length} size{m.sizes.length > 1 ? 's' : ''}
             </span>
           ) : <span />}
-          <span style={{
-            fontFamily: "'Manrope', sans-serif", fontSize: 9, fontWeight: 700,
-            letterSpacing: '0.14em', textTransform: 'uppercase',
-            color: accent, opacity: hov ? 1 : 0.5, transition: 'opacity 0.2s',
-            display: 'flex', alignItems: 'center', gap: 4,
-          }}>
-            View <span style={{ transform: hov ? 'translateX(3px)' : 'none', transition: 'transform 0.2s', display: 'inline-block' }}>→</span>
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{
+              fontFamily: "'Manrope', sans-serif", fontSize: 9, fontWeight: 700,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: accent, opacity: hov ? 1 : 0.58, transition: 'opacity 0.2s',
+              display: 'flex', alignItems: 'center', gap: 4,
+            }}>
+              View <span style={{ transform: hov ? 'translateX(3px)' : 'none', transition: 'transform 0.2s', display: 'inline-block' }}>→</span>
+            </span>
+            {catalogue && (
+              <a
+                href={catalogue.url}
+                download={catalogue.file}
+                aria-label={`Download technical PDF for ${m.name}`}
+                title={`Download ${catalogue.label}`}
+                onClick={(event) => event.stopPropagation()}
+                style={{
+                  minWidth: 34, minHeight: 34,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  padding: '7px 9px', borderRadius: 8,
+                  color: '#fff', background: accent,
+                  boxShadow: `0 7px 16px ${accent}28`,
+                  fontFamily: "'Manrope', sans-serif",
+                  fontSize: 8.5, fontWeight: 800, letterSpacing: '.1em',
+                  textTransform: 'uppercase',
+                  transition: 'transform .2s ease, box-shadow .2s ease',
+                }}
+                onMouseEnter={(event) => {
+                  event.currentTarget.style.transform = 'translateY(-2px)';
+                  event.currentTarget.style.boxShadow = `0 10px 20px ${accent}38`;
+                }}
+                onMouseLeave={(event) => {
+                  event.currentTarget.style.transform = 'none';
+                  event.currentTarget.style.boxShadow = `0 7px 16px ${accent}28`;
+                }}
+              >
+                <Download size={13} />
+                <span>PDF</span>
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>

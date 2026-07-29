@@ -2,6 +2,7 @@ import type { Product } from '@/data/products';
 
 const postPressSubcategoryMap: Record<string, string> = {
   'hpm-programmable-paper-cutter-system': 'Cutting / Trimming / Handling',
+  'hpm-fully-automatic-paper-cutting-machine': 'Cutting / Trimming / Handling',
   'hpm-heavy-duty-digital-programmable-paper-cutter': 'Cutting / Trimming / Handling',
   'pile-turner': 'Cutting / Trimming / Handling',
   'pile-lifter': 'Cutting / Trimming / Handling',

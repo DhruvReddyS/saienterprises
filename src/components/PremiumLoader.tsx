@@ -10,8 +10,8 @@ const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
   const go = useCallback(() => onComplete(), [onComplete]);
 
   useEffect(() => {
-    const t0 = setTimeout(() => setExiting(true), 2200);
-    const t1 = setTimeout(go, 2750);
+    const t0 = setTimeout(() => setExiting(true), 650);
+    const t1 = setTimeout(go, 950);
     return () => [t0, t1].forEach(clearTimeout);
   }, [go]);
 

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Download, ExternalLink, FileText } from 'lucide-react';
 import { Product } from '@/data/products';
+import { getCatalogueDocument } from '@/data/catalogueDocuments';
 import { InteractiveTravelCard } from '@/components/ui/3d-card';
 
 interface Props {
@@ -19,6 +21,12 @@ const CATEGORY_COLORS: Record<string, string> = {
 const MachinePreviewModal = ({ product: p, onClose }: Props) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const accent = CATEGORY_COLORS[p.category] ?? '#3B82F6';
+  const catalogue = getCatalogueDocument(p.id);
+  const effectiveSpecifications = {
+    ...(p.specifications ?? {}),
+    ...(catalogue?.specifications ?? {}),
+  };
+  const effectiveFeatures = [...new Set([...(catalogue?.highlights ?? []), ...(p.features ?? [])])];
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -43,11 +51,68 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
         @keyframes modal-overlay-in { from { opacity:0 } to { opacity:1 } }
         @keyframes modal-panel-in   { from { opacity:0; transform:translateY(24px) scale(0.97) } to { opacity:1; transform:none } }
         @keyframes img-float        { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-8px) } }
+        .machine-modal__mobile-image { display:none; }
+        @media (min-width: 768px) and (max-width: 1023px) {
+          .machine-modal__desktop-card { display:none !important; }
+          .machine-modal__mobile-image {
+            display:block;
+            position:relative;
+            z-index:1;
+            width:100%;
+            height:290px;
+            object-fit:contain;
+            filter:drop-shadow(0 20px 24px rgba(8,15,28,.16));
+          }
+          .machine-modal-visual {
+            min-height:320px !important;
+            padding:24px 36px 14px !important;
+            border-right:0 !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .machine-modal-overlay {
+            padding: 0 !important;
+            align-items: flex-end !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+          }
+          .machine-modal-panel {
+            max-height: 96svh !important;
+            border-radius: 24px 24px 0 0 !important;
+            border-bottom: 0 !important;
+          }
+          .machine-modal-grid { display:block !important; }
+          .machine-modal-visual {
+            min-height: 0 !important;
+            height: 238px !important;
+            padding: 22px 20px 10px !important;
+            border-right: 0 !important;
+          }
+          .machine-modal__desktop-card { display:none !important; }
+          .machine-modal__mobile-image {
+            display:block;
+            position:relative;
+            z-index:1;
+            width:100%;
+            height:205px;
+            object-fit:contain;
+            filter:drop-shadow(0 18px 22px rgba(8,15,28,.16));
+          }
+          .machine-modal-copy {
+            padding: 22px 18px calc(28px + env(safe-area-inset-bottom)) !important;
+            gap: 18px !important;
+          }
+          .machine-modal-copy h2 { font-size: 28px !important; line-height: 1.06 !important; padding-right: 32px; }
+          .machine-modal-description { padding: 14px !important; line-height:1.65 !important; }
+          .machine-modal-cta { display:grid !important; grid-template-columns:1fr !important; }
+          .machine-modal-cta a { width:100%; justify-content:center; text-align:center; }
+        }
       `}</style>
 
       {/* Overlay */}
       <div
         ref={overlayRef}
+        className="machine-modal-overlay"
         onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
         style={{
           position: 'fixed', inset: 0, zIndex: 600,
@@ -73,7 +138,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
           scrollbarColor: 'rgba(45,95,124,0.2) transparent',
           overflowX: 'hidden',
         }}
-          className="max-md:max-h-screen"
+          className="machine-modal-panel max-md:max-h-screen"
         >
           {/* Close button */}
           <CloseBtn onClose={onClose} />
@@ -82,7 +147,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
           <div style={{
             display: 'grid', gridTemplateColumns: '1.08fr 0.92fr',
           }}
-            className="max-lg:!grid-cols-1"
+            className="machine-modal-grid max-lg:!grid-cols-1"
           >
             {/* ── LEFT: image ── */}
             <div style={{
@@ -91,7 +156,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
               minHeight: 'clamp(240px, 35vw, 560px)', padding: 'clamp(24px, 4vw, 48px) clamp(20px, 4vw, 40px) clamp(22px, 3vw, 42px)',
               position: 'relative', overflow: 'hidden',
               borderRight: '1px solid rgba(26,58,78,0.07)',
-            }}>
+            }} className="machine-modal-visual">
               {/* Subtle dot grid */}
               <div style={{
                 position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -111,7 +176,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
 
               {p.image ? (
                 <div style={{ position: 'relative', zIndex: 1, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <div style={{ perspective: '1200px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                  <div className="machine-modal__desktop-card" style={{ perspective: '1200px', width: '100%', display: 'flex', justifyContent: 'center' }}>
                     <InteractiveTravelCard
                       title={p.name}
                       subtitle=""
@@ -126,6 +191,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
                       className="h-[31rem] w-[25rem] max-w-full border-white/22 bg-transparent shadow-[0_30px_74px_rgba(8,15,28,0.16)]"
                     />
                   </div>
+                  <img className="machine-modal__mobile-image" src={p.image} alt={p.name} loading="eager" decoding="async" />
                 </div>
               ) : (
                 <div style={{
@@ -147,7 +213,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
               flexDirection: 'column',
               gap: 24,
               background: 'linear-gradient(180deg, rgba(255,255,255,0.99), rgba(246,250,255,0.96))',
-            }}>
+            }} className="machine-modal-copy">
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
                 {p.brand && (
@@ -192,7 +258,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
                   {p.name}
                 </h2>
 
-                {p.description && (
+                {(catalogue?.summary || p.description) && (
                   <p style={{
                     fontSize: 13.5,
                     color: 'rgba(16,35,56,0.66)',
@@ -201,11 +267,54 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
                     border: '1px solid rgba(26,58,78,0.08)',
                     background: `linear-gradient(135deg, ${accent}0f 0%, rgba(255,255,255,0.86) 62%)`,
                     borderRadius: 20,
-                  }}>
-                    {p.description}
+                  }} className="machine-modal-description">
+                    {catalogue?.summary || p.description}
                   </p>
                 )}
               </div>
+
+              {catalogue && (
+                <div style={{
+                  border: `1px solid ${accent}24`,
+                  background: `linear-gradient(135deg, ${accent}10, rgba(255,255,255,.92))`,
+                  borderRadius: 20,
+                  padding: 16,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{
+                      display: 'grid', placeItems: 'center', width: 34, height: 34,
+                      borderRadius: 10, color: accent, background: `${accent}12`,
+                    }}>
+                      <FileText size={17} />
+                    </span>
+                    <div>
+                      <p style={{ margin: 0, fontSize: 9, fontWeight: 800, letterSpacing: '.18em', textTransform: 'uppercase', color: accent }}>
+                        Official machine catalogue
+                      </p>
+                      <p style={{ margin: '3px 0 0', fontSize: 11, color: 'rgba(16,35,56,.56)' }}>
+                        Technical source · opens only when requested
+                      </p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 14 }} className="max-[420px]:!grid-cols-1">
+                    <a href={catalogue.url} target="_blank" rel="noreferrer" style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      borderRadius: 12, padding: '11px 12px', background: '#102338', color: '#fff',
+                      fontSize: 10, fontWeight: 750, letterSpacing: '.12em', textTransform: 'uppercase',
+                    }}>
+                      View PDF <ExternalLink size={13} />
+                    </a>
+                    <a href={catalogue.url} download={catalogue.file} style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      borderRadius: 12, padding: '11px 12px', background: '#fff', color: '#102338',
+                      border: '1px solid rgba(16,35,56,.12)', fontSize: 10, fontWeight: 750,
+                      letterSpacing: '.12em', textTransform: 'uppercase',
+                    }}>
+                      Download <Download size={13} />
+                    </a>
+                  </div>
+                </div>
+              )}
 
               {/* Sizes */}
               {p.sizes && p.sizes.length > 0 && (
@@ -225,10 +334,10 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
               )}
 
               {/* Specifications */}
-              {p.specifications && Object.keys(p.specifications).length > 0 && (
+              {Object.keys(effectiveSpecifications).length > 0 && (
                 <Section label="Specifications" accent={accent}>
                   <div>
-                    {Object.entries(p.specifications).map(([k, v]) => (
+                    {Object.entries(effectiveSpecifications).map(([k, v]) => (
                       <div key={k} style={{
                         display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                         padding: '9px 0', borderBottom: '1px solid rgba(26,58,78,0.06)',
@@ -242,10 +351,10 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
               )}
 
               {/* Features */}
-              {p.features && p.features.length > 0 && (
+              {effectiveFeatures.length > 0 && (
                 <Section label="Key Features" accent={accent}>
                   <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 7 }}>
-                    {p.features.map((f) => (
+                    {effectiveFeatures.map((f) => (
                       <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                         <span style={{ color: accent, marginTop: 3, flexShrink: 0, fontSize: 7 }}>◆</span>
                         <span style={{ fontSize: 13, color: 'rgba(26,58,78,0.65)', lineHeight: 1.6 }}>{f}</span>
@@ -283,7 +392,7 @@ const MachinePreviewModal = ({ product: p, onClose }: Props) => {
                 display: 'flex', gap: 12, marginTop: 8, paddingTop: 20,
                 borderTop: '1px solid rgba(26,58,78,0.08)',
                 flexWrap: 'wrap',
-              }}>
+              }} className="machine-modal-cta">
                 <Link
                   to={`/contact?machine=${encodeURIComponent(p.name)}&category=${encodeURIComponent(p.categoryName ?? p.category)}`}
                   onClick={onClose}
