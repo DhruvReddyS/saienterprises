@@ -1,5 +1,6 @@
 # ──────────────────────────────────────────────────────────────
-# Sai Enterprises — Apache config for Turbify static hosting
+# Sai Enterprises — Apache config for shared hosting (GoDaddy cPanel,
+# Turbify, or any Apache host). Identical requirements on all of them.
 # Lives in public/ so every `npm run build` copies it into dist/.
 # ──────────────────────────────────────────────────────────────
 
@@ -9,6 +10,13 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+
+  # GoDaddy shared hosting enables MultiViews, which makes Apache guess at
+  # extensionless URLs before the rewrite rules run and can swallow app
+  # routes. Turning it off here keeps routing predictable.
+  <IfModule mod_negotiation.c>
+    Options -MultiViews
+  </IfModule>
 
   RewriteRule ^index\.html$ - [L]
 

@@ -1,77 +1,105 @@
-# Deploying to Turbify
+# Deploying
 
-Turbify Web Hosting serves static files from Apache, which is all this site
-needs — the build output is plain HTML, JS, CSS and assets.
+The build output is plain static HTML, JS, CSS and assets, so it runs on any
+Apache shared host. `public/.htaccess` is copied into `dist/` on every build
+and covers GoDaddy cPanel, Turbify and anything else running Apache.
 
 ## Build
 
 ```bash
 npm ci
-npm run build
-```
-
-`npm run build` runs `optimize:machines` first, so any newly added supplier
-PNG gets a WebP sibling before Vite bundles it. Output lands in `dist/`.
-
-## Bundles
-
-```bash
 npm run bundle
 ```
 
-Produces two zips in `deploy/`:
+`npm run bundle` builds and then packages. The build runs `optimize:machines`
+first, so any newly added supplier PNG gets a WebP sibling before Vite bundles
+it — without that step the output balloons by ~130MB.
+
+Two zips land in `deploy/`:
 
 | File | Size | Upload |
 | --- | --- | --- |
 | `01-app-core.zip` | ~46 MB | Every deploy |
 | `02-catalogues.zip` | ~13 MB | Only when catalogue PDFs change |
 
-They are split because the catalogue PDFs almost never change and there is no
-reason to re-upload them for a CSS tweak.
+Split on purpose: the catalogue PDFs almost never change, and there is no
+reason to re-upload 13MB for a CSS fix.
 
-## Upload
+---
 
-1. Sign in to Turbify Web Hosting and open **File Manager** (or connect over
-   FTP/SFTP with the credentials in your hosting control panel).
-2. Upload and extract `01-app-core.zip` into the **document root**
-   (usually `/` or `public_html`). The contents go at the root — not inside a
-   `dist/` subfolder.
-3. Upload and extract `02-catalogues.zip` the same way, so the PDFs land at
-   `/catalogues/...`.
-4. Confirm `.htaccess` is present at the document root. Some file managers
-   hide dotfiles — enable "show hidden files" if you do not see it.
+## GoDaddy (cPanel / shared Linux hosting)
+
+> This needs a **cPanel hosting** plan. GoDaddy's *Website Builder* product
+> cannot host an uploaded static site — if your plan only shows a drag-and-drop
+> site editor, there is nowhere to put these files and you will need to switch
+> to Web Hosting.
+
+1. Sign in to GoDaddy → **My Products** → your hosting plan → **cPanel Admin**.
+2. Open **File Manager** and go to **`public_html`**. This is the document
+   root for your primary domain.
+3. If anything is already in there from a previous site, clear it out or move
+   it aside first.
+4. **Upload** `01-app-core.zip` into `public_html`, then right-click it →
+   **Extract**. The contents must land directly in `public_html` — you should
+   see `index.html` and `assets/` at that level, **not** a `dist/` folder.
+   Delete the zip afterwards.
+5. Upload and extract `02-catalogues.zip` the same way, so the PDFs end up at
+   `public_html/catalogues/`.
+6. **Confirm `.htaccess` is there.** File Manager hides dotfiles by default:
+   **Settings** (top right) → tick **Show Hidden Files (dotfiles)** → Save,
+   then look again. If it is missing, the site's internal links will work but
+   reloading any page except the homepage will 404.
+
+Addon or subdomain instead of the primary domain? Upload into that domain's
+own document root (usually `public_html/<subdomain>`) rather than
+`public_html`, and see *Subdirectory* below.
+
+### FTP instead of File Manager
+
+Host, username and password are under **cPanel → FTP Accounts**. Upload the
+*contents* of `dist/` into `public_html` — not the `dist` folder itself. Make
+sure your FTP client is set to show/transfer hidden files, or `.htaccess`
+will be silently skipped (FileZilla: Server → Force showing hidden files).
+
+---
+
+## Turbify
+
+Same files, same `.htaccess`. Upload and extract both zips into the document
+root via **File Manager** or FTP, and enable hidden files so `.htaccess`
+comes across.
+
+---
 
 ## Why `.htaccess` matters
 
-It is committed at `public/.htaccess`, so it is copied into `dist/` on every
-build. It does three things:
-
 - **SPA routing.** React Router owns the URLs. Without the rewrite rules,
   loading `/machinery` or `/contact` directly returns an Apache 404, because
-  no such file exists on disk. Only `/` would work.
+  no such file exists on disk. Only `/` would work. The rules also disable
+  `MultiViews`, which GoDaddy enables and which otherwise lets Apache guess at
+  extensionless URLs before the rewrites run.
 - **Caching.** Asset filenames carry a content hash, so they are cached for a
-  year. `index.html` is explicitly *not* cached, otherwise returning visitors
-  keep being served the previous deploy's HTML, which points at asset files
-  that no longer exist.
+  year. `index.html` is explicitly *not* cached — otherwise returning visitors
+  keep getting the previous deploy's HTML, which points at asset files that no
+  longer exist, and the site renders blank.
 - **Compression** and correct MIME types for `.webp` and `.woff2`.
 
-If Turbify's plan does not permit `mod_rewrite`, deep links will 404. The
-`ErrorDocument 404 /index.html` line at the end is a fallback that makes the
-app still load in that case, though the browser sees a 404 status.
+---
 
-## Verifying a deploy
+## Verify after uploading
 
-After uploading, check:
+1. `/` loads and the intro overlay plays.
+2. Go to **Machinery**, then **reload the page**. This is the SPA routing
+   test and the single most likely thing to be broken. A 404 here means
+   `.htaccess` did not upload.
+3. Download a catalogue PDF from a machine's "Download PDF" button.
+4. Hard-reload and confirm the hashed asset filename in the network panel
+   matches the new build — that is the cache-header test.
+5. Check one page on a phone.
 
-- `/` loads and the intro overlay plays.
-- Navigate to Machinery, then **reload the page** — this is the SPA routing
-  test and the thing most likely to be broken.
-- A catalogue PDF downloads, e.g. from a machine's "Download PDF" button.
-- Hard-reload and confirm you get the new build (check the hashed filename in
-  the network panel) — this is the cache-header test.
+## Subdirectory deploys
 
-## Custom domain / subdirectory
-
-The Vite config uses the default base of `/`, which assumes the site is served
-from the domain root. If you deploy into a subdirectory, set `base` in
-`vite.config.ts` to that path and rebuild, or asset URLs will 404.
+`vite.config.ts` uses the default base of `/`, which assumes the site is
+served from the domain root. To deploy into a subfolder, set `base` to that
+path, rebuild, and update `RewriteBase` in `public/.htaccess` to match —
+otherwise every asset URL 404s.
