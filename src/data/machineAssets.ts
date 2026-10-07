@@ -1,9 +1,9 @@
+/* WebP only, on purpose. The supplier PNGs are 1.5-2.6MB each and globbing
+   both formats made Vite emit both, shipping ~150MB of unused PNGs. Every
+   source file has a committed .webp sibling, produced by
+   `npm run optimize:machines`, which also runs as part of `npm run build`. */
 const machineImageModules = import.meta.glob(
-  [
-    '../assets/machine_png/**/*.png',
-    '../assets/machine_png/**/*.jpg',
-    '../assets/machine_png/**/*.jpeg',
-  ],
+  ['../assets/machine_png/**/*.webp'],
   { eager: true, import: 'default' }
 ) as Record<string, string>;
 
@@ -23,12 +23,10 @@ const normalize = (value: string) =>
 
 const machineImageEntries: MachineImageEntry[] = Object.entries(machineImageModules).map(([path, src]) => {
   const segments = path.split('/');
-  const folder = segments[segments.length - 2] ?? '';
-  const fileName = segments[segments.length - 1] ?? '';
 
   return {
-    folder: normalize(folder),
-    name: normalize(fileName),
+    folder: normalize(segments[segments.length - 2] ?? ''),
+    name: normalize(segments[segments.length - 1] ?? ''),
     src,
   };
 });

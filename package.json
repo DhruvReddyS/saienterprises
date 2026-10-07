@@ -2,17 +2,19 @@
   "name": "sai-enterprises",
   "private": true,
   "version": "1.0.0",
-  "description": "Sai Enterprises — Graphic Machinery Suppliers, India & East Africa",
+  "description": "Sai Enterprises \u2014 Graphic Machinery Suppliers, India & East Africa",
   "author": "Sai Enterprises",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run optimize:machines && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "optimize:brochure": "node scripts/build-brochure.mjs",
-    "sync:catalogues": "node scripts/sync-catalogues.mjs"
+    "sync:catalogues": "node scripts/sync-catalogues.mjs",
+    "optimize:machines": "node scripts/optimize-machine-images.mjs",
+    "bundle": "npm run build && node scripts/make-bundles.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
