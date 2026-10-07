@@ -5,7 +5,6 @@ import {
   Handshake,
   Mail,
   MapPin,
-  Phone,
   Wrench,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -48,7 +47,6 @@ const typeMeta: Record<
   },
 };
 
-const cleanPhoneHref = (phone: string) => `tel:${phone.replace(/[^+\d]/g, '')}`;
 
 const PresenceCityDetailContent = ({
   city,
@@ -172,16 +170,7 @@ const PresenceCityDetailContent = ({
                       </p>
 
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {contact.phone ? (
-                          <a
-                            href={cleanPhoneHref(contact.phone)}
-                            className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-white px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/25 hover:text-primary"
-                          >
-                            <Phone className="h-3.5 w-3.5" />
-                            {contact.phone}
-                          </a>
-                        ) : null}
-
+                        {/* Phone numbers are published on the contact page only. */}
                         {contact.email ? (
                           <a
                             href={`mailto:${contact.email}`}

@@ -56,10 +56,9 @@ const AnimatedRoutes = () => {
 };
 
 const AppContent = () => {
-  const [showLoader, setShowLoader] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !sessionStorage.getItem("sai-loader-seen");
-  });
+  /* Shown on every full page load. SPA route changes do not remount this,
+     so it only appears on a real load or refresh, never on navigation. */
+  const [showLoader, setShowLoader] = useState(() => typeof window !== "undefined");
   const [showChatbot, setShowChatbot] = useState(false);
 
   useEffect(() => {
@@ -68,12 +67,7 @@ const AppContent = () => {
     return () => window.clearTimeout(timer);
   }, []);
 
-  const handleLoaderComplete = () => {
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("sai-loader-seen", "1");
-    }
-    setShowLoader(false);
-  };
+  const handleLoaderComplete = () => setShowLoader(false);
 
   return (
     <>
@@ -104,7 +98,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter>
         <AppContent />
       </BrowserRouter>
     </TooltipProvider>

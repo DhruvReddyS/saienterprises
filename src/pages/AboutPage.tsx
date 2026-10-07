@@ -5,7 +5,7 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
-import { LEGEND } from '@/components/presence/WorldPresenceMap';
+import { PRESENCE_LEGEND } from '@/data/presenceLegend';
 import RotatingEarth from '@/components/ui/wireframe-dotted-globe';
 import BrandImage from '@/components/BrandImage';
 import { BorderBeam } from '@/components/ui/border-beam';
@@ -531,7 +531,7 @@ const AboutPage = () => {
             </motion.div>
 
           {/* Headline, premium stacked treatment */}
-          <div style={{ maxWidth: 1100, position: 'relative', order: 1 }}>
+          <h1 style={{ maxWidth: 1100, position: 'relative', order: 1, margin: 0 }}>
             {/* Vertical accent bar */}
             <motion.div
               initial={{ scaleY: 0 }}
@@ -551,7 +551,7 @@ const AboutPage = () => {
               { text: 'Relationships move', size: 'clamp(46px,7vw,90px)', weight: 700, color: '#fff', italic: false, delay: 0.16 },
               { text: 'business.', size: 'clamp(42px,6.4vw,82px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.24, glow: true },
             ].map((line) => (
-              <motion.div
+              <motion.span
                 key={line.text}
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -567,9 +567,9 @@ const AboutPage = () => {
                 }}
               >
                 {line.text}
-              </motion.div>
+              </motion.span>
             ))}
-          </div>
+          </h1>
           </div>
 
           {/* Sub-copy + CTAs */}
@@ -922,7 +922,7 @@ const AboutPage = () => {
 
           {/* Legend row */}
           <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', marginTop: 20, paddingTop: 20, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-            {LEGEND.map((l) => (
+            {PRESENCE_LEGEND.map((l) => (
               <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
                 <div style={{
                   width: 8, height: 8, borderRadius: '50%',

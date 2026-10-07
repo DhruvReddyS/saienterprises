@@ -39,7 +39,7 @@ export const extractAdvisorRequirements = (
   else if (includesAny(text, ['semi automatic', 'semi-auto', 'semi auto'])) next.automation = 'semi-automatic';
   else if (includesAny(text, ['manual', 'low investment'])) next.automation = 'manual';
 
-  const size = query.match(/\b\d{2,4}(?:\.\d+)?\s*(?:mm|cm|inch|inches|\")\b/i)?.[0];
+  const size = query.match(/\b\d{2,4}(?:\.\d+)?\s*(?:mm|cm|inch|inches|")\b/i)?.[0];
   if (size) next.sheetSize = size;
 
   if (includesAny(text, ['economy', 'budget', 'lowest cost', 'affordable', 'low investment'])) next.budgetPriority = 'economy';

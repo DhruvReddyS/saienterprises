@@ -10,7 +10,7 @@ const proofItems: { badge: ReactNode; title: string; subtitle: string; accent: s
     badge: <img src={badge24} alt="" loading="lazy" decoding="async" />,
     title: '24+ Years',
     subtitle: 'Industry experience',
-    accent: '#3B82F6',
+    accent: '#2E90FF',
   },
   {
     badge: <Gauge size={20} />,
@@ -28,25 +28,25 @@ const proofItems: { badge: ReactNode; title: string; subtitle: string; accent: s
     badge: <img src={largestSellingBadge} alt="" loading="lazy" decoding="async" />,
     title: 'India’s Largest',
     subtitle: 'Paper cutter distributor',
-    accent: '#FACC15',
+    accent: '#60A5FA',
   },
   {
     badge: <BrandImage src={hpmLogo} alt="HPM" />,
     title: 'HPM',
     subtitle: 'Sole agent in India',
-    accent: '#EF4444',
+    accent: '#2E90FF',
   },
   {
     badge: <Globe2 size={20} />,
     title: '15+ Countries',
     subtitle: 'Global client network',
-    accent: '#22C55E',
+    accent: '#38BDF8',
   },
   {
     badge: <MapPin size={20} />,
     title: 'Hyderabad',
     subtitle: 'India & East Africa',
-    accent: '#A78BFA',
+    accent: '#7DD3FC',
   },
 ];
 
@@ -77,13 +77,11 @@ const ProofScrollerSection = () => (
       .proof-conveyor {
         position: relative;
         z-index: 12;
-        height: 142px;
+        height: 124px;
         overflow: hidden;
-        perspective: 900px;
-        background: linear-gradient(180deg, #070d16 0%, #04080e 72%);
-        border-top: 1px solid rgba(147,197,253,.16);
-        border-bottom: 1px solid rgba(255,255,255,.07);
-        box-shadow: 0 -26px 70px rgba(0,0,0,.34), 0 30px 65px rgba(0,0,0,.24);
+        background: linear-gradient(180deg, #080E18 0%, #05090F 100%);
+        border-top: 1px solid rgba(255,255,255,.07);
+        border-bottom: 1px solid rgba(255,255,255,.06);
       }
       .proof-conveyor::before {
         content: '';
@@ -101,77 +99,72 @@ const ProofScrollerSection = () => (
         left: 0;
         right: 0;
         top: 0;
-        height: 4px;
-        background: linear-gradient(90deg, transparent, rgba(59,130,246,.7) 35%, rgba(147,197,253,.9) 50%, rgba(59,130,246,.7) 65%, transparent);
-        box-shadow: 0 2px 18px rgba(59,130,246,.25);
-        opacity: .7;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(46,144,255,.55) 30%, rgba(27,214,242,.7) 50%, rgba(46,144,255,.55) 70%, transparent);
       }
       .proof-conveyor__viewport {
         height: 100%;
-        transform: rotateX(2.5deg);
-        transform-origin: top center;
       }
       .proof-conveyor__track {
         display: flex;
         align-items: stretch;
         width: max-content;
         height: 100%;
-        animation: proof-conveyor-move 44s linear infinite;
+        animation: proof-conveyor-move 52s linear infinite;
         will-change: transform;
+        backface-visibility: hidden;
       }
       .proof-conveyor__card {
         position: relative;
-        width: clamp(245px, 21vw, 320px);
+        width: clamp(238px, 20vw, 300px);
         display: flex;
         align-items: center;
-        gap: .9rem;
-        padding: 0 1.65rem;
+        gap: 1rem;
+        padding: 0 1.7rem;
         overflow: hidden;
-        border-right: 1px solid rgba(255,255,255,.075);
-        background: linear-gradient(135deg, rgba(255,255,255,.025), transparent 62%);
-        box-shadow: inset 0 1px rgba(255,255,255,.025), inset 0 -18px 30px rgba(0,0,0,.1);
-        transform: translateZ(0);
-        transition: background .3s ease, transform .3s ease;
+        border-right: 1px solid rgba(255,255,255,.06);
+        transition: background .3s ease;
       }
       .proof-conveyor__card:hover {
-        background: linear-gradient(135deg, rgba(59,130,246,.12), rgba(255,255,255,.02));
-        transform: translateZ(24px) translateY(-3px);
+        background: linear-gradient(135deg, rgba(46,144,255,.14), rgba(255,255,255,.03));
       }
       .proof-conveyor__number {
         position: absolute;
-        right: 10px;
-        top: 8px;
-        color: rgba(255,255,255,.085);
-        font-size: 1.65rem;
-        font-weight: 800;
-        letter-spacing: -.07em;
+        right: 14px;
+        top: 12px;
+        color: rgba(255,255,255,.1);
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .14em;
       }
       .proof-conveyor__badge {
-        width: 49px;
-        height: 49px;
-        flex: 0 0 49px;
+        width: 44px;
+        height: 44px;
+        flex: 0 0 44px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 14px;
-        transform: perspective(160px) rotateY(-9deg);
-        box-shadow: 8px 10px 24px rgba(0,0,0,.22);
+        border-radius: 13px;
+        box-shadow: 0 6px 16px rgba(2,6,14,.3), inset 0 1px 0 rgba(255,255,255,.08);
       }
-      .proof-conveyor__badge img { width: 44px; height: 44px; object-fit: contain; }
+      .proof-conveyor__badge img { width: 38px; height: 38px; object-fit: contain; }
       .proof-conveyor__badge img[alt="HPM"] { width: 40px; height: 24px; }
       .proof-conveyor__copy { display: flex; flex-direction: column; gap: .32rem; }
       .proof-conveyor__copy strong {
-        color: rgba(255,255,255,.95);
-        font-size: 1rem;
-        letter-spacing: -.025em;
+        font-family: var(--font-display);
+        color: #fff;
+        font-size: 1.12rem;
+        font-weight: 600;
+        letter-spacing: -.03em;
         white-space: nowrap;
       }
       .proof-conveyor__copy span {
-        font-size: .5rem;
-        font-weight: 800;
-        letter-spacing: .14em;
+        font-size: .56rem;
+        font-weight: 500;
+        letter-spacing: .16em;
         text-transform: uppercase;
         white-space: nowrap;
+        opacity: .8;
       }
       @keyframes proof-conveyor-move { to { transform: translateX(-50%); } }
       @media (max-width: 600px) {

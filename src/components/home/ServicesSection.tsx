@@ -53,23 +53,25 @@ const ServicesSection = () => {
   const [revealed, setRevealed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [ringRotation, setRingRotation] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+  );
 
   useEffect(() => {
-    const c = () => setIsMobile(window.innerWidth < 1024);
-    c();
-    window.addEventListener('resize', c);
-    return () => window.removeEventListener('resize', c);
+    const media = window.matchMedia('(max-width: 767px)');
+    const update = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+    setIsMobile(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
   }, []);
 
-  /* SVG text scales with viewBox (920), bump sizes on mobile for readability */
-  const FS_TITLE  = isMobile ? 32 : 21;
-  const FS_DETAIL = isMobile ? 20 : 13;
-  const FS_NUM    = isMobile ? 26 : 18;
-  const FS_BRAND  = isMobile ? 38 : 28;
-  const FS_TAG    = isMobile ? 16 : 11;
-  const DOT_R     = isMobile ? 42 : 30;
-  const DOT_R_ACT = isMobile ? 46 : 34;
+  const FS_TITLE = 28;
+  const FS_DETAIL = 17;
+  const FS_NUM = 22;
+  const FS_BRAND = 28;
+  const FS_TAG = 11;
+  const DOT_R = 34;
+  const DOT_R_ACT = 39;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -95,6 +97,7 @@ const ServicesSection = () => {
       frame = 0;
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
+      if (rect.bottom < -240 || rect.top > window.innerHeight + 240) return;
       const mix = clamp((window.innerHeight - rect.top) / (window.innerHeight + rect.height * 0.35), 0, 1);
       setActiveIndex(clamp(Math.round(mix * (serviceSteps.length - 1)), 0, serviceSteps.length - 1));
       setRingRotation(mix * 18);
@@ -119,18 +122,13 @@ const ServicesSection = () => {
 
   const cx = 460;
   const cy = 460;
-  const ringRadius = 306;
-  const labelRadius = 394;
+  const ringRadius = 292;
+  const labelRadius = 388;
 
   return (
-    <>
-      <style>{`
-        @keyframes svc-orbit-spin  { from { transform: rotate(0deg)   } to { transform: rotate(360deg)  } }
-        @keyframes svc-orbit-rspin { from { transform: rotate(0deg)   } to { transform: rotate(-360deg) } }
-        @keyframes svc-center-glow { 0%,100% { opacity: 0.18 } 50% { opacity: 0.45 } }
-      `}</style>
     <section
       ref={sectionRef}
+      className="services-cycle-section"
       style={{
         background: '#060A10',
         padding: '124px 0 114px',
@@ -155,8 +153,8 @@ const ServicesSection = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '0.88fr 1.12fr',
-            gap: 54,
+            gridTemplateColumns: '0.76fr 1.24fr',
+            gap: 44,
             alignItems: 'center',
           }}
           className="max-lg:!grid-cols-1 max-lg:!gap-10"
@@ -169,11 +167,12 @@ const ServicesSection = () => {
             }}
           >
             <div
+              className="font-mono"
               style={{
                 fontSize: 10,
-                letterSpacing: '0.3em',
+                letterSpacing: '0.24em',
                 textTransform: 'uppercase',
-                color: '#3B82F6',
+                color: '#66B5FF',
                 marginBottom: 18,
                 display: 'flex',
                 alignItems: 'center',
@@ -181,33 +180,41 @@ const ServicesSection = () => {
                 fontWeight: 700,
               }}
             >
-              <div style={{ width: 32, height: 1, background: '#3B82F6' }} />
+              <div style={{ width: 26, height: 2, borderRadius: 2, background: 'linear-gradient(90deg,#2E90FF,#1BD6F2)' }} />
               What We Do
             </div>
 
             <h2
               style={{
-                fontSize: 'clamp(42px,5vw,76px)',
-                fontWeight: 800,
-                lineHeight: 0.94,
+                fontSize: 'clamp(32px,3.4vw,52px)',
+                fontWeight: 700,
+                lineHeight: 1.0,
+                letterSpacing: '-0.035em',
                 color: '#fff',
                 margin: 0,
-                maxWidth: 560,
+                maxWidth: 460,
               }}
             >
               One machinery partner.
               <br />
-              <span style={{ color: '#60A5FA', fontWeight: 600 }}>Eight connected phases.</span>
+              <span style={{
+                background: 'linear-gradient(100deg, #66B5FF, #1BD6F2)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>
+                Eight connected phases.
+              </span>
             </h2>
 
             <p
               style={{
-                fontSize: 16,
-                color: 'rgba(255,255,255,0.62)',
-                lineHeight: 1.8,
-                marginTop: 24,
+                fontSize: 15.5,
+                color: 'rgba(255,255,255,0.66)',
+                lineHeight: 1.72,
+                marginTop: 22,
                 marginBottom: 30,
-                maxWidth: 500,
+                maxWidth: 430,
               }}
             >
               From first suggestion to long-term support, Sai Enterprises handles the full machinery cycle with one accountable team.
@@ -235,12 +242,109 @@ const ServicesSection = () => {
               style={{
                 position: 'relative',
                 width: '100%',
-                aspectRatio: '1 / 1',
-                maxWidth: 760,
+                aspectRatio: isMobile ? undefined : '1180 / 980',
+                maxWidth: 820,
+                minWidth: 0,
                 margin: '0 auto',
               }}
             >
-              <svg viewBox="0 0 920 920" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+              {isMobile ? (
+                <div
+                  role="list"
+                  aria-label="Eight connected service phases"
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+                    gap: 10,
+                    width: '100%',
+                    maxWidth: 520,
+                    margin: '0 auto',
+                  }}
+                >
+                  {serviceSteps.map((step, index) => {
+                    const isActive = index === activeIndex;
+                    return (
+                      <button
+                        key={step.number}
+                        type="button"
+                        role="listitem"
+                        onClick={() => setActiveIndex(index)}
+                        aria-current={isActive ? 'step' : undefined}
+                        style={{
+                          position: 'relative',
+                          minWidth: 0,
+                          minHeight: 112,
+                          padding: '14px 12px',
+                          overflow: 'hidden',
+                          textAlign: 'left',
+                          color: '#fff',
+                          border: `1px solid ${isActive ? 'rgba(96,165,250,.62)' : 'rgba(255,255,255,.08)'}`,
+                          borderRadius: 16,
+                          background: isActive
+                            ? 'linear-gradient(145deg,rgba(37,99,235,.19),rgba(10,18,31,.96))'
+                            : 'rgba(9,15,25,.78)',
+                          boxShadow: isActive ? '0 14px 34px rgba(0,0,0,.24), inset 0 1px rgba(255,255,255,.05)' : 'none',
+                          transition: 'border-color .25s ease, background .25s ease, box-shadow .25s ease',
+                        }}
+                      >
+                        <span
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            color: isActive ? '#93C5FD' : 'rgba(96,165,250,.72)',
+                            fontSize: 10,
+                            fontWeight: 800,
+                            letterSpacing: '.14em',
+                          }}
+                        >
+                          {step.number}
+                          <i
+                            aria-hidden="true"
+                            style={{
+                              width: isActive ? 22 : 6,
+                              height: 2,
+                              borderRadius: 99,
+                              background: isActive ? '#60A5FA' : 'rgba(255,255,255,.14)',
+                              boxShadow: isActive ? '0 0 10px rgba(96,165,250,.55)' : 'none',
+                              transition: 'width .3s ease, background .3s ease',
+                            }}
+                          />
+                        </span>
+                        <strong
+                          style={{
+                            display: 'block',
+                            marginTop: 12,
+                            overflowWrap: 'anywhere',
+                            fontSize: 13,
+                            lineHeight: 1.22,
+                          }}
+                        >
+                          {step.titleLines.join(' ')}
+                        </strong>
+                        <small
+                          style={{
+                            display: 'block',
+                            marginTop: 7,
+                            overflowWrap: 'anywhere',
+                            color: 'rgba(255,255,255,.48)',
+                            fontSize: 10,
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {step.detailLines.join(' ')}
+                        </small>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+              <svg
+                viewBox="-130 -30 1180 980"
+                role="img"
+                aria-label="Eight connected phases in the Sai Enterprises service cycle"
+                style={{ display: 'block', width: '100%', height: '100%', overflow: 'hidden' }}
+              >
                 <defs>
                   <radialGradient id="svc-core" cx="50%" cy="42%" r="58%">
                     <stop offset="0%" stopColor="rgba(59,130,246,0.18)" />
@@ -269,22 +373,22 @@ const ServicesSection = () => {
                   }}
                 >
                   <circle cx={cx} cy={cy} r={ringRadius + 78} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                  <circle cx={cx} cy={cy} r={ringRadius + 34} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-                  <circle cx={cx} cy={cy} r={ringRadius} fill="none" stroke="url(#svc-ring-main)" strokeWidth="2.4" strokeDasharray="16 18" />
+                  <circle cx={cx} cy={cy} r={ringRadius + 34} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+                  <circle cx={cx} cy={cy} r={ringRadius} fill="none" stroke="url(#svc-ring-main)" strokeWidth="3.2" strokeDasharray="20 16" />
                   <circle cx={cx} cy={cy} r={ringRadius - 42} fill="none" stroke="rgba(59,130,246,0.12)" strokeWidth="1.2" strokeDasharray="2 14" />
                 </g>
 
-                {/* Slowly-rotating outer accent rings */}
-                <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'svc-orbit-spin 120s linear infinite' }}>
+                {/* Restrained static guide rings keep the cycle legible without constant GPU work. */}
+                <g>
                   <circle cx={cx} cy={cy} r={ringRadius + 116} fill="none" stroke="rgba(59,130,246,0.06)" strokeWidth="1" strokeDasharray="3 28" />
                 </g>
-                <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'svc-orbit-rspin 80s linear infinite' }}>
+                <g>
                   <circle cx={cx} cy={cy} r={ringRadius + 56} fill="none" stroke="rgba(96,165,250,0.07)" strokeWidth="0.8" strokeDasharray="8 36" />
                 </g>
 
-                {/* Center ambient glow pulse */}
+                {/* Static center glow */}
                 <circle cx={cx} cy={cy} r="188" fill="none" stroke="rgba(59,130,246,0.07)" strokeWidth="40"
-                  style={{ filter: 'blur(12px)', animation: 'svc-center-glow 4s ease-in-out infinite' }} />
+                  style={{ filter: 'blur(12px)', opacity: 0.3 }} />
 
                 <circle cx={cx} cy={cy} r="144" fill="url(#svc-core)" stroke="rgba(59,130,246,0.22)" strokeWidth="1.2" />
                 <circle cx={cx} cy={cy} r="166" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
@@ -296,19 +400,21 @@ const ServicesSection = () => {
                   const sin = Math.sin(rad);
                   const dotX = cx + cos * ringRadius;
                   const dotY = cy + sin * ringRadius;
-                  const labelX = cx + cos * labelRadius;
-                  const labelY = cy + sin * labelRadius;
-                  const anchor = cos > 0.34 ? 'start' : cos < -0.34 ? 'end' : 'middle';
-                  const titleStartY = sin < -0.58 ? 10 : sin > 0.58 ? -38 : -12;
+                  /* Diagonal labels are anchored side-on, so their text runs back
+                     toward the ring and used to sit on top of its own node. Pushing
+                     them further out buys the vertical clearance they need. */
+                  const isDiagonal = Math.abs(cos) > 0.3 && Math.abs(sin) > 0.3;
+                  const lr = labelRadius + (isDiagonal ? 54 : 0);
+                  const labelX = cx + cos * lr;
+                  const labelY = cy + sin * lr;
+                  const anchor = cos > 0.34 ? 'end' : cos < -0.34 ? 'start' : 'middle';
+                  const titleStartY = sin < -0.58 ? 12 : sin > 0.58 ? -58 : -14;
                   const isActive = index === activeIndex;
 
                   return (
                     <g key={step.number}>
                       {isActive && (
-                        <circle cx={dotX} cy={dotY} r="36" fill="none" stroke="rgba(96,165,250,0.16)" strokeWidth="1.2">
-                          <animate attributeName="r" values="28;38;28" dur="2.4s" repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.5;0.08;0.5" dur="2.4s" repeatCount="indefinite" />
-                        </circle>
+                        <circle cx={dotX} cy={dotY} r="36" fill="none" stroke="rgba(96,165,250,0.18)" strokeWidth="1.2" />
                       )}
 
                       <motion.g
@@ -332,8 +438,8 @@ const ServicesSection = () => {
                           cy={dotY}
                           r={isActive ? DOT_R_ACT : DOT_R}
                           fill={isActive ? 'rgba(13,21,36,0.98)' : 'rgba(8,14,24,0.94)'}
-                          stroke={isActive ? 'rgba(96,165,250,0.68)' : 'rgba(59,130,246,0.28)'}
-                          strokeWidth={isActive ? 1.8 : 1.2}
+                          stroke={isActive ? 'rgba(102,181,255,0.95)' : 'rgba(46,144,255,0.45)'}
+                          strokeWidth={isActive ? 2.4 : 1.6}
                           filter={isActive ? 'url(#svc-glow)' : undefined}
                         />
                         <text
@@ -369,7 +475,7 @@ const ServicesSection = () => {
                           <text
                             key={`${step.number}-title-${lineIndex}`}
                             x={labelX}
-                            y={labelY + titleStartY + lineIndex * 22}
+                            y={labelY + titleStartY + lineIndex * 28}
                             textAnchor={anchor}
                             fill="#FFFFFF"
                             fontSize={FS_TITLE}
@@ -384,9 +490,9 @@ const ServicesSection = () => {
                           <text
                             key={`${step.number}-detail-${lineIndex}`}
                             x={labelX}
-                            y={labelY + titleStartY + step.titleLines.length * 22 + 10 + lineIndex * 16}
+                            y={labelY + titleStartY + step.titleLines.length * 28 + 8 + lineIndex * 21}
                             textAnchor={anchor}
-                            fill={isActive ? 'rgba(255,255,255,0.76)' : 'rgba(255,255,255,0.48)'}
+                            fill={isActive ? 'rgba(255,255,255,0.86)' : 'rgba(255,255,255,0.6)'}
                             fontSize={FS_DETAIL}
                             fontWeight="500"
                             style={{ userSelect: 'none', pointerEvents: 'none' }}
@@ -423,12 +529,12 @@ const ServicesSection = () => {
                   </text>
                 </motion.g>
               </svg>
+              )}
             </div>
           </div>
         </div>
       </div>
     </section>
-    </>
   );
 };
 

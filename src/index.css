@@ -46,61 +46,127 @@
   }
 }
 
+/* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   A single source of truth for surface, line, light and motion.
+   Sections and components should reference these, never raw hex.
+   ══════════════════════════════════════════════════════════════ */
+
 @layer base {
   :root {
-    /* ── BLACK / BLUE / WHITE SYSTEM ── */
-    --font-site: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    /* Three roles. Display carries the brand voice, text carries reading,
+       mono carries anything that is a measurement, count or label — which is
+       most of what this business actually communicates. */
+    --font-display: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-text:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    /* Legacy alias: older inline styles still reference this. */
+    --font-site: var(--font-text);
 
-    --ink:        4 8% 4%;       /* #060A10 */
-    --ink-2:      216 28% 10%;   /* #0D1421 */
-    --ink-3:      217 19% 15%;   /* #1B2333 */
+    /* ── SURFACE LADDER ───────────────────────────────────────
+       Each step is a real elevation, not a random tint. Cards sit
+       on s2, raised/hovered states on s3, popovers on s4.        */
+    --s-0:  218 46% 3.5%;    /* page floor      #05080E */
+    --s-1:  217 38% 6%;      /* section band    #0A0E17 */
+    --s-2:  216 32% 8.5%;    /* card            #0E141F */
+    --s-3:  215 27% 12%;     /* raised card     #161C27 */
+    --s-4:  214 23% 16.5%;   /* hover / popover #20262F */
 
-    --background: 4 8% 4%;
-    --foreground:  0 0% 100%;
+    /* ── BRAND ────────────────────────────────────────────────
+       A precise azure. Deeper and cleaner than stock blue-500,
+       so the UI reads engineered rather than templated.          */
+    --brand:      212 100% 58%;   /* #2E90FF */
+    --brand-lift: 207 100% 70%;   /* #66B5FF  highlights, hover  */
+    --brand-deep: 219  88% 44%;   /* #0D53D3  pressed, gradients */
+    --accent-cy:  190  95% 55%;   /* #1BD6F2  used sparingly     */
 
-    --card:        216 28% 10%;
+    /* ── LINES ────────────────────────────────────────────────
+       Three weights only. Hairline for structure, strong for
+       interactive edges. Keeps the UI from looking noisy.        */
+    --line-1: 255 255 255 / 0.06;
+    --line-2: 255 255 255 / 0.10;
+    --line-3: 255 255 255 / 0.17;
+
+    /* ── ELEVATION ────────────────────────────────────────────
+       Layered + slightly blue-tinted, the way real light falls.
+       The inset top rim is what makes a dark card feel physical. */
+    --rim:  inset 0 1px 0 rgb(255 255 255 / 0.07);
+    --rim-strong: inset 0 1px 0 rgb(255 255 255 / 0.12);
+    --e-1: 0 1px 2px rgb(2 6 14 / 0.5);
+    --e-2: 0 4px 14px -3px rgb(2 6 14 / 0.55), 0 2px 5px rgb(2 6 14 / 0.3);
+    --e-3: 0 14px 36px -10px rgb(2 6 14 / 0.65), 0 5px 12px rgb(2 6 14 / 0.35);
+    --e-4: 0 32px 76px -18px rgb(2 6 14 / 0.75), 0 12px 26px rgb(2 6 14 / 0.42);
+    --glow-brand: 0 18px 46px -12px hsl(var(--brand) / 0.45);
+
+    /* ── RADII ────────────────────────────────────────────────
+       One coherent scale. Previously the site mixed 2px, 16px
+       and 40px with no logic, which reads as unfinished.         */
+    --r-xs:  6px;
+    --r-sm:  9px;
+    --r-md:  13px;
+    --r-lg:  18px;
+    --r-xl:  26px;
+    --r-2xl: 34px;
+    --r-pill: 999px;
+
+    /* ── MOTION ───────────────────────────────────────────────  */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring:   cubic-bezier(0.34, 1.4, 0.44, 1);
+    --t-fast: 0.18s;
+    --t-mid:  0.32s;
+    --t-slow: 0.6s;
+
+    /* ── TEXT ─────────────────────────────────────────────────  */
+    --fg-1: 255 255 255 / 1;      /* headings            */
+    --fg-2: 255 255 255 / 0.72;   /* body                */
+    --fg-3: 255 255 255 / 0.50;   /* secondary           */
+    --fg-4: 255 255 255 / 0.34;   /* captions, meta      */
+
+    /* ── LIGHT SURFACES (used by the light bands) ────────────  */
+    --paper:    220 38% 98%;
+    --paper-2:  219 30% 95%;
+    --paper-3:  218 26% 91%;
+    --ink-1:    218 46% 6%;
+    --ink-2:    218 20% 28%;
+    --ink-3:    218 14% 46%;
+
+    /* ── SHADCN BRIDGE ────────────────────────────────────────
+       Keeps every Radix/shadcn primitive on the same system.     */
+    --background: var(--s-0);
+    --foreground: 0 0% 100%;
+    --card: var(--s-2);
     --card-foreground: 0 0% 100%;
-
-    --popover:     216 28% 10%;
+    --popover: var(--s-4);
     --popover-foreground: 0 0% 100%;
-
-    /* Primary, electric blue */
-    --primary:     217 91% 60%;  /* #3B82F6 */
+    --primary: var(--brand);
     --primary-foreground: 0 0% 100%;
-
-    --secondary:   217 19% 15%;
-    --secondary-foreground: 0 0% 90%;
-
-    --muted:       216 15% 20%;
-    --muted-foreground: 215 20% 55%;
-
-    --accent:      217 91% 60%;
+    --secondary: var(--s-3);
+    --secondary-foreground: 0 0% 92%;
+    --muted: var(--s-3);
+    --muted-foreground: 215 16% 62%;
+    --accent: var(--brand);
     --accent-foreground: 0 0% 100%;
-
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
+    --border: 216 20% 16%;
+    --input: 216 20% 16%;
+    --ring: var(--brand);
+    --radius: 0.8rem;
 
-    --border:      217 15% 18%;
-    --input:       217 15% 18%;
-    --ring:        217 91% 60%;
-    --radius:      0.15rem;
+    /* legacy aliases, kept so older inline styles keep resolving */
+    --ink:   var(--s-0);
+    --ink-2: var(--s-2);
+    --ink-3: var(--s-3);
 
-    /* Light surface (used in select light sections) */
-    --paper:       220 20% 97%;  /* #F4F6FA */
-    --paper-2:     220 16% 93%;
-
-    /* sidebar */
-    --sidebar-background:        216 28% 8%;
-    --sidebar-foreground:        0 0% 88%;
-    --sidebar-primary:           217 91% 60%;
+    --sidebar-background:         216 34% 7%;
+    --sidebar-foreground:         0 0% 88%;
+    --sidebar-primary:            var(--brand);
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent:            216 20% 14%;
-    --sidebar-accent-foreground: 0 0% 88%;
-    --sidebar-border:            217 15% 16%;
-    --sidebar-ring:              217 91% 60%;
+    --sidebar-accent:             215 27% 13%;
+    --sidebar-accent-foreground:  0 0% 90%;
+    --sidebar-border:             216 20% 15%;
+    --sidebar-ring:               var(--brand);
   }
-
-  /* No separate .dark, the whole site is dark */
 }
 
 @layer base {
@@ -110,8 +176,11 @@
     @apply border-border;
   }
 
+  /* The blanket override stays so the many inline `fontFamily: 'Manrope'`
+     declarations across the sections resolve to the system, but headings and
+     technical labels claim their own families below. */
   * {
-    font-family: var(--font-site) !important;
+    font-family: var(--font-text) !important;
   }
 
   html {
@@ -120,17 +189,18 @@
     font-family: var(--font-site);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   body {
-    background: #060A10;
-    color: #FFFFFF;
+    background: hsl(var(--s-0));
+    color: rgb(var(--fg-2));
     font-family: var(--font-site);
     font-weight: 400;
     font-size: 16px;
     line-height: 1.6;
-    letter-spacing: -0.01em;
-    font-feature-settings: "ss01" 1, "cv01" 1, "cv11" 1;
+    letter-spacing: -0.011em;
+    font-feature-settings: "ss01" 1, "cv01" 1, "cv11" 1, "tnum" 0;
     overflow-x: hidden;
   }
 
@@ -140,12 +210,12 @@
   body textarea,
   body select {
     transition:
-      color 0.24s ease,
-      background-color 0.24s ease,
-      border-color 0.24s ease,
-      opacity 0.24s ease,
-      box-shadow 0.24s ease,
-      transform 0.24s ease;
+      color var(--t-mid) var(--ease-out-expo),
+      background-color var(--t-mid) var(--ease-out-expo),
+      border-color var(--t-mid) var(--ease-out-expo),
+      opacity var(--t-mid) var(--ease-out-expo),
+      box-shadow var(--t-mid) var(--ease-out-expo),
+      transform var(--t-mid) var(--ease-out-expo);
   }
 
   body,
@@ -159,45 +229,107 @@
   body p,
   body li,
   body label,
-  body h1,
-  body h2,
-  body h3,
-  body h4,
-  body h5,
-  body h6,
   body strong,
   body small {
-    font-family: var(--font-site) !important;
+    font-family: var(--font-text) !important;
+  }
+
+  /* Display voice */
+  h1, h2, h3, h4, h5, h6,
+  body h1, body h2, body h3, body h4, body h5, body h6,
+  .font-display {
+    font-family: var(--font-display) !important;
+  }
+
+  /* Technical voice: eyebrows, counts, spec labels, measured readouts.
+     This is the detail that makes the page read as instrumentation rather
+     than as a generic marketing template. */
+  .font-mono,
+  .eyebrow,
+  .caption,
+  .chip,
+  .mega__count,
+  .ftr__h,
+  .ftr__office-role,
+  .hdr__link,
+  .pnav__label,
+  .clean-system-card__head,
+  .clean-system-card__specs b,
+  .clean-intro > span,
+  .clean-system-card > p,
+  .proof-conveyor__copy span,
+  .proof-conveyor__number {
+    font-family: var(--font-mono) !important;
   }
 
   ::selection {
-    background: rgba(59,130,246,0.35);
+    background: hsl(var(--brand) / 0.32);
     color: #fff;
   }
 
-  ::-webkit-scrollbar { width: 2px; height: 2px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: hsl(var(--primary)); border-radius: 1px; }
+  /* A scrollbar you can actually grab, still unobtrusive. */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: hsl(var(--s-0)); }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--s-4));
+    border-radius: var(--r-pill);
+    border: 3px solid hsl(var(--s-0));
+  }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--brand) / 0.65); }
 
   img, video, svg, canvas { max-width: 100%; height: auto; }
 
+  /* ── TYPE SCALE ───────────────────────────────────────────
+     Tracking tightens as size grows (optical sizing). A single
+     blanket -0.05em made small headings feel cramped.          */
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-site) !important;
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    line-height: 1.02;
+    color: rgb(var(--fg-1));
+    text-wrap: balance;
   }
 
-  h1 { font-size: clamp(3rem, 8vw, 7rem); font-weight: 700; }
-  h2 { font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 600; }
-  h3 { font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 600; }
-  h4 { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 600; }
+  h1 {
+    font-size: clamp(2.75rem, 7.2vw, 6.25rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+  }
+  h2 {
+    font-size: clamp(2rem, 4.8vw, 4rem);
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -0.028em;
+  }
+  h3 {
+    font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  h4 {
+    font-size: clamp(1.15rem, 1.8vw, 1.55rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.014em;
+  }
+  h5 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.008em;
+  }
+  h6 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0;
+  }
 
   p { line-height: 1.7; }
 
   :focus-visible {
-    outline: 1px solid hsl(var(--primary));
+    outline: 2px solid hsl(var(--brand));
     outline-offset: 2px;
+    border-radius: var(--r-xs);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -216,22 +348,37 @@
 }
 
 @layer components {
-  /* Shared route surface: carries the landing page's restrained navy/blue atmosphere. */
+  /* ══════════════════════════════════════════════════════════
+     PAGE SHELL
+     Atmosphere layer: a slow brand wash plus a fine grain so
+     large dark areas have tooth instead of reading as flat ink.
+     ══════════════════════════════════════════════════════════ */
   .sai-page-shell {
     position: relative;
     isolation: isolate;
-    background: #060A10;
+    background: hsl(var(--s-0));
   }
 
   .sai-page-shell::before {
     content: '';
     position: fixed;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     pointer-events: none;
     background:
-      radial-gradient(circle at 12% 12%, rgba(59,130,246,0.055), transparent 27%),
-      radial-gradient(circle at 88% 72%, rgba(14,165,233,0.035), transparent 24%);
+      radial-gradient(ellipse 60% 50% at 10% 0%,   hsl(var(--brand) / 0.10), transparent 60%),
+      radial-gradient(ellipse 50% 45% at 92% 28%,  hsl(var(--accent-cy) / 0.05), transparent 62%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, hsl(var(--brand-deep) / 0.08), transparent 65%);
+  }
+
+  .sai-page-shell::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   .about-deferred {
@@ -239,12 +386,108 @@
     contain-intrinsic-size: auto 760px;
   }
 
-  /* ── FONT UTILITIES ── */
+  /* ══════════════════════════════════════════════════════════
+     SURFACES
+     The core premium primitive: layered fill + hairline + rim
+     light + real shadow. Use instead of bare rgba backgrounds.
+     ══════════════════════════════════════════════════════════ */
+  .surface {
+    position: relative;
+    background:
+      linear-gradient(180deg, hsl(var(--s-2)) 0%, hsl(var(--s-1)) 100%);
+    border: 1px solid rgb(var(--line-1));
+    border-radius: var(--r-lg);
+    box-shadow: var(--rim), var(--e-2);
+  }
+
+  .surface-raised {
+    position: relative;
+    background:
+      linear-gradient(180deg, hsl(var(--s-3)) 0%, hsl(var(--s-2)) 100%);
+    border: 1px solid rgb(var(--line-2));
+    border-radius: var(--r-lg);
+    box-shadow: var(--rim-strong), var(--e-3);
+  }
+
+  /* Frosted panel for anything that floats over content. */
+  .surface-glass {
+    position: relative;
+    background: hsl(var(--s-2) / 0.72);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid rgb(var(--line-2));
+    border-radius: var(--r-lg);
+    box-shadow: var(--rim), var(--e-3);
+  }
+
+  /* Interactive surface: lifts, brightens, picks up a brand edge. */
+  .surface-interactive {
+    transition:
+      transform var(--t-mid) var(--ease-out-expo),
+      border-color var(--t-mid) ease,
+      box-shadow var(--t-mid) ease,
+      background var(--t-mid) ease;
+  }
+  .surface-interactive:hover {
+    transform: translateY(-4px);
+    border-color: hsl(var(--brand) / 0.38);
+    box-shadow:
+      var(--rim-strong),
+      var(--e-4),
+      0 0 0 1px hsl(var(--brand) / 0.14);
+  }
+
+  /* A 1px gradient divider that fades at both ends. */
+  .hairline {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--line-2)) 18%,
+      rgb(var(--line-2)) 82%,
+      transparent
+    );
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     LOGO PLATE
+     Client/partner marks are supplied on white. Dropping raw
+     white tiles onto a dark page is the single most jarring
+     thing on the site; this plate keeps them legible but calm.
+     ══════════════════════════════════════════════════════════ */
+  .logo-plate {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--r-md);
+    background: linear-gradient(180deg, #fdfdfe 0%, #eef2f8 100%);
+    box-shadow: inset 0 0 0 1px rgb(2 6 14 / 0.06);
+  }
+
+  .logo-plate img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Calms the mismatched source logos. `opacity` composites, where a
+       `filter` here would repaint on every frame of the logo marquee. */
+    opacity: 0.92;
+    transition: transform var(--t-slow) var(--ease-out-expo), opacity var(--t-mid) ease;
+  }
+
+  .logo-plate:hover img {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+
+  /* ── FONT UTILITIES (legacy aliases) ── */
   .font-serif {
-    font-family: var(--font-site) !important;
+    font-family: var(--font-display) !important;
   }
   .font-sans-dm {
-    font-family: var(--font-site) !important;
+    font-family: var(--font-text) !important;
   }
 
   .brand-logo {
@@ -263,29 +506,55 @@
     align-items: center;
     justify-content: center;
     padding: 10px 18px;
-    border: 1px solid rgba(6,10,16,0.08);
-    border-radius: 999px;
-    background: #060A10;
-    box-shadow: 0 18px 40px rgba(6,10,16,0.12);
+    border: 1px solid rgb(var(--line-1));
+    border-radius: var(--r-pill);
+    background: hsl(var(--s-2));
+    box-shadow: var(--rim), var(--e-2);
   }
 
   /* ── EYEBROW / CAPTION ── */
   .eyebrow {
-    font-family: var(--font-site) !important;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.28em;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.26em;
     text-transform: uppercase;
-    color: hsl(var(--primary));
+    color: hsl(var(--brand-lift));
   }
 
   .caption {
-    font-family: var(--font-site) !important;
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 500;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.38);
+    color: rgb(var(--fg-4));
+  }
+
+  /* Pill label used above section headings. */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 15px 7px 12px;
+    border-radius: var(--r-pill);
+    background: hsl(var(--brand) / 0.09);
+    border: 1px solid hsl(var(--brand) / 0.22);
+    box-shadow: var(--rim);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: hsl(var(--brand-lift));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .chip::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: hsl(var(--brand-lift));
+    box-shadow: 0 0 0 3px hsl(var(--brand) / 0.18), 0 0 10px hsl(var(--brand-lift) / 0.8);
   }
 
   /* ── MASK-REVEAL ── */
@@ -293,7 +562,7 @@
   .ml-inner {
     display: block;
     transform: translateY(108%);
-    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 1s var(--ease-out-expo);
   }
   .ml.revealed .ml-inner { transform: translateY(0); }
   .ml.d1 .ml-inner { transition-delay: 0.06s; }
@@ -305,7 +574,7 @@
   .reveal {
     opacity: 0;
     transform: translateY(24px);
-    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
   }
   .reveal.revealed { opacity: 1; transform: none; }
   .reveal.d1 { transition-delay: 0.08s; }
@@ -318,13 +587,13 @@
   .line-draw {
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    transition: transform 0.9s var(--ease-out-expo);
   }
   .line-draw.revealed { transform: scaleX(1); }
   .line-draw-center {
     transform: scaleX(0);
     transform-origin: center;
-    transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    transition: transform 0.9s var(--ease-out-expo);
   }
   .line-draw-center.revealed { transform: scaleX(1); }
 
@@ -333,86 +602,121 @@
   .container-wide { @apply max-w-[1400px] mx-auto px-8 md:px-12 lg:px-16; }
   .container-narrow { @apply max-w-3xl mx-auto px-6 md:px-8; }
 
-  /* ── BUTTONS ── */
+  /* ══════════════════════════════════════════════════════════
+     BUTTONS
+     Rounded, with a gradient fill, rim light and a travelling
+     sheen. Sized for 44px touch targets without extra overrides.
+     ══════════════════════════════════════════════════════════ */
   .btn-primary {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 13px 28px;
-    background: hsl(var(--primary));
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 26px;
+    overflow: hidden;
+    background: linear-gradient(180deg, hsl(var(--brand-lift)) -20%, hsl(var(--brand)) 46%, hsl(var(--brand-deep)) 150%);
     color: #fff;
-    font-family: var(--font-site) !important;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     text-decoration: none;
-    border: 1.5px solid hsl(var(--primary));
-    transition: all 0.25s ease;
+    border: 1px solid hsl(var(--brand) / 0.9);
+    border-radius: var(--r-pill);
+    box-shadow: var(--rim-strong), var(--e-2);
     cursor: pointer;
+    transition:
+      transform var(--t-mid) var(--ease-out-expo),
+      box-shadow var(--t-mid) ease,
+      filter var(--t-mid) ease;
   }
+
+  /* Sheen sweeps across on hover. */
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgb(255 255 255 / 0.28) 50%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform 0.75s var(--ease-out-expo);
+    pointer-events: none;
+  }
+
   .btn-primary:hover {
-    background: transparent;
-    color: hsl(var(--primary));
-    transform: translateY(-3px);
-    box-shadow: 0 16px 34px rgba(59,130,246,0.26);
+    transform: translateY(-2px);
+    filter: brightness(1.07);
+    box-shadow: var(--rim-strong), var(--e-3), var(--glow-brand);
   }
+  .btn-primary:hover::before { transform: translateX(120%); }
+  .btn-primary:active { transform: translateY(0); filter: brightness(0.96); }
 
   .sai-page-shell a[href^="/contact"] {
-    transition: color 0.24s ease, background-color 0.24s ease, border-color 0.24s ease,
-      box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
-  }
-
-  .sai-page-shell a[href^="/contact"]:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 32px rgba(59,130,246,0.22);
+    transition: color var(--t-mid) ease, background-color var(--t-mid) ease, border-color var(--t-mid) ease,
+      box-shadow var(--t-mid) ease, transform var(--t-mid) var(--ease-out-expo);
   }
 
   .btn-outline {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 13px 28px;
-    background: transparent;
-    color: rgba(255,255,255,0.7);
-    font-family: var(--font-site) !important;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 26px;
+    background: hsl(var(--s-3) / 0.5);
+    color: rgb(var(--fg-2));
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     text-decoration: none;
-    border: 1.5px solid rgba(255,255,255,0.18);
-    transition: all 0.25s ease;
+    border: 1px solid rgb(var(--line-2));
+    border-radius: var(--r-pill);
+    box-shadow: var(--rim);
     cursor: pointer;
+    transition:
+      transform var(--t-mid) var(--ease-out-expo),
+      border-color var(--t-mid) ease,
+      color var(--t-mid) ease,
+      background var(--t-mid) ease;
   }
   .btn-outline:hover {
-    border-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    transform: translateY(-2px);
+    border-color: hsl(var(--brand) / 0.5);
+    background: hsl(var(--brand) / 0.1);
+    color: #fff;
   }
+  .btn-outline:active { transform: translateY(0); }
 
   .cta-arrow {
     display: inline-flex; align-items: center; gap: 10px;
-    font-family: var(--font-site) !important;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.8);
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgb(var(--fg-2));
     text-decoration: none;
-    transition: gap 0.25s ease, color 0.25s ease;
+    transition: gap var(--t-mid) ease, color var(--t-mid) ease;
     cursor: pointer;
   }
   .cta-arrow:hover { gap: 18px; color: #fff; }
-  .cta-arrow .arr { color: hsl(var(--primary)); transition: transform 0.25s; }
+  .cta-arrow .arr { color: hsl(var(--brand-lift)); transition: transform var(--t-mid) ease; }
   .cta-arrow:hover .arr { transform: translateX(4px); }
 
   .cta-blue {
     display: inline-flex; align-items: center; gap: 10px;
-    font-family: var(--font-site) !important;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    color: hsl(var(--primary));
+    font-size: 11.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: hsl(var(--brand-lift));
     text-decoration: none;
-    position: relative; padding-bottom: 2px;
-    transition: gap 0.25s ease;
+    position: relative; padding-bottom: 3px;
+    transition: gap var(--t-mid) ease;
     cursor: pointer;
   }
   .cta-blue::after {
     content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-    height: 1px; background: hsl(var(--primary));
+    height: 1px;
+    background: linear-gradient(90deg, hsl(var(--brand)), hsl(var(--brand) / 0.2));
   }
   .cta-blue:hover { gap: 18px; }
-  .cta-blue .arr { transition: transform 0.25s; }
+  .cta-blue .arr { transition: transform var(--t-mid) ease; }
   .cta-blue:hover .arr { transform: translateX(4px); }
 
   /* ── MARQUEE ── */
@@ -429,7 +733,7 @@
   /* ── PAGE TRANSITION BAR ── */
   .pt-bar {
     position: fixed; inset: 0; z-index: 900;
-    background: #060A10;
+    background: hsl(var(--s-0));
     transform: translateY(100%);
     pointer-events: none;
     transition: transform 0.35s cubic-bezier(0.9, 0, 0.1, 1);
@@ -437,25 +741,35 @@
 
   /* ── SCROLL PROGRESS ── */
   .scroll-prog {
-    position: fixed; top: 0; left: 0; height: 1.5px;
-    background: hsl(var(--primary));
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: linear-gradient(90deg, hsl(var(--brand-deep)), hsl(var(--brand)), hsl(var(--accent-cy)));
+    box-shadow: 0 0 12px hsl(var(--brand) / 0.6);
     z-index: 500; width: 0; pointer-events: none;
     transition: width 0.1s linear;
   }
 
   /* ── EDITORIAL GRID ITEMS ── */
   .ed-item {
-    background: #0D1421; padding: 24px 24px 20px;
+    background: linear-gradient(180deg, hsl(var(--s-2)), hsl(var(--s-1)));
+    padding: 24px 24px 20px;
     cursor: pointer; position: relative; overflow: hidden;
-    transition: background 0.2s;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid rgb(var(--line-1));
+    border-radius: var(--r-lg);
+    box-shadow: var(--rim), var(--e-1);
+    transition: background var(--t-mid) ease, border-color var(--t-mid) ease,
+      box-shadow var(--t-mid) ease, transform var(--t-mid) var(--ease-out-expo);
   }
-  .ed-item:hover { background: #111827; }
+  .ed-item:hover {
+    background: linear-gradient(180deg, hsl(var(--s-3)), hsl(var(--s-2)));
+    border-color: hsl(var(--brand) / 0.3);
+    box-shadow: var(--rim-strong), var(--e-3);
+    transform: translateY(-3px);
+  }
   .ed-item:hover .ed-img img { transform: scale(1.04); }
   .ed-hline {
-    position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px;
-    background: hsl(var(--primary));
-    transition: width 0.35s cubic-bezier(0.16,1,0.3,1);
+    position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+    background: linear-gradient(90deg, hsl(var(--brand)), hsl(var(--accent-cy)));
+    transition: width 0.35s var(--ease-out-expo);
   }
   .ed-item:hover .ed-hline { width: 100%; }
 
@@ -471,17 +785,41 @@
 
   /* ── BROCHURE ── */
   .brochure-viewer .brochure-mark {
-    background: rgba(59,130,246,0.2);
-    color: #fff; border-radius: 2px; padding: 0 2px;
+    background: hsl(var(--brand) / 0.25);
+    color: #fff; border-radius: var(--r-xs); padding: 0 3px;
   }
 }
 
 @layer utilities {
-  .ease-expo { transition-timing-function: cubic-bezier(0.16,1,0.3,1); }
+  .ease-expo { transition-timing-function: var(--ease-out-expo); }
   .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
   .fade-bottom {
     mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  /* Fades a horizontal scroller at both edges, for marquees. */
+  .fade-x {
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+
+  /* Gradient text, kept on-brand. */
+  .text-gradient-brand {
+    background: linear-gradient(135deg, #fff 10%, hsl(var(--brand-lift)) 62%, hsl(var(--brand)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Smooth dark→light and light→dark section seams. */
+  .seam-to-light {
+    background: linear-gradient(180deg, hsl(var(--s-0)) 0%, hsl(var(--s-1)) 40%, hsl(var(--paper)) 100%);
+  }
+  .seam-to-dark {
+    background: linear-gradient(180deg, hsl(var(--paper)) 0%, hsl(var(--s-1)) 60%, hsl(var(--s-0)) 100%);
   }
 }
 
@@ -513,7 +851,7 @@
   to { transform: rotate(360deg); }
 }
 
-.animate-fade-up   { animation: fade-up  0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
+.animate-fade-up   { animation: fade-up  0.8s var(--ease-out-expo) forwards; }
 .animate-fade-in   { animation: fade-in  0.6s ease forwards; }
 .animate-float     { animation: float    5s  ease-in-out infinite; }
 .animate-spin-slow { animation: spin-slow 20s linear infinite; }
@@ -532,9 +870,12 @@
   isolation: isolate;
 }
 
-/* ── GLOBAL LAZY LOADING HINT ── */
+/* ── GLOBAL LAZY LOADING HINT ──
+   `content-visibility: auto` is deliberately NOT used on images: it defers
+   their render until they are nearly in view, which pops content in and
+   shifts the layout under the reader mid-scroll. */
 img:not([loading]) {
-  content-visibility: auto;
+  content-visibility: visible;
 }
 
 /* ── MOBILE TOUCH TARGETS ── */
@@ -572,10 +913,43 @@ img:not([loading]) {
   }
 }
 
-/* ── GLOBAL MOBILE RESET ── */
-html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
+/* ── GLOBAL VIEWPORT CONTAINMENT ── */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+main,
+.sai-page-shell {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+main > section,
+main > div,
+.grid > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  max-width: 100%;
 }
 
 @media (max-width: 480px) {
@@ -590,11 +964,16 @@ html, body {
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
   }
 
+  .services-cycle-section {
+    padding-top: 72px !important;
+    padding-bottom: 72px !important;
+  }
+
   .container-editorial,
   .container-wide,
   .container-narrow {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 18px !important;
+    padding-right: 18px !important;
   }
 
   /* Sticky filter bar: no header so stick to top 0 */
@@ -606,8 +985,8 @@ html, body {
 
   /* Ensure all section content containers are contained */
   section, main > div {
-    max-width: 100vw;
-    overflow-x: hidden;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   /* Offerings mobile cards: tighter vertical spacing */
@@ -622,8 +1001,9 @@ html, body {
 
   /* Reduce section heading size on very small screens */
   h1, h2 {
-    word-break: break-word;
-    overflow-wrap: break-word;
+    word-break: normal;
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
   /* Machine cards need enough width for useful names and controls. */
@@ -645,43 +1025,40 @@ html, body {
   .about-deferred,
   main > section:nth-of-type(n + 3) {
     content-visibility: auto;
-    contain-intrinsic-size: 760px;
+    contain-intrinsic-block-size: auto 900px;
   }
 }
 
-/* ── ENHANCED BUTTON HOVER ANIMATIONS ── */
-.btn-primary {
-  position: relative;
-  overflow: hidden;
+@media (max-width: 380px) {
+  .container-editorial,
+  .container-wide,
+  .container-narrow {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    max-width: 100%;
+    padding-inline: 18px !important;
+    text-align: center;
+    white-space: normal;
+  }
 }
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.btn-primary:hover::before { opacity: 1; }
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(59,130,246,0.4) !important;
-}
-.btn-primary:active { transform: translateY(0); }
 
 /* ── CARD HOVER LIFT ── */
 .card-hover {
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+  transition: transform var(--t-mid) var(--ease-out-expo), box-shadow var(--t-mid) ease;
 }
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  box-shadow: var(--e-4);
 }
 
 /* ── GLOW PULSE ── */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(59,130,246,0.2); }
-  50%       { box-shadow: 0 0 40px rgba(59,130,246,0.45); }
+  0%, 100% { box-shadow: 0 0 22px hsl(var(--brand) / 0.2); }
+  50%      { box-shadow: 0 0 46px hsl(var(--brand) / 0.45); }
 }
 .glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
 
@@ -711,10 +1088,10 @@ html, body {
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.6), transparent);
+  background: linear-gradient(90deg, transparent, hsl(var(--brand) / 0.6), transparent);
   background-size: 200% auto;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity var(--t-mid);
   z-index: -1;
 }
 .border-glow:hover::after {
@@ -732,16 +1109,95 @@ html, body {
 
 /* ── FOCUS RING GLOW ── */
 :focus-visible {
-  outline: 2px solid rgba(59,130,246,0.7);
+  outline: 2px solid hsl(var(--brand) / 0.8);
   outline-offset: 3px;
-  box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+  box-shadow: 0 0 0 4px hsl(var(--brand) / 0.16);
 }
 
 /* ── LINK UNDERLINE ANIMATION ── */
 a.animated-link {
-  background: linear-gradient(hsl(var(--primary)), hsl(var(--primary))) no-repeat;
+  background: linear-gradient(hsl(var(--brand)), hsl(var(--brand))) no-repeat;
   background-size: 0% 1px;
   background-position: 0 100%;
-  transition: background-size 0.3s cubic-bezier(0.16,1,0.3,1);
+  transition: background-size var(--t-mid) var(--ease-out-expo);
 }
 a.animated-link:hover { background-size: 100% 1px; }
+
+
+/* ══════════════════════════════════════════════════════════════
+   INTERACTION LANGUAGE
+   A small, shared set of behaviours so every hover on the site
+   feels like it came from the same hand. Transform and opacity
+   only, so none of it costs a layout or a repaint.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Lift: the default for any clickable card or tile. */
+.u-lift {
+  transition:
+    transform var(--t-mid) var(--ease-out-expo),
+    box-shadow var(--t-mid) ease,
+    border-color var(--t-mid) ease;
+  will-change: transform;
+}
+.u-lift:hover { transform: translateY(-4px); }
+.u-lift:active { transform: translateY(-1px); }
+
+/* Press: for controls that should feel physical rather than floaty. */
+.u-press { transition: transform var(--t-fast) var(--ease-out-expo); }
+.u-press:active { transform: scale(0.97); }
+
+/* Media zoom: pair on a wrapper with overflow:hidden. */
+.u-zoom { overflow: hidden; }
+.u-zoom > img,
+.u-zoom > video {
+  transition: transform 0.75s var(--ease-out-expo);
+  will-change: transform;
+}
+.u-zoom:hover > img,
+.u-zoom:hover > video { transform: scale(1.045); }
+
+/* Arrow nudge on links that lead somewhere. */
+.u-nudge svg,
+.u-nudge .arr { transition: transform var(--t-mid) var(--ease-out-expo); }
+.u-nudge:hover svg,
+.u-nudge:hover .arr { transform: translateX(3px); }
+.u-nudge-up:hover svg { transform: translate(2px, -2px); }
+
+/* Scroll reveal variants. `.reveal` stays the default; these give sections
+   a little variety without every block doing the same thing. */
+.reveal-left,
+.reveal-right {
+  opacity: 0;
+  transition: opacity 0.85s var(--ease-out-expo), transform 0.85s var(--ease-out-expo);
+}
+.reveal-left  { transform: translateX(-22px); }
+.reveal-right { transform: translateX(22px); }
+.reveal-left.revealed,
+.reveal-right.revealed { opacity: 1; transform: none; }
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.85s var(--ease-out-expo), transform 0.85s var(--ease-out-expo);
+}
+.reveal-scale.revealed { opacity: 1; transform: none; }
+
+/* Focus: visible for keyboards, invisible for mouse users. */
+.u-lift:focus-visible,
+.u-press:focus-visible {
+  outline: 2px solid hsl(var(--brand));
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .u-lift,
+  .u-press,
+  .u-zoom > img,
+  .u-nudge svg,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    transition: none !important;
+    transform: none !important;
+  }
+}

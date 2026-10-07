@@ -40,7 +40,7 @@ export default function RotatingEarth({ className = '' }: RotatingEarthProps) {
 
     let stopped = false;
     let land: GeoJSON.FeatureCollection | null = null;
-    let dots: [number, number][] = [];
+    const dots: [number, number][] = [];
     let width = 0;
     let height = 0;
     let baseRadius = 0;

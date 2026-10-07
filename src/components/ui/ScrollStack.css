@@ -41,12 +41,18 @@
 
 @media (max-width: 767px) {
   .scroll-stack-inner {
-    padding: 7vh 0.75rem 28vh;
+    min-height: 0;
+    padding: 3rem 0.75rem 5rem;
   }
 
   .scroll-stack-card {
-    min-height: 74vh;
+    min-height: 0;
+    margin: 16px 0 !important;
     border-radius: 24px;
+    transform: none !important;
+    filter: none !important;
+    will-change: auto;
+    box-shadow: 0 20px 54px rgba(0, 0, 0, 0.22);
   }
 }
 

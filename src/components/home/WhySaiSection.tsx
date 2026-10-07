@@ -43,13 +43,15 @@ type Tile = {
   stat?: string; // large centered stat (optional alternate layout)
 };
 
+const BRAND = '#2E90FF';
+
 const tiles: Tile[] = [
   {
     icon: <img src={badge24} alt="24 Years" loading="lazy" decoding="async" style={{ width: 24, height: 24, objectFit: 'contain' }} />,
     kicker: 'Legacy',
     title: '24+ Years',
     subtitle: '24+ years of industry continuity, machine trust, and client relationships.',
-    accent: '#2563EB',
+    accent: BRAND,
     col: 'span 3',
     stat: '24+',
   },
@@ -58,7 +60,7 @@ const tiles: Tile[] = [
     kicker: 'Scale',
     title: '4000+ Machines',
     subtitle: 'Installed across print, finishing, and packaging floors nationwide.',
-    accent: '#3B82F6',
+    accent: BRAND,
     col: 'span 3',
     stat: '4K+',
   },
@@ -67,7 +69,7 @@ const tiles: Tile[] = [
     kicker: 'Trust',
     title: '2000+ Customers',
     subtitle: 'Built through long-term service, supply, and responsive support.',
-    accent: '#0EA5E9',
+    accent: BRAND,
     col: 'span 3',
     stat: '4K+',
   },
@@ -76,7 +78,7 @@ const tiles: Tile[] = [
     kicker: 'Market Lead',
     title: 'Largest Distributor',
     subtitle: "India's #1 paper cutter distributor. 90% market share.",
-    accent: '#F59E0B',
+    accent: BRAND,
     col: 'span 3',
   },
   {
@@ -84,8 +86,8 @@ const tiles: Tile[] = [
     kicker: 'Global Reach',
     title: '15+ Countries',
     subtitle: 'Sri Lanka, Nepal, UAE, Oman and key markets across Africa.',
-    accent: '#22C55E',
-    col: 'span 5',
+    accent: BRAND,
+    col: 'span 4',
     featured: true,
   },
   {
@@ -93,7 +95,7 @@ const tiles: Tile[] = [
     kicker: 'Exclusive',
     title: 'HPM Sole Agent',
     subtitle: 'Only authorized HPM source in India for machines, spares, and service.',
-    accent: '#EF4444',
+    accent: BRAND,
     col: 'span 4',
   },
   {
@@ -101,8 +103,8 @@ const tiles: Tile[] = [
     kicker: 'Foundation',
     title: 'Est. 2000',
     subtitle: 'Founded in Hyderabad. National offices + Kenya, Ethiopia, Sri Lanka.',
-    accent: '#8B5CF6',
-    col: 'span 3',
+    accent: BRAND,
+    col: 'span 4',
   },
 ];
 
@@ -132,23 +134,24 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
       transition={{ duration: 0.65, delay, ease: [0.16, 1, 0.3, 1] }}
       style={{
         gridColumn: item.col,
-        padding: item.featured ? '36px 32px' : '28px 24px',
+        padding: item.featured ? '30px 26px' : '26px 24px',
         background: hov
-          ? `linear-gradient(135deg, #fff 0%, ${item.accent}06 100%)`
-          : 'rgba(255,255,255,0.97)',
+          ? `linear-gradient(165deg, #ffffff 0%, ${item.accent}0A 100%)`
+          : 'linear-gradient(165deg, #ffffff 0%, #F7F9FD 100%)',
         boxShadow: hov
-          ? `0 28px 64px rgba(15,23,42,0.14), 0 0 0 1.5px ${item.accent}35, inset 0 1px 0 rgba(255,255,255,0.9)`
-          : '0 2px 16px rgba(15,23,42,0.06)',
-        border: `1px solid ${hov ? `${item.accent}20` : 'rgba(13,20,33,0.07)'}`,
+          ? `0 30px 64px -18px rgba(10,20,40,0.22), 0 6px 16px -6px rgba(10,20,40,0.12), inset 0 1px 0 #fff`
+          : '0 2px 4px rgba(10,20,40,0.04), 0 10px 26px -14px rgba(10,20,40,0.14), inset 0 1px 0 #fff',
+        border: `1px solid ${hov ? `${item.accent}33` : 'rgba(13,20,33,0.08)'}`,
         transition: 'box-shadow 0.35s, background 0.3s, border-color 0.3s',
         cursor: 'default', overflow: 'hidden', position: 'relative',
-        borderRadius: 2,
+        borderRadius: 14,
       }}
       className="max-lg:!col-span-full"
     >
       {/* Left accent bar */}
       <div style={{
-        position: 'absolute', left: 0, top: 0, bottom: 0, width: 3,
+        position: 'absolute', left: 0, top: 10, bottom: 10, width: 3,
+        borderRadius: '0 3px 3px 0',
         background: `linear-gradient(180deg, ${item.accent}, ${item.accent}44)`,
         transform: hov ? 'scaleY(1)' : 'scaleY(0)',
         transformOrigin: 'top',
@@ -175,15 +178,24 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
       {/* Icon + kicker */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18, position: 'relative' }}>
         <motion.span
-          animate={{ scale: hov ? 1.18 : 1, rotate: hov ? 8 : 0 }}
+          animate={{ scale: hov ? 1.07 : 1 }}
           transition={{ type: 'spring', stiffness: 340, damping: 20 }}
-          style={{ color: item.accent, display: 'flex', alignItems: 'center', flexShrink: 0 }}
+          style={{
+            color: item.accent,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 38, height: 38, flexShrink: 0,
+            borderRadius: 11,
+            background: hov ? `${item.accent}1A` : `${item.accent}0F`,
+            border: `1px solid ${item.accent}22`,
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8)',
+            transition: 'background 0.3s, border-color 0.3s',
+          }}
         >
           {item.icon}
         </motion.span>
         <span style={{
-          fontSize: 8, fontWeight: 800, letterSpacing: '0.28em', textTransform: 'uppercase',
-          color: hov ? item.accent : `${item.accent}99`,
+          fontSize: 9.5, fontWeight: 800, letterSpacing: '0.2em', textTransform: 'uppercase',
+          color: hov ? item.accent : `${item.accent}B0`,
           transition: 'color 0.25s',
         }}>
           {item.kicker}
@@ -192,11 +204,11 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
 
       {/* Title */}
       <div style={{
-        fontSize: item.featured ? 24 : 19,
+        fontSize: item.featured ? 26 : 21,
         fontWeight: 800,
-        letterSpacing: '-0.025em',
-        color: hov ? '#040810' : '#080E18',
-        marginBottom: 10, lineHeight: 1.1, position: 'relative',
+        letterSpacing: '-0.032em',
+        color: '#070C16',
+        marginBottom: 9, lineHeight: 1.08, position: 'relative',
         fontFamily: "'Manrope', sans-serif",
         transition: 'color 0.2s',
       }}>
@@ -205,8 +217,8 @@ const TileCard = ({ item, delay, on }: { item: Tile; delay: number; on: boolean 
 
       {/* Subtitle */}
       <div style={{
-        fontSize: item.featured ? 13.5 : 12.5, lineHeight: 1.68,
-        color: hov ? 'rgba(13,20,33,0.6)' : 'rgba(13,20,33,0.42)',
+        fontSize: item.featured ? 13.5 : 13, lineHeight: 1.62,
+        color: hov ? 'rgba(13,20,33,0.74)' : 'rgba(13,20,33,0.58)',
         transition: 'color 0.25s', position: 'relative',
       }}>
         {item.subtitle}
@@ -236,10 +248,21 @@ const WhySaiSection = () => {
 
   return (
     <section style={{
-      background: 'linear-gradient(180deg, #F4F8FE 0%, #ECF2FB 100%)',
-      padding: 'clamp(60px,8vw,120px) 0 clamp(56px,7vw,112px)',
+      background: 'linear-gradient(180deg, #F6F9FE 0%, #EDF2FA 62%, #E6EDF8 100%)',
+      padding: 'clamp(76px,8.5vw,128px) 0 clamp(76px,8vw,124px)',
       position: 'relative', overflow: 'hidden',
     }}>
+      {/* A crisp edge, not a fade. Fading dark over light produced a grey
+          smear across the top of the band; a defined rule reads intentional. */}
+      <div aria-hidden style={{
+        position: 'absolute', top: 0, left: 0, right: 0, height: 3, pointerEvents: 'none', zIndex: 3,
+        background: 'linear-gradient(90deg, transparent, #2E90FF 22%, #1BD6F2 50%, #2E90FF 78%, transparent)',
+        opacity: 0.85,
+      }} />
+      <div aria-hidden style={{
+        position: 'absolute', top: 3, left: 0, right: 0, height: 56, pointerEvents: 'none', zIndex: 1,
+        background: 'linear-gradient(180deg, rgba(46,144,255,0.1), transparent)',
+      }} />
       {/* Dot grid bg */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
@@ -251,7 +274,7 @@ const WhySaiSection = () => {
         background: 'radial-gradient(circle at 8% 18%, rgba(59,130,246,0.08) 0%, transparent 30%), radial-gradient(circle at 90% 8%, rgba(59,130,246,0.05) 0%, transparent 22%)',
       }} />
 
-      <div ref={reveal.ref} style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative' }}
+      <div ref={reveal.ref} style={{ maxWidth: 1300, margin: '0 auto', padding: '0 56px', position: 'relative', zIndex: 2 }}
         className="max-md:!px-6 max-[767px]:!px-4"
       >
         {/* Header */}
@@ -268,9 +291,9 @@ const WhySaiSection = () => {
           <div>
             <div style={{
               fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
-              color: '#2563EB', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, fontWeight: 700,
+              color: '#1565E0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, fontWeight: 700,
             }}>
-              <div style={{ width: 32, height: 1, background: '#2563EB' }} />
+              <div style={{ width: 32, height: 2, borderRadius: 2, background: 'linear-gradient(90deg,#2E90FF,#1BD6F2)' }} />
               Why Sai Enterprises
             </div>
 
@@ -279,11 +302,11 @@ const WhySaiSection = () => {
               lineHeight: 0.96, color: '#060A10', margin: '0 0 16px',
             }}>
               Trusted by scale.<br />
-              <span style={{ color: '#2563EB', fontWeight: 600 }}>Backed by consistency.</span>
+              <span style={{ color: '#1565E0', fontWeight: 600 }}>Backed by consistency.</span>
             </h2>
 
             <p style={{
-              fontSize: 15, color: 'rgba(13,20,33,0.52)', lineHeight: 1.8, maxWidth: 560, margin: 0,
+              fontSize: 15.5, color: 'rgba(13,20,33,0.62)', lineHeight: 1.75, maxWidth: 560, margin: 0,
             }}>
               Built through 24+ years of dependable machines, responsive service and partnerships that keep growing.
             </p>
@@ -295,15 +318,17 @@ const WhySaiSection = () => {
             </Link>
             <Link to="/about" style={{
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              gap: 10, padding: '13px 24px',
-              border: '1px solid rgba(13,20,33,0.14)',
-              color: '#060A10', textDecoration: 'none',
-              fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
+              gap: 10, padding: '14px 26px',
+              border: '1px solid rgba(13,20,33,0.12)',
+              borderRadius: 999,
+              color: '#070C16', textDecoration: 'none',
+              fontSize: 11.5, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase',
               background: '#fff',
-              transition: 'all 0.2s',
+              boxShadow: '0 1px 2px rgba(10,20,40,0.06), 0 6px 16px -10px rgba(10,20,40,0.2)',
+              transition: 'all 0.25s cubic-bezier(0.16,1,0.3,1)',
             }}
-              onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#2563EB'; el.style.color = '#2563EB'; }}
-              onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(13,20,33,0.14)'; el.style.color = '#060A10'; }}
+              onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = '#2E90FF'; el.style.color = '#1565E0'; el.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = 'rgba(13,20,33,0.12)'; el.style.color = '#070C16'; el.style.transform = 'translateY(0)'; }}
             >
               Our Story
             </Link>
@@ -314,8 +339,8 @@ const WhySaiSection = () => {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: 10,
-        }} className="max-lg:!grid-cols-1 max-lg:!gap-3">
+          gap: 6,
+        }} className="max-lg:!grid-cols-1 max-lg:!gap-2">
           {tiles.map((item, index) => (
             <TileCard key={item.title} item={item} delay={0.04 + index * 0.05} on={reveal.on} />
           ))}

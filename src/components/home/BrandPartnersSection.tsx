@@ -74,25 +74,34 @@ const BrandPartnersSection = () => {
             />
 
             <div style={{
+              position: 'relative',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: 12,
-              padding: '10px 14px 10px 10px',
-              marginBottom: 22,
-              borderRadius: 18,
-              background: 'rgba(255,255,255,0.72)',
-              border: '1px solid rgba(59,130,246,0.14)',
-              boxShadow: '0 14px 34px rgba(13,20,33,0.07)',
+              gap: 16,
+              padding: '14px 22px 14px 14px',
+              marginBottom: 24,
+              borderRadius: 4,
+              background: '#fff',
+              border: '1px solid rgba(13,20,33,0.1)',
+              boxShadow: '0 1px 2px rgba(10,20,40,0.05), 0 18px 40px -22px rgba(10,20,40,0.35)',
             }}>
+              {/* Ruled inner frame, the way a certification plate is set. */}
+              <span aria-hidden style={{
+                position: 'absolute', inset: 5,
+                border: '1px solid rgba(46,144,255,0.2)',
+                borderRadius: 2,
+                pointerEvents: 'none',
+              }} />
               <span style={{
-                width: 52,
-                height: 52,
+                width: 54,
+                height: 54,
                 display: 'grid',
                 placeItems: 'center',
-                borderRadius: 14,
+                borderRadius: 2,
                 background: '#fff',
-                border: '1px solid rgba(203,40,40,0.12)',
+                border: '1px solid rgba(203,40,40,0.14)',
                 flexShrink: 0,
+                position: 'relative',
               }}>
                 <img
                   src={largestSellingBadge}
@@ -103,32 +112,41 @@ const BrandPartnersSection = () => {
                     width: 42,
                     height: 42,
                     objectFit: 'contain',
-                    filter: 'drop-shadow(0 5px 8px rgba(203,40,40,0.10))',
                   }}
                 />
               </span>
-              <span>
-                <span style={{
+              <span style={{ position: 'relative' }}>
+                <span className="font-mono" style={{
                   display: 'block',
-                  fontFamily: "'Manrope', sans-serif",
-                  fontSize: 8.5,
-                  letterSpacing: '0.18em',
+                  fontSize: 9,
+                  letterSpacing: '0.22em',
                   textTransform: 'uppercase',
-                  color: '#3B82F6',
-                  fontWeight: 800,
-                  marginBottom: 4,
+                  color: '#1565E0',
+                  fontWeight: 700,
+                  marginBottom: 6,
                 }}>
                   India leadership
                 </span>
-                <span style={{
+                <span className="font-display" style={{
                   display: 'block',
-                  fontFamily: "'Manrope', sans-serif",
-                  fontSize: 13,
-                  lineHeight: 1.25,
-                  color: '#060A10',
-                  fontWeight: 800,
+                  fontSize: 15,
+                  lineHeight: 1.2,
+                  color: '#070C16',
+                  fontWeight: 700,
+                  letterSpacing: '-0.025em',
                 }}>
                   Largest Paper Cutter Distributor
+                </span>
+                <span className="font-mono" style={{
+                  display: 'block',
+                  marginTop: 6,
+                  fontSize: 8.5,
+                  letterSpacing: '0.16em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(13,20,33,0.42)',
+                  fontWeight: 500,
+                }}>
+                  90% market share · Since 2000
                 </span>
               </span>
             </div>

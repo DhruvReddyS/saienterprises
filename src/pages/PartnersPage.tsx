@@ -526,13 +526,13 @@ const PartnersPage = () => {
               className="max-lg:!flex-col max-lg:!gap-6"
             >
               {/* Staggered headline */}
-              <div style={{ flex: '1 1 auto' }}>
+              <h1 style={{ flex: '1 1 auto', margin: 0 }}>
                 {[
                   { text: 'The only authorized', size: 'clamp(22px,4.2vw,62px)', weight: 300, color: 'rgba(255,255,255,0.38)', italic: true, delay: 0.08 },
                   { text: 'HPM source', size: 'clamp(42px,8.5vw,130px)', weight: 700, color: '#fff', italic: false, delay: 0.16 },
                   { text: 'in India.', size: 'clamp(32px,6.5vw,98px)', weight: 600, color: '#3B82F6', italic: false, delay: 0.24 },
                 ].map((line) => (
-                  <motion.div
+                  <motion.span
                     key={line.text}
                     initial={{ opacity: 0, x: 40 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -545,9 +545,9 @@ const PartnersPage = () => {
                     }}
                   >
                     {line.text}
-                  </motion.div>
+                  </motion.span>
                 ))}
-              </div>
+              </h1>
 
               {/* Large badge, right of title */}
               <motion.div

@@ -42,7 +42,10 @@ const ROW2 = CLIENTS.slice(5);
 const ROW1_LOOP = [...ROW1, ...ROW1, ...ROW1];
 const ROW2_LOOP = [...ROW2, ...ROW2, ...ROW2];
 
-/* Premium logo card with hover detail reveal */
+/* Logo card.
+   Client marks arrive as artwork on white, so each sits on a neutral plate
+   rather than a raw white tile. A single brand accent replaces the previous
+   per-client colours, which read as a rainbow against the dark section. */
 const LogoCard = ({ client }: { client: Client }) => {
   const [imgFailed, setImgFailed] = useState(false);
   const [hovered, setHovered]     = useState(false);
@@ -55,62 +58,27 @@ const LogoCard = ({ client }: { client: Client }) => {
       style={{
         flexShrink: 0,
         position: 'relative',
-        display: 'flex', flexDirection: 'column',
-        background: hovered
-          ? `linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))`
-          : 'rgba(255,255,255,0.025)',
-        border: `1px solid ${hovered ? `${client.color}55` : 'rgba(255,255,255,0.06)'}`,
-        borderRadius: 16,
-        width: 220,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 0,
+        width: 236,
+        padding: 12,
         overflow: 'hidden',
-        transition: 'background 0.35s, border-color 0.35s, transform 0.35s cubic-bezier(0.16,1,0.3,1)',
-        transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+        borderRadius: 18,
+        background: hovered
+          ? 'linear-gradient(180deg, hsl(215 27% 12%), hsl(216 32% 8.5%))'
+          : 'linear-gradient(180deg, hsl(216 32% 8.5%), hsl(217 38% 6%))',
+        border: `1px solid ${hovered ? 'hsl(212 100% 58% / 0.38)' : 'rgba(255,255,255,0.07)'}`,
         boxShadow: hovered
-          ? `0 24px 56px ${client.color}26, 0 0 0 1px ${client.color}24, inset 0 1px 0 rgba(255,255,255,0.06)`
-          : '0 4px 14px rgba(0,0,0,0.18)',
+          ? 'inset 0 1px 0 rgba(255,255,255,0.12), 0 32px 76px -18px rgba(2,6,14,0.75), 0 0 0 1px hsl(212 100% 58% / 0.12)'
+          : 'inset 0 1px 0 rgba(255,255,255,0.07), 0 4px 14px -3px rgba(2,6,14,0.55)',
+        transform: hovered ? 'translateY(-5px)' : 'translateY(0)',
+        transition:
+          'transform 0.32s cubic-bezier(0.16,1,0.3,1), border-color 0.32s ease, box-shadow 0.32s ease, background 0.32s ease',
       }}
     >
-      {/* Top accent line */}
-      <div style={{
-        position: 'absolute', top: 0, left: 0, right: 0, height: 2,
-        background: `linear-gradient(90deg, transparent, ${client.color}, transparent)`,
-        opacity: hovered ? 1 : 0,
-        transition: 'opacity 0.35s',
-      }} />
-
-      {/* Category chip, top right */}
-      <div style={{
-        position: 'absolute', top: 12, right: 12, zIndex: 2,
-        fontFamily: "'Manrope', sans-serif",
-        fontSize: 7.5, letterSpacing: '0.22em', textTransform: 'uppercase',
-        color: hovered ? client.color : 'rgba(255,255,255,0.32)',
-        fontWeight: 700,
-        padding: '4px 8px',
-        background: hovered ? `${client.color}14` : 'rgba(255,255,255,0.04)',
-        border: `1px solid ${hovered ? `${client.color}40` : 'rgba(255,255,255,0.06)'}`,
-        borderRadius: 4,
-        transition: 'all 0.35s',
-      }}>
-        {client.category}
-      </div>
-
-      {/* Logo area */}
-      <div style={{
-        width: '100%', height: 132,
-        background: hasLogo ? '#fff' : `${client.color}15`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* shimmer overlay on hover */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: `linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%)`,
-          transform: hovered ? 'translateX(100%)' : 'translateX(-100%)',
-          transition: 'transform 0.9s cubic-bezier(0.16,1,0.3,1)',
-          pointerEvents: 'none',
-        }} />
-
+      {/* Logo plate */}
+      <div className="logo-plate" style={{ height: 112, width: '100%' }}>
         {hasLogo ? (
           <img
             src={client.logo}
@@ -118,20 +86,14 @@ const LogoCard = ({ client }: { client: Client }) => {
             loading="lazy"
             decoding="async"
             onError={() => setImgFailed(true)}
-            style={{
-              width: '100%', height: '100%',
-              objectFit: 'contain', padding: 22,
-              transition: 'transform 0.45s cubic-bezier(0.16,1,0.3,1)',
-              transform: hovered ? 'scale(1.06)' : 'scale(1)',
-            }}
+            style={{ padding: '20px 24px' }}
           />
         ) : (
           <span style={{
-            fontFamily: "'Manrope', sans-serif",
-            fontSize: client.initials.length >= 3 ? 22 : 36,
-            fontWeight: 700,
-            color: client.color,
-            letterSpacing: '-0.02em',
+            fontSize: client.initials.length >= 3 ? 24 : 34,
+            fontWeight: 800,
+            color: 'hsl(219 88% 44%)',
+            letterSpacing: '-0.03em',
             userSelect: 'none',
           }}>
             {client.initials}
@@ -139,39 +101,62 @@ const LogoCard = ({ client }: { client: Client }) => {
         )}
       </div>
 
-      {/* Name + city + since */}
-      <div style={{ padding: '14px 16px 16px', textAlign: 'left', position: 'relative' }}>
+      {/* Meta */}
+      <div style={{ padding: '14px 6px 4px' }}>
         <div style={{
-          fontFamily: "'Manrope', sans-serif",
-          fontSize: 12.5, fontWeight: 700,
-          color: '#fff',
-          lineHeight: 1.3,
-          marginBottom: 4,
-          transition: 'color 0.3s',
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          gap: 10,
+          marginBottom: 7,
         }}>
-          {client.name}
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{
-            fontFamily: "'Manrope', sans-serif",
-            fontSize: 9, color: 'rgba(255,255,255,0.34)',
-            letterSpacing: '0.14em', textTransform: 'uppercase',
-            display: 'inline-flex', alignItems: 'center', gap: 4,
+          <span style={{
+            fontSize: 13,
+            fontWeight: 700,
+            letterSpacing: '-0.015em',
+            color: '#fff',
+            lineHeight: 1.25,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}>
-            <svg width="7" height="7" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.7 }}>
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" />
-            </svg>
-            {client.city}
-          </div>
-          <div style={{
-            fontFamily: "'Manrope', sans-serif",
-            fontSize: 11,
-            color: hovered ? client.color : 'rgba(255,255,255,0.5)',
-            fontStyle: 'italic',
+            {client.name}
+          </span>
+          <span style={{
+            flexShrink: 0,
+            fontSize: 10,
+            fontWeight: 600,
+            color: hovered ? 'hsl(207 100% 70%)' : 'rgba(255,255,255,0.34)',
             transition: 'color 0.3s',
+            fontVariantNumeric: 'tabular-nums',
           }}>
-            since {client.since}
-          </div>
+            {client.since}
+          </span>
+        </div>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 7,
+          minWidth: 0,
+          fontSize: 9.5,
+          letterSpacing: '0.16em',
+          textTransform: 'uppercase',
+          fontWeight: 600,
+          color: 'rgba(255,255,255,0.4)',
+        }}>
+          <span style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>{client.city}</span>
+          <span style={{
+            width: 3, height: 3, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.26)', flexShrink: 0,
+          }} />
+          <span style={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {client.category}
+          </span>
         </div>
       </div>
     </div>
@@ -192,7 +177,7 @@ const ClientsSection = () => {
 
   return (
     <section ref={ref} style={{
-      background: 'linear-gradient(180deg, #060A10 0%, #0A1322 50%, #060A10 100%)',
+      background: 'linear-gradient(180deg, hsl(218 46% 3.5%) 0%, hsl(217 38% 6%) 50%, hsl(218 46% 3.5%) 100%)',
       padding: 'clamp(80px,10vw,140px) 0 clamp(72px,9vw,120px)',
       overflow: 'hidden', position: 'relative',
     }}>
@@ -206,9 +191,9 @@ const ClientsSection = () => {
       }} />
       <div style={{
         position: 'absolute', top: '32%', left: '50%', transform: 'translate(-50%,-50%)',
-        width: 720, height: 720,
-        background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)',
-        filter: 'blur(80px)', pointerEvents: 'none',
+        width: 860, height: 860,
+        background: 'radial-gradient(circle, rgba(46,144,255,0.10) 0%, rgba(46,144,255,0.04) 38%, transparent 68%)',
+        pointerEvents: 'none',
       }} />
 
       {/* ── HEADER ── */}
@@ -222,24 +207,7 @@ const ClientsSection = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           style={{ textAlign: 'center', maxWidth: 760, margin: '0 auto' }}
         >
-          {/* Tag chip */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 10,
-            padding: '7px 16px', marginBottom: 22,
-            background: 'rgba(59,130,246,0.08)',
-            border: '1px solid rgba(59,130,246,0.22)',
-            borderRadius: 24,
-            backdropFilter: 'blur(8px)',
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#60A5FA', boxShadow: '0 0 10px rgba(96,165,250,0.7)' }} />
-            <span style={{
-              fontFamily: "'Manrope', sans-serif",
-              fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
-              color: '#93C5FD', fontWeight: 700,
-            }}>
-              Our Clients
-            </span>
-          </div>
+          <div className="chip" style={{ marginBottom: 22 }}>Our Clients</div>
 
           <h2 style={{
             fontFamily: "'Manrope', sans-serif",
@@ -249,14 +217,14 @@ const ClientsSection = () => {
           }}>
             Trusted by India's
             <br />
-            <span style={{ fontStyle: 'italic', fontWeight: 400, color: '#60A5FA' }}>
+            <span className="text-gradient-brand" style={{ fontStyle: 'italic', fontWeight: 400 }}>
               finest print houses.
             </span>
           </h2>
 
           <p style={{
             fontFamily: "'Manrope', sans-serif",
-            fontSize: 15, color: 'rgba(255,255,255,0.45)',
+            fontSize: 15, color: 'rgba(255,255,255,0.56)',
             marginTop: 22, maxWidth: 540, lineHeight: 1.75,
             marginLeft: 'auto', marginRight: 'auto',
           }}>
@@ -276,11 +244,11 @@ const ClientsSection = () => {
         {/* Edge fade masks */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none',
-          background: 'linear-gradient(90deg, #060A10 0%, rgba(6,10,16,0) 10%, rgba(6,10,16,0) 90%, #060A10 100%)',
+          background: 'linear-gradient(90deg, hsl(218 46% 3.5%) 0%, hsl(218 46% 3.5% / 0) 11%, hsl(218 46% 3.5% / 0) 89%, hsl(218 46% 3.5%) 100%)',
         }} />
 
         {/* Row 1 → left */}
-        <div style={{ overflow: 'hidden', marginBottom: 16 }}
+        <div className="clients-row clients-row--primary" style={{ overflow: 'hidden', marginBottom: 16 }}
           onMouseEnter={e => { const el = e.currentTarget.querySelector('div') as HTMLDivElement; if (el) el.style.animationPlayState = 'paused'; }}
           onMouseLeave={e => { const el = e.currentTarget.querySelector('div') as HTMLDivElement; if (el) el.style.animationPlayState = 'running'; }}
         >
@@ -295,7 +263,7 @@ const ClientsSection = () => {
         </div>
 
         {/* Row 2 → right */}
-        <div style={{ overflow: 'hidden' }}
+        <div className="clients-row clients-row--secondary" style={{ overflow: 'hidden' }}
           onMouseEnter={e => { const el = e.currentTarget.querySelector('div') as HTMLDivElement; if (el) el.style.animationPlayState = 'paused'; }}
           onMouseLeave={e => { const el = e.currentTarget.querySelector('div') as HTMLDivElement; if (el) el.style.animationPlayState = 'running'; }}
         >
@@ -318,6 +286,13 @@ const ClientsSection = () => {
         @keyframes clients-right {
           0%   { transform: translateX(-33.333%); }
           100% { transform: translateX(0); }
+        }
+        @media (max-width: 767px) {
+          .clients-row--secondary { display: none; }
+          .clients-row--primary { margin-bottom: 0 !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .clients-row > div { animation-play-state: paused !important; }
         }
       `}</style>
     </section>

@@ -4,11 +4,32 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { type ChatbotSessionState, type ChatbotSuggestion } from '@/lib/chatbotEngine';
 import { getChatbotRAGReply } from '@/lib/chatbotRAG';
 
-// Browser Speech Recognition shim
-const SpeechRecognition =
-  (window as any).SpeechRecognition ??
-  (window as any).webkitSpeechRecognition ??
-  null;
+type SpeechRecognitionResultLike = {
+  0: { transcript: string };
+  isFinal: boolean;
+};
+
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  continuous: boolean;
+  onstart: (() => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  onresult: ((event: { results: ArrayLike<SpeechRecognitionResultLike> }) => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+type SpeechEnabledWindow = Window & {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+};
+
+const speechWindow = window as SpeechEnabledWindow;
+const SpeechRecognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition ?? null;
 
 type Msg = {
   id: string;
@@ -84,7 +105,7 @@ const ChatbotWidget = () => {
   const [state, setState] = useState<ChatbotSessionState>({});
   const [responding, setResponding] = useState(false);
   const [listening, setListening] = useState(false);
-  const recognitionRef = useRef<InstanceType<typeof SpeechRecognition> | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const isBrochurePage = location.pathname === '/brochure';
 
@@ -152,7 +173,7 @@ const ChatbotWidget = () => {
     rec.onend = () => setListening(false);
     rec.onerror = () => setListening(false);
 
-    rec.onresult = (e: any) => {
+    rec.onresult = (e) => {
       const transcript = Array.from(e.results)
         .map(r => r[0].transcript)
         .join('');

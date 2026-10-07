@@ -83,7 +83,7 @@ const TestimonialCard = ({ t, dark }: { t: Testimonial; dark: boolean }) => (
     {/* Quote watermark */}
     <div style={{
       position: 'absolute', top: 10, right: 14,
-      fontSize: 56, lineHeight: 1, fontFamily: ''Manrope', sans-serif',
+      fontSize: 56, lineHeight: 1, fontFamily: "'Manrope', sans-serif",
       color: dark ? 'rgba(59,130,246,0.12)' : 'rgba(255,255,255,0.05)',
       userSelect: 'none', pointerEvents: 'none',
     }}>

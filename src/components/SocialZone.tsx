@@ -62,7 +62,7 @@ const socialItems = [
 ];
 
 const SocialZone = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <motion.div
@@ -90,8 +90,8 @@ const SocialZone = () => {
         whileHover={{ x: -2 }}
         whileTap={{ scale: 0.98 }}
         style={{
-          width: 34,
-          height: 66,
+          width: 32,
+          height: 58,
           border: 'none',
           cursor: 'pointer',
           borderTopLeftRadius: 12,

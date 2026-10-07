@@ -27,6 +27,7 @@ const MachineryHub = () => {
     : 'all';
   const [filter, setFilter] = useState(initialCategory);
   const [search, setSearch] = useState('');
+  const [visibleCount, setVisibleCount] = useState(20);
   const [selectedMachine, setSelectedMachine] = useState<Product | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const categoryStripRef = useRef<HTMLDivElement>(null);
@@ -90,6 +91,11 @@ const MachineryHub = () => {
   });
 
   const activeCat = CATS.find((c) => c.id === filter) ?? CATS[0];
+  const visibleMachines = filtered.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [filter, search]);
 
   return (
     <PageTransition>
@@ -194,7 +200,7 @@ const MachineryHub = () => {
         padding: '0 clamp(16px,5vw,64px)',
         position: 'sticky', top: 0, zIndex: 30,
         backdropFilter: 'blur(16px)',
-      }}>
+      }} className="min-[768px]:!top-[72px]">
         <div style={{ maxWidth: 1300, margin: '0 auto' }}>
           <div style={{
             display: 'flex', gap: 6, overflowX: 'auto',
@@ -295,7 +301,7 @@ const MachineryHub = () => {
                 }}
                 className="machine-grid max-xl:!grid-cols-3 max-lg:!grid-cols-2 max-[767px]:!grid-cols-1 max-[767px]:!gap-4"
               >
-                {filtered.map((m, i) => (
+                {visibleMachines.map((m, i) => (
                   <MachineCard
                     key={m.id}
                     m={m}
@@ -312,6 +318,24 @@ const MachineryHub = () => {
               </motion.div>
             )}
           </AnimatePresence>
+
+          {visibleCount < filtered.length && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
+              <button
+                type="button"
+                onClick={() => setVisibleCount((count) => Math.min(count + 20, filtered.length))}
+                style={{
+                  border: '1px solid rgba(37,99,235,.28)', borderRadius: 999,
+                  background: '#fff', color: '#1D4ED8', cursor: 'pointer',
+                  padding: '12px 22px', fontFamily: "'Manrope', sans-serif",
+                  fontSize: 10, fontWeight: 800, letterSpacing: '.16em', textTransform: 'uppercase',
+                  boxShadow: '0 10px 28px rgba(37,99,235,.09)',
+                }}
+              >
+                Load 20 more · {filtered.length - visibleCount} remaining
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -356,6 +380,15 @@ const MachineCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: Math.min(i * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
       onClick={() => onSelect(m)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onSelect(m);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${m.name}`}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{

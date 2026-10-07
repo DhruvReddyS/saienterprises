@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import hpmLane from '@/assets/machine_png/Sai & HPM/HPM Lane.png';
@@ -88,38 +94,121 @@ const machines: HeroMachine[] = [
 
 const CYCLE_MS = 5600;
 
+const precisionCurve = [
+  { y: 8, rotate: -5.5, rotateY: 7, z: 0 },
+  { y: 4, rotate: -4, rotateY: 5, z: 5 },
+  { y: 1, rotate: -2.5, rotateY: 3, z: 10 },
+  { y: -2, rotate: -1.25, rotateY: 1.5, z: 15 },
+  { y: -4, rotate: 0, rotateY: 0, z: 18 },
+  { y: -2, rotate: 1.25, rotateY: -1.5, z: 15 },
+  { y: 1, rotate: 2.5, rotateY: -3, z: 10 },
+  { y: 4, rotate: 4, rotateY: -5, z: 5 },
+  { y: 8, rotate: 5.5, rotateY: -7, z: 0 },
+];
+
+const motionCurve = [
+  { y: -4, rotate: 4.5, rotateY: 6, z: 2 },
+  { y: -1, rotate: 3.25, rotateY: 4, z: 6 },
+  { y: 2, rotate: 2, rotateY: 2, z: 10 },
+  { y: 4, rotate: 1, rotateY: 1, z: 13 },
+  { y: 6, rotate: 0, rotateY: 0, z: 15 },
+  { y: 4, rotate: -1, rotateY: -1, z: 13 },
+  { y: 2, rotate: -2, rotateY: -2, z: 10 },
+  { y: -1, rotate: -3.25, rotateY: -4, z: 6 },
+  { y: -4, rotate: -4.5, rotateY: -6, z: 2 },
+];
+
+const curvedLetterStyle = (
+  curve: (typeof precisionCurve)[number],
+  index: number,
+) => ({
+  '--letter-y': `${curve.y}px`,
+  '--letter-r': `${curve.rotate}deg`,
+  '--letter-ry': `${curve.rotateY}deg`,
+  '--letter-z': `${curve.z}px`,
+  '--letter-index': index,
+}) as CSSProperties;
+
+const renderCurvedText = (
+  text: string,
+  curve: typeof precisionCurve,
+) => (
+  <>
+    {[...text].map((letter, index) => (
+      <b
+        key={`${letter}-${index}`}
+        aria-hidden="true"
+        data-letter={letter === ' ' ? '\u00A0' : letter}
+        style={curvedLetterStyle(curve[index], index)}
+      >
+        {letter === ' ' ? '\u00A0' : letter}
+      </b>
+    ))}
+  </>
+);
+
 const HeroSection = () => {
   const heroRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
+  const [visible, setVisible] = useState(true);
   const current = machines[active];
   const currentCatalogue = getCatalogueDocument(current.productId);
 
+  /* Park the hero while it is off screen: no carousel re-renders and no CSS
+     animation, so scrolling the rest of the page has the main thread to itself. */
   useEffect(() => {
+    const node = heroRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { rootMargin: '120px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
     const timer = window.setTimeout(
       () => setActive((value) => (value + 1) % machines.length),
       CYCLE_MS,
     );
     return () => window.clearTimeout(timer);
-  }, [active]);
+  }, [active, visible]);
 
   const selectMachine = (index: number) => {
     setActive((index + machines.length) % machines.length);
   };
 
+  /* Each of these custom properties invalidates style for the whole hero
+     subtree, so a raw pointermove handler recalculated it dozens of times a
+     second. One coalesced write per frame is plenty for a parallax this subtle. */
+  const pointerFrame = useRef<number>();
   const moveMachine = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.pointerType === 'touch') return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    event.currentTarget.style.setProperty('--hero-shift-x', `${x * 18}px`);
-    event.currentTarget.style.setProperty('--hero-shift-y', `${y * 12}px`);
-    event.currentTarget.style.setProperty('--hero-rotate-x', `${y * -3}deg`);
-    event.currentTarget.style.setProperty('--hero-rotate-y', `${x * 5}deg`);
-    event.currentTarget.style.setProperty('--hero-pointer-x', `${(x + 0.5) * 100}%`);
-    event.currentTarget.style.setProperty('--hero-pointer-y', `${(y + 0.5) * 100}%`);
+    const node = event.currentTarget;
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+    if (pointerFrame.current) return;
+    pointerFrame.current = requestAnimationFrame(() => {
+      pointerFrame.current = undefined;
+      const bounds = node.getBoundingClientRect();
+      const x = (clientX - bounds.left) / bounds.width - 0.5;
+      const y = (clientY - bounds.top) / bounds.height - 0.5;
+      node.style.setProperty('--hero-shift-x', `${(x * 18).toFixed(2)}px`);
+      node.style.setProperty('--hero-shift-y', `${(y * 12).toFixed(2)}px`);
+      node.style.setProperty('--hero-rotate-x', `${(y * -3).toFixed(2)}deg`);
+      node.style.setProperty('--hero-rotate-y', `${(x * 5).toFixed(2)}deg`);
+      node.style.setProperty('--hero-pointer-x', `${((x + 0.5) * 100).toFixed(1)}%`);
+      node.style.setProperty('--hero-pointer-y', `${((y + 0.5) * 100).toFixed(1)}%`);
+    });
   };
 
   const resetMachine = () => {
+    if (pointerFrame.current) {
+      cancelAnimationFrame(pointerFrame.current);
+      pointerFrame.current = undefined;
+    }
     const hero = heroRef.current;
     if (!hero) return;
     hero.style.setProperty('--hero-shift-x', '0px');
@@ -133,7 +222,7 @@ const HeroSection = () => {
   return (
     <section
       ref={heroRef}
-      className="clean-hero"
+      className={`clean-hero${visible ? '' : ' is-dormant'}`}
       onPointerMove={moveMachine}
       onPointerLeave={resetMachine}
     >
@@ -146,17 +235,12 @@ const HeroSection = () => {
           <i />
           <p>Exclusive Indian partner <strong>Sai Enterprises</strong></p>
         </div>
-        <div className="clean-sequence">
-          <i />
-          <span>Automatic showcase</span>
-          <b>{String(active + 1).padStart(2, '0')} / {String(machines.length).padStart(2, '0')}</b>
-        </div>
       </div>
 
-      <div className="clean-headline" aria-label="Precision in motion">
-        <span data-text="PRECISION">PRECISION</span>
-        <strong data-text="IN MOTION">IN MOTION</strong>
-      </div>
+      <h1 className="clean-headline" aria-label="Precision in motion">
+        <span data-text="PRECISION">{renderCurvedText('PRECISION', precisionCurve)}</span>
+        <strong data-text="IN MOTION">{renderCurvedText('IN MOTION', motionCurve)}</strong>
+      </h1>
 
       <div className="clean-machine-stage" key={current.title}>
         <div className="clean-machine-halo" aria-hidden="true" />
@@ -180,7 +264,7 @@ const HeroSection = () => {
       </div>
 
       <div className="clean-intro">
-        <span>Graphic machinery · Since 2000</span>
+        <span>Graphic machinery · Est. 2000</span>
         <p>Production systems selected, installed and supported by one experienced partner.</p>
         <Link to="/machinery?category=post-press">
           Explore HPM machinery <ArrowUpRight size={15} />
@@ -255,6 +339,13 @@ const HeroSection = () => {
       </div>
 
       <style>{`
+        /* The hero animates continuously. Once it is off screen that work is
+           pure cost, and it was competing with scrolling further down the page. */
+        .clean-hero.is-dormant,
+        .clean-hero.is-dormant * {
+          animation-play-state: paused !important;
+        }
+
         .clean-hero {
           --hero-shift-x: 0px;
           --hero-shift-y: 0px;
@@ -325,7 +416,7 @@ const HeroSection = () => {
         .clean-hero__top {
           position: absolute;
           z-index: 8;
-          top: 108px;
+          top: 132px;
           left: clamp(24px, 5vw, 78px);
           right: clamp(24px, 5vw, 78px);
           display: flex;
@@ -396,7 +487,7 @@ const HeroSection = () => {
           z-index: 1;
           left: 0;
           right: 0;
-          top: 17.5%;
+          top: max(13.5%, 176px);
           text-align: center;
           perspective: 900px;
           pointer-events: none;
@@ -407,46 +498,93 @@ const HeroSection = () => {
         .clean-headline strong {
           position: relative;
           display: block;
+          transform-style: preserve-3d;
           font-family: 'Manrope', sans-serif;
-          font-size: clamp(82px, 11.45vw, 190px);
+          font-size: clamp(42px, 9.5vw, 176px);
           font-weight: 820;
           line-height: .78;
           letter-spacing: -.067em;
           white-space: nowrap;
+        }
+
+        .clean-headline span > b,
+        .clean-headline strong > b {
+          position: relative;
+          z-index: 1;
+          display: inline-block;
+          isolation: isolate;
+          transform:
+            translate3d(0, var(--letter-y), var(--letter-z))
+            rotateZ(var(--letter-r))
+            rotateY(var(--letter-ry));
+          transform-origin: 50% 78%;
+          transform-style: preserve-3d;
+          font: inherit;
+          font-style: normal;
+          transition: transform .7s cubic-bezier(.16,1,.3,1);
+          will-change: transform;
+        }
+
+        .clean-headline span > b {
           color: transparent;
           background:
             linear-gradient(
-              105deg,
-              #fff 0%,
-              #fff 35%,
-              #dbeafe 45%,
-              #fff 54%,
+              112deg,
+              #fff 4%,
+              #fff 42%,
+              #dbeafe 51%,
+              #fff 61%,
               #fff 100%
             );
+          background-size: 220% 100%;
           background-position: 120% center;
-          background-size: 230% 100%;
           -webkit-background-clip: text;
           background-clip: text;
-          filter: drop-shadow(0 20px 28px rgba(0,0,0,.38));
+          -webkit-text-fill-color: transparent;
+          -webkit-text-stroke: 1px rgba(255,255,255,.18);
+          text-shadow:
+            0 1px rgba(255,255,255,.25),
+            0 10px 22px rgba(0,0,0,.28);
+          animation: clean-type-shimmer 8.5s ease-in-out -1.1s infinite;
         }
 
-        .clean-headline span::after,
-        .clean-headline strong::after {
-          content: attr(data-text);
+        .clean-headline strong > b {
+          color: rgba(255,255,255,.025);
+          -webkit-text-fill-color: rgba(255,255,255,.025);
+          -webkit-text-stroke: inherit;
+          text-shadow: inherit;
+        }
+
+        .clean-headline span > b::after,
+        .clean-headline strong > b::after {
+          content: attr(data-letter);
           position: absolute;
           z-index: -1;
           inset: 0;
           color: transparent;
-          -webkit-text-stroke: 1px rgba(147,197,253,.13);
-          transform: translateY(5px);
-          filter: blur(.15px);
-          opacity: .72;
-          transition: transform .5s cubic-bezier(.16,1,.3,1), opacity .35s ease;
+          pointer-events: none;
+          transform: translate3d(0, 7px, -4px);
         }
 
-        .clean-headline span::before,
-        .clean-headline strong::before {
-          content: attr(data-text);
+        .clean-headline span > b::after {
+          -webkit-text-stroke: 1.35px rgba(96,165,250,.32);
+          text-shadow:
+            0 2px 0 rgba(59,130,246,.14),
+            0 7px 13px rgba(0,0,0,.3);
+        }
+
+        .clean-headline strong > b::after {
+          -webkit-text-stroke: 1.2px rgba(96,165,250,.42);
+          transform: translate3d(4px, 7px, -4px);
+          filter: blur(.15px);
+        }
+
+        /* The scan sweep is drawn per letter. A single full-string ghost
+           cannot line up with the individually curved <b> glyphs, and its
+           overhang used to bleed past the left edge of the viewport. */
+        .clean-headline span > b::before,
+        .clean-headline strong > b::before {
+          content: attr(data-letter);
           position: absolute;
           z-index: 2;
           inset: 0;
@@ -459,27 +597,14 @@ const HeroSection = () => {
         }
 
         .clean-headline span {
-          font-size: clamp(88px, 12vw, 198px);
+          font-size: clamp(46px, 9.7vw, 184px);
           letter-spacing: -.045em;
-          -webkit-text-stroke: 1px rgba(255,255,255,.14);
-          text-shadow:
-            0 1px rgba(255,255,255,.25),
-            0 10px 22px rgba(0,0,0,.28);
-          animation:
-            clean-precision-depth 7.2s ease-in-out infinite,
-            clean-type-shimmer 8.5s ease-in-out -1.1s infinite;
-        }
-
-        .clean-headline span::after {
-          -webkit-text-stroke: 1.2px rgba(96,165,250,.2);
-          transform: translateY(8px) scaleX(1.018);
-          filter: blur(.25px);
-          opacity: .8;
+          animation: clean-precision-depth 7.2s ease-in-out infinite;
         }
 
         .clean-headline strong {
-          margin-top: .36em;
-          font-size: clamp(82px, 10.85vw, 180px);
+          margin-top: .12em;
+          font-size: clamp(44px, 9.3vw, 166px);
           font-weight: 760;
           letter-spacing: .035em;
           color: rgba(255,255,255,.025);
@@ -497,14 +622,7 @@ const HeroSection = () => {
           transition: -webkit-text-stroke-color .35s ease, text-shadow .35s ease;
         }
 
-        .clean-headline strong::after {
-          -webkit-text-stroke: 1.4px rgba(96,165,250,.4);
-          transform: translate(5px, 9px) scaleX(.99);
-          filter: blur(.2px);
-          opacity: .95;
-        }
-
-        .clean-headline strong::before {
+        .clean-headline strong > b::before {
           animation-delay: .34s;
         }
 
@@ -512,9 +630,9 @@ const HeroSection = () => {
           position: absolute;
           z-index: 3;
           left: 50%;
-          top: 26.5%;
-          width: min(980px, 69vw);
-          height: 54%;
+          top: max(38%, 352px);
+          width: min(940px, 66vw);
+          height: 52%;
           display: grid;
           place-items: center;
           transform: translateX(-50%);
@@ -710,7 +828,15 @@ const HeroSection = () => {
           z-index: 6;
           left: clamp(24px, 5vw, 78px);
           bottom: 112px;
-          width: 255px;
+          width: 324px;
+          padding: 22px 24px 24px;
+          border: 1px solid rgba(255,255,255,.08);
+          border-top-color: rgba(191,219,254,.2);
+          border-radius: 18px;
+          background: linear-gradient(160deg, rgba(14,20,31,.72), rgba(5,8,14,.62));
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 24px 54px rgba(2,6,14,.5);
+          backdrop-filter: blur(18px) saturate(140%);
+          -webkit-backdrop-filter: blur(18px) saturate(140%);
         }
 
         .clean-intro > span,
@@ -718,15 +844,18 @@ const HeroSection = () => {
           color: #7fb4ff;
           font-size: 8px;
           font-weight: 800;
-          letter-spacing: .18em;
+          letter-spacing: .14em;
           text-transform: uppercase;
         }
 
+        .clean-intro > span { display: block; white-space: nowrap; font-size: 9px; }
+        .clean-intro a { white-space: nowrap; }
+
         .clean-intro p {
           margin: 13px 0 18px;
-          color: rgba(255,255,255,.56);
-          font-size: 13px;
-          line-height: 1.7;
+          color: rgba(255,255,255,.74);
+          font-size: 13.5px;
+          line-height: 1.62;
         }
 
         .clean-intro a,
@@ -735,8 +864,8 @@ const HeroSection = () => {
           align-items: center;
           gap: 8px;
           color: #fff;
-          font-size: 9px;
-          font-weight: 800;
+          font-size: 10px;
+          font-weight: 750;
           letter-spacing: .12em;
           text-transform: uppercase;
           transition: color .2s ease, gap .2s ease;
@@ -753,15 +882,16 @@ const HeroSection = () => {
           z-index: 7;
           right: clamp(24px, 5vw, 78px);
           bottom: 104px;
-          width: min(330px, 27vw);
-          padding: 15px;
-          border: 1px solid rgba(147,197,253,.17);
-          border-top-color: rgba(191,219,254,.35);
-          border-radius: 20px;
-          background: linear-gradient(145deg, rgba(14,27,45,.94), rgba(4,10,18,.95));
-          box-shadow: 0 28px 64px rgba(0,0,0,.38), inset 0 1px rgba(255,255,255,.055);
-          backdrop-filter: blur(20px);
-          transition: transform .3s cubic-bezier(.16,1,.3,1), border-color .3s ease, box-shadow .3s ease;
+          width: min(372px, 30vw);
+          padding: 22px 22px 20px;
+          border: 1px solid rgba(255,255,255,.09);
+          border-top-color: rgba(191,219,254,.22);
+          border-radius: 22px;
+          background: linear-gradient(160deg, rgba(16,24,38,.9), rgba(6,10,18,.94));
+          box-shadow: 0 32px 76px -18px rgba(2,6,14,.75), inset 0 1px 0 rgba(255,255,255,.08);
+          backdrop-filter: blur(22px) saturate(150%);
+          -webkit-backdrop-filter: blur(22px) saturate(150%);
+          transition: transform .35s cubic-bezier(.16,1,.3,1), border-color .35s ease, box-shadow .35s ease;
         }
 
         .clean-system-card:hover {
@@ -777,10 +907,10 @@ const HeroSection = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          color: rgba(255,255,255,.4);
-          font-size: 8px;
-          font-weight: 800;
-          letter-spacing: .16em;
+          color: rgba(255,255,255,.42);
+          font-size: 9px;
+          font-weight: 700;
+          letter-spacing: .2em;
           text-transform: uppercase;
         }
 
@@ -813,9 +943,10 @@ const HeroSection = () => {
         }
 
         .clean-system-card__progress {
-          height: 1px;
-          margin: 12px 0 15px;
+          height: 2px;
+          margin: 15px 0 18px;
           overflow: hidden;
+          border-radius: 2px;
           background: rgba(255,255,255,.08);
         }
 
@@ -829,18 +960,19 @@ const HeroSection = () => {
         }
 
         .clean-system-card h2 {
-          margin: 7px 0 8px;
+          margin: 8px 0 10px;
           color: #fff;
-          font-size: clamp(21px, 1.8vw, 27px);
-          line-height: 1.02;
-          letter-spacing: -.04em;
+          font-size: clamp(23px, 2vw, 30px);
+          font-weight: 740;
+          line-height: 1.04;
+          letter-spacing: -.035em;
         }
 
         .clean-system-card > span {
           display: block;
-          color: rgba(255,255,255,.54);
-          font-size: 10px;
-          line-height: 1.55;
+          color: rgba(255,255,255,.62);
+          font-size: 12px;
+          line-height: 1.6;
         }
 
         .clean-schematic {
@@ -1203,51 +1335,41 @@ const HeroSection = () => {
         .clean-system-card__specs {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 5px;
-          margin: 11px 0 13px;
+          gap: 0;
+          margin: 18px 0;
+          padding: 14px 0;
+          border-top: 1px solid rgba(255,255,255,.08);
+          border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
         .clean-system-card__specs > div {
           position: relative;
           min-width: 0;
-          min-height: 50px;
-          padding: 7px;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,.065);
-          border-radius: 9px;
-          background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012));
-          transition: border-color .2s ease, background .2s ease, transform .2s ease;
+          padding: 0 12px;
         }
 
-        .clean-system-card__specs > div:hover {
-          border-color: rgba(96,165,250,.23);
-          background: rgba(59,130,246,.055);
-          transform: translateY(-2px);
+        .clean-system-card__specs > div + div {
+          border-left: 1px solid rgba(255,255,255,.08);
         }
+
+        .clean-system-card__specs > div:first-child { padding-left: 0; }
+        .clean-system-card__specs > div:last-child  { padding-right: 0; }
 
         .clean-system-card__specs b {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          color: #60a5fa;
-          font-size: 7px;
-          letter-spacing: .1em;
-        }
-
-        .clean-system-card__specs b::after {
-          content: '';
-          width: 4px;
-          height: 4px;
-          border-radius: 50%;
-          background: rgba(96,165,250,.68);
-          box-shadow: 0 0 6px rgba(96,165,250,.45);
+          display: block;
+          color: #7fb4ff;
+          font-size: 8.5px;
+          font-weight: 700;
+          letter-spacing: .18em;
+          font-variant-numeric: tabular-nums;
         }
 
         .clean-system-card__specs span {
           display: block;
-          margin-top: 5px;
-          color: rgba(255,255,255,.7);
-          font-size: 8px;
+          margin-top: 6px;
+          color: rgba(255,255,255,.78);
+          font-size: 10.5px;
+          font-weight: 500;
           line-height: 1.35;
         }
 
@@ -1261,18 +1383,20 @@ const HeroSection = () => {
         .clean-system-card__download {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          padding: 7px 9px;
-          color: #bfdbfe;
-          border: 1px solid rgba(96,165,250,.18);
-          border-radius: 8px;
-          background: rgba(37,99,235,.06);
-          font-size: 7px;
-          font-weight: 800;
-          letter-spacing: .08em;
+          gap: 7px;
+          padding: 10px 14px;
+          color: #dbeafe;
+          border: 1px solid rgba(96,165,250,.26);
+          border-radius: 999px;
+          background: rgba(46,144,255,.1);
+          font-size: 8.5px;
+          font-weight: 750;
+          letter-spacing: .1em;
           text-transform: uppercase;
-          transition: color .2s ease, border-color .2s ease, background .2s ease;
+          transition: color .2s ease, border-color .2s ease, background .2s ease, transform .25s cubic-bezier(.16,1,.3,1);
         }
+
+        .clean-system-card__download:hover { transform: translateY(-2px); }
 
         .clean-system-card__download:hover {
           color: #fff;
@@ -1372,29 +1496,13 @@ const HeroSection = () => {
         }
 
         @keyframes clean-precision-depth {
-          0%, 100% {
-            transform: translateZ(-8px) scaleX(1.035) scaleY(.992);
-            filter: drop-shadow(0 16px 24px rgba(0,0,0,.34));
-          }
-          50% {
-            transform: translateZ(12px) scaleX(1.052) scaleY(1.012);
-            filter:
-              drop-shadow(0 24px 34px rgba(0,0,0,.42))
-              drop-shadow(0 0 12px rgba(147,197,253,.08));
-          }
+          0%, 100% { transform: translateZ(-8px) scaleX(1.035) scaleY(.992); }
+          50%      { transform: translateZ(12px) scaleX(1.052) scaleY(1.012); }
         }
 
         @keyframes clean-motion-drift {
-          0%, 100% {
-            transform: translateX(-.65%) translateZ(-3px) scaleX(.97);
-            filter: drop-shadow(0 18px 27px rgba(0,0,0,.36));
-          }
-          50% {
-            transform: translateX(.65%) translateZ(7px) scaleX(.985);
-            filter:
-              drop-shadow(0 22px 31px rgba(0,0,0,.4))
-              drop-shadow(-8px 0 13px rgba(96,165,250,.07));
-          }
+          0%, 100% { transform: translateX(-.65%) translateZ(-3px) scaleX(.97); }
+          50%      { transform: translateX(.65%) translateZ(7px) scaleX(.985); }
         }
 
         @keyframes clean-type-scan {
@@ -1557,6 +1665,17 @@ const HeroSection = () => {
             opacity: .94;
           }
 
+          .clean-hero:hover .clean-headline span > b {
+            transform:
+              translate3d(0, calc(var(--letter-y) - 3px), calc(var(--letter-z) + 13px))
+              rotateZ(var(--letter-r))
+              rotateY(var(--letter-ry));
+            filter:
+              drop-shadow(0 1px 0 rgba(255,255,255,.3))
+              drop-shadow(0 18px 20px rgba(0,0,0,.28))
+              drop-shadow(0 0 8px rgba(147,197,253,.1));
+          }
+
           .clean-hero:hover .clean-headline strong {
             -webkit-text-stroke-color: #fff;
             text-shadow:
@@ -1568,6 +1687,16 @@ const HeroSection = () => {
           .clean-hero:hover .clean-headline strong::after {
             transform: translate(7px, 12px) scaleX(.995);
             opacity: 1;
+          }
+
+          .clean-hero:hover .clean-headline strong > b {
+            transform:
+              translate3d(0, calc(var(--letter-y) + 2px), calc(var(--letter-z) + 9px))
+              rotateZ(var(--letter-r))
+              rotateY(var(--letter-ry));
+            filter:
+              drop-shadow(0 16px 20px rgba(0,0,0,.32))
+              drop-shadow(0 0 10px rgba(96,165,250,.13));
           }
 
           .clean-selector button:not(.is-active):hover {
@@ -1595,8 +1724,10 @@ const HeroSection = () => {
 
         @media (max-width: 1100px) {
           .clean-machine-stage { width: 70vw; }
-          .clean-system-card { width: 320px; }
-          .clean-intro { width: 220px; }
+          .clean-system-card { width: 330px; padding: 18px; }
+          /* Below this the eyebrow clipped inside the panel, so it may wrap. */
+          .clean-intro { width: 274px; }
+          .clean-intro > span { white-space: normal; }
           .clean-selector button { width: 88px; }
         }
 
@@ -1604,6 +1735,15 @@ const HeroSection = () => {
           .clean-hero {
             height: 810px;
             min-height: 810px;
+          }
+
+          .clean-hero__grid,
+          .clean-hero__glow {
+            animation: none;
+          }
+
+          .clean-machine-sweep {
+            display: none;
           }
 
           .clean-hero__top {
@@ -1623,26 +1763,26 @@ const HeroSection = () => {
           }
 
           .clean-headline {
-            top: 17%;
+            top: max(14.5%, 132px);
           }
 
           .clean-headline span,
           .clean-headline strong {
-            font-size: clamp(58px, 14.5vw, 106px);
+            font-size: clamp(42px, 13vw, 100px);
           }
 
           .clean-headline span {
-            font-size: clamp(64px, 16vw, 118px);
+            font-size: clamp(46px, 13.6vw, 108px);
           }
 
           .clean-headline strong {
-            margin-top: .31em;
-            font-size: clamp(57px, 14vw, 103px);
+            margin-top: .1em;
+            font-size: clamp(41px, 12.6vw, 96px);
             letter-spacing: .028em;
           }
 
           .clean-machine-stage {
-            top: 24%;
+            top: 32%;
             width: min(790px, 116vw);
             height: 44%;
           }
@@ -1767,27 +1907,27 @@ const HeroSection = () => {
           }
 
           .clean-headline {
-            top: 15%;
+            top: max(11.5%, 104px);
           }
 
           .clean-headline span,
           .clean-headline strong {
-            font-size: 15vw;
+            font-size: 14vw;
             line-height: .82;
           }
 
           .clean-headline span {
-            font-size: 17vw;
+            font-size: 15vw;
           }
 
           .clean-headline strong {
-            margin-top: .3em;
-            font-size: 14.3vw;
+            margin-top: .1em;
+            font-size: 13.4vw;
             letter-spacing: .024em;
           }
 
           .clean-machine-stage {
-            top: 23%;
+            top: 31%;
             width: 122vw;
             height: 40%;
           }
@@ -1851,15 +1991,15 @@ const HeroSection = () => {
           }
 
           .clean-headline {
-            top: 14.5%;
+            top: 11%;
           }
 
           .clean-headline strong {
-            margin-top: .25em;
+            margin-top: .08em;
           }
 
           .clean-machine-stage {
-            top: 22%;
+            top: 30%;
             width: 120vw;
             height: 36%;
           }
@@ -1946,6 +2086,11 @@ const HeroSection = () => {
 
           .clean-headline strong {
             transform: scaleX(.98);
+          }
+
+          .clean-headline span > b,
+          .clean-headline strong > b {
+            transition: none;
           }
         }
       `}</style>

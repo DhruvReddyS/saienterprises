@@ -73,8 +73,10 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        sans:  ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        // `font-serif` is used for display headings across the sections.
+        serif: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+        mono:  ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       keyframes: {
         "accordion-down": {

@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import { CinematicFooter } from '@/components/ui/motion-footer';
 import PageTransition from '@/components/PageTransition';
 import { productCategories } from '@/data/products';
+import { contactInquirySchema, submitContactInquiry } from '@/lib/contactSubmission';
 
 /* ── inquiry data: categories + their machines ── */
 const INQUIRY_CATS = [
@@ -73,26 +74,29 @@ const IcoChevron = () => (
 
 /* ── floating-label text input ── */
 const FloatField = ({
-  label, type = 'text', value, onChange, required = false,
+  label, name, type = 'text', value, onChange, required = false, autoComplete, maxLength = 120, error,
 }: {
-  label: string; type?: string; value: string; onChange: (v: string) => void; required?: boolean;
+  label: string; name: string; type?: string; value: string; onChange: (v: string) => void;
+  required?: boolean; autoComplete?: string; maxLength?: number; error?: string;
 }) => {
   const [focused, setFocused] = useState(false);
   const active = focused || value.length > 0;
   return (
     <div style={{ position: 'relative', marginBottom: 28 }}>
       <input
-        type={type} value={value} onChange={(e) => onChange(e.target.value)}
+        id={name} name={name} type={type} value={value} onChange={(e) => onChange(e.target.value)}
         required={required} placeholder=" "
+        autoComplete={autoComplete} maxLength={maxLength}
+        aria-invalid={Boolean(error)} aria-describedby={error ? `${name}-error` : undefined}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
         style={{
           width: '100%', background: 'transparent', border: 'none',
-          borderBottom: `1.5px solid ${focused ? '#3B82F6' : 'rgba(6,10,16,0.13)'}`,
+          borderBottom: `1.5px solid ${error ? '#DC2626' : focused ? '#3B82F6' : 'rgba(6,10,16,0.13)'}`,
           padding: '14px 0 9px', fontSize: 15, color: '#060A10',
           fontFamily: "'Manrope', sans-serif", outline: 'none', transition: 'border-color 0.25s',
         }}
       />
-      <label style={{
+      <label htmlFor={name} style={{
         position: 'absolute', top: active ? 0 : 14, left: 0,
         fontFamily: "'Manrope', sans-serif", fontSize: active ? 9 : 13,
         letterSpacing: active ? '0.18em' : '0.04em', textTransform: 'uppercase',
@@ -101,6 +105,7 @@ const FloatField = ({
       }}>
         {label}
       </label>
+      {error && <div id={`${name}-error`} role="alert" style={{ marginTop: 6, color: '#B91C1C', fontSize: 11 }}>{error}</div>}
     </div>
   );
 };
@@ -269,24 +274,24 @@ const MachinePicker = ({
 };
 
 /* ── Message field ── */
-const MessageField = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+const MessageField = ({ value, onChange, error }: { value: string; onChange: (v: string) => void; error?: string }) => {
   const [focused, setFocused] = useState(false);
   const active = focused || value.length > 0;
   return (
     <div style={{ position: 'relative', marginBottom: 40 }}>
       <textarea
-        value={value} onChange={(e) => onChange(e.target.value)}
-        required rows={3}
+        id="message" name="message" value={value} onChange={(e) => onChange(e.target.value)}
+        required rows={3} maxLength={3000} aria-invalid={Boolean(error)} aria-describedby={error ? 'message-error' : undefined}
         style={{
           width: '100%', background: 'transparent', border: 'none',
-          borderBottom: `1.5px solid ${focused ? '#3B82F6' : 'rgba(6,10,16,0.13)'}`,
+          borderBottom: `1.5px solid ${error ? '#DC2626' : focused ? '#3B82F6' : 'rgba(6,10,16,0.13)'}`,
           padding: '22px 0 9px', fontSize: 15, color: '#060A10',
           fontFamily: "'Manrope', sans-serif", outline: 'none', resize: 'none',
           transition: 'border-color 0.25s',
         }}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
       />
-      <label style={{
+      <label htmlFor="message" style={{
         position: 'absolute', top: active ? 0 : 22, left: 0,
         fontFamily: "'Manrope', sans-serif",
         fontSize: active ? 9 : 13, letterSpacing: active ? '0.18em' : '0.04em',
@@ -296,6 +301,7 @@ const MessageField = ({ value, onChange }: { value: string; onChange: (v: string
       }}>
         Your Requirement
       </label>
+      {error && <div id="message-error" role="alert" style={{ marginTop: 6, color: '#B91C1C', fontSize: 11 }}>{error}</div>}
     </div>
   );
 };
@@ -483,8 +489,10 @@ const ContactPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [on, setOn] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
+  const formStartedAt = useRef(Date.now());
 
   useEffect(() => {
     setPageMeta(
@@ -504,6 +512,7 @@ const ContactPage = () => {
       category: catId,
       machine: params.get('machine') ?? '',
       message: params.get('message') ?? '',
+      website: '',
     };
   });
 
@@ -521,43 +530,32 @@ const ContactPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitError('');
+    setFieldErrors({});
 
     const categoryName = INQUIRY_CATS.find((category) => category.id === form.category)?.name || 'Not selected';
-    const endpoint = import.meta.env.VITE_CONTACT_FORM_ENDPOINT
-      || 'https://formsubmit.co/ajax/venkat@saienterprises.info';
+    const validated = contactInquirySchema.safeParse({ ...form, category: categoryName });
+    if (!validated.success) {
+      const nextErrors: Record<string, string> = {};
+      validated.error.issues.forEach((issue) => {
+        const field = String(issue.path[0] ?? 'form');
+        if (!nextErrors[field]) nextErrors[field] = issue.message;
+      });
+      setFieldErrors(nextErrors);
+      setSubmitError('Please check the highlighted fields and try again.');
+      return;
+    }
+
+    setIsSubmitting(true);
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 12000);
 
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        signal: controller.signal,
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          _replyto: form.email,
-          _cc: 'msrao@saienterprises.info',
-          company: form.company || 'Not provided',
-          phone: form.phone || 'Not provided',
-          category: categoryName,
-          machine: form.machine || 'Not selected',
-          message: form.message || 'No additional message',
-          _subject: `New website inquiry from ${form.name}`,
-          _template: 'table',
-          _captcha: 'false',
-        }),
-      });
-
-      if (!response.ok) throw new Error(`Submission failed (${response.status})`);
-
-      const result = await response.json().catch(() => null);
-      if (result && result.success === false) throw new Error(result.message || 'Email provider rejected the inquiry');
+      await submitContactInquiry(validated.data, { startedAt: formStartedAt.current, signal: controller.signal });
 
       setSubmitted(true);
-      setForm({ name: '', email: '', company: '', phone: '', category: '', machine: '', message: '' });
+      setForm({ name: '', email: '', company: '', phone: '', category: '', machine: '', message: '', website: '' });
+      formStartedAt.current = Date.now();
     } catch (error) {
       console.error('Contact form submission failed:', error);
       setSubmitError('We could not send your inquiry. Please try again, or email venkat@saienterprises.info directly.');
@@ -568,7 +566,6 @@ const ContactPage = () => {
   };
 
   /* if arriving from a machine page, scroll form into view */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (params.get('machine') && formRef.current) {
       setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
@@ -708,16 +705,20 @@ const ContactPage = () => {
             {/* FORM */}
             <AnimatePresence mode="wait">
               {submitted ? (
-                <SuccessState key="success" onReset={() => setSubmitted(false)} />
+                <SuccessState key="success" onReset={() => { setSubmitted(false); formStartedAt.current = Date.now(); }} />
               ) : (
-                <motion.form key="form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.6, delay: 0.5 }} onSubmit={handleSubmit}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }} className="max-sm:!grid-cols-1">
-                    <FloatField label="Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
-                    <FloatField label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
+                <motion.form key="form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.6, delay: 0.5 }} onSubmit={handleSubmit} noValidate>
+                  <div aria-hidden="true" style={{ position: 'absolute', left: -10000, width: 1, height: 1, overflow: 'hidden' }}>
+                    <label htmlFor="website">Website</label>
+                    <input id="website" name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }} className="max-sm:!grid-cols-1">
-                    <FloatField label="Company" value={form.company} onChange={(v) => setForm({ ...form, company: v })} />
-                    <FloatField label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }} className="max-sm:!grid-cols-1 max-sm:!gap-0">
+                    <FloatField label="Name" name="name" autoComplete="name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required error={fieldErrors.name} />
+                    <FloatField label="Email" name="email" type="email" autoComplete="email" maxLength={254} value={form.email} onChange={(v) => setForm({ ...form, email: v })} required error={fieldErrors.email} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }} className="max-sm:!grid-cols-1 max-sm:!gap-0">
+                    <FloatField label="Company" name="company" autoComplete="organization" value={form.company} onChange={(v) => setForm({ ...form, company: v })} error={fieldErrors.company} />
+                    <FloatField label="Phone" name="phone" type="tel" autoComplete="tel" maxLength={30} value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} error={fieldErrors.phone} />
                   </div>
 
                   {/* Smart category picker */}
@@ -730,7 +731,7 @@ const ContactPage = () => {
                     onChange={(v) => setForm({ ...form, machine: v })}
                   />
 
-                  <MessageField value={form.message} onChange={(v) => setForm({ ...form, message: v })} />
+                  <MessageField value={form.message} onChange={(v) => setForm({ ...form, message: v })} error={fieldErrors.message} />
                   {submitError && (
                     <div role="alert" style={{
                       marginBottom: 18, padding: '12px 14px', color: '#B91C1C',

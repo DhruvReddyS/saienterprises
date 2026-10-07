@@ -1,13 +1,13 @@
 # Machine catalogue workflow
 
-`Catalogue Machine Details/` is the source-of-truth folder for original supplier files. The website serves lightweight copies from `public/catalogues/`; they are never imported into the JavaScript bundle and are transferred only when a visitor chooses View PDF or Download.
+`Catalogue Machine Details/` is the source-of-truth folder for original supplier files. The website serves sanitized copies from `public/catalogues/`; they are never imported into the JavaScript bundle and are transferred only when a visitor chooses View PDF or Download. The sync task removes the repeated Sai Enterprises letterhead from published PDFs while preserving the originals.
 
 To add or replace a catalogue:
 
 1. Put the final PDF in `Catalogue Machine Details/`.
 2. Add or update the machine ID and filename in `src/data/catalogueDocuments.ts`.
 3. Add a concise, verified `summary`, `highlights`, and `specifications` when the PDF contains useful technical information.
-4. Run `npm run sync:catalogues`.
+4. Run `npm run sync:catalogues`. This republishes every PDF and removes the repeated header from each letterheaded page.
 5. Run `npm run build` and open that machine from the machinery catalogue.
 
 Keep filenames stable after publishing so existing links do not break. DOC and DOCX working files can remain in the source folder, but only final PDFs are copied to the public website.

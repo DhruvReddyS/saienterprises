@@ -5,7 +5,6 @@ import {
   useLayoutEffect,
   useRef,
 } from 'react';
-import Lenis from 'lenis';
 import './ScrollStack.css';
 
 type ScrollStackItemProps = {
@@ -56,9 +55,9 @@ const ScrollStack = ({
   onStackComplete,
 }: ScrollStackProps) => {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const cardOffsetsRef = useRef<number[]>([]);
+  const endOffsetRef = useRef(0);
   const stackCompletedRef = useRef(false);
-  const animationFrameRef = useRef<number>();
-  const lenisRef = useRef<Lenis>();
   const cardsRef = useRef<HTMLElement[]>([]);
   const lastTransformsRef = useRef(new Map<number, CardTransform>());
   const isUpdatingRef = useRef(false);
@@ -97,6 +96,16 @@ const ScrollStack = ({
     [useWindowScroll],
   );
 
+  /* Card offsets only change on layout, never on scroll. Reading them inside
+     the scroll loop interleaved a forced reflow with every transform write
+     (read-write-read-write), which is what made this section stutter.
+     They are measured once here and refreshed on resize / image load. */
+  const measureOffsets = useCallback(() => {
+    cardOffsetsRef.current = cardsRef.current.map((card) => getElementOffset(card));
+    const endElement = scrollerRef.current?.querySelector<HTMLElement>('.scroll-stack-end');
+    endOffsetRef.current = endElement ? getElementOffset(endElement) : 0;
+  }, [getElementOffset]);
+
   const updateCardTransforms = useCallback(() => {
     if (!cardsRef.current.length || isUpdatingRef.current) return;
     isUpdatingRef.current = true;
@@ -104,19 +113,18 @@ const ScrollStack = ({
     const { scrollTop, containerHeight } = getScrollData();
     const stackPositionPx = parsePercentage(stackPosition, containerHeight);
     const scaleEndPositionPx = parsePercentage(scaleEndPosition, containerHeight);
-    const endElement = scrollerRef.current?.querySelector<HTMLElement>('.scroll-stack-end');
-    const endElementTop = endElement ? getElementOffset(endElement) : 0;
+    const endElementTop = endOffsetRef.current;
 
     let topCardIndex = 0;
     if (blurAmount) {
-      cardsRef.current.forEach((card, index) => {
-        const trigger = getElementOffset(card) - stackPositionPx - itemStackDistance * index;
+      cardsRef.current.forEach((_card, index) => {
+        const trigger = (cardOffsetsRef.current[index] ?? 0) - stackPositionPx - itemStackDistance * index;
         if (scrollTop >= trigger) topCardIndex = index;
       });
     }
 
     cardsRef.current.forEach((card, index) => {
-      const cardTop = getElementOffset(card);
+      const cardTop = cardOffsetsRef.current[index] ?? 0;
       const triggerStart = cardTop - stackPositionPx - itemStackDistance * index;
       const triggerEnd = cardTop - scaleEndPositionPx;
       const pinEnd = endElementTop - containerHeight / 2;
@@ -169,7 +177,6 @@ const ScrollStack = ({
     baseScale,
     blurAmount,
     calculateProgress,
-    getElementOffset,
     getScrollData,
     itemScale,
     itemStackDistance,
@@ -195,31 +202,55 @@ const ScrollStack = ({
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reducedMotion) return;
 
-    const lenis = useWindowScroll
-      ? new Lenis({ duration: 1.15, smoothWheel: true, touchMultiplier: 1.5, lerp: 0.1 })
-      : new Lenis({
-          wrapper: scroller,
-          content: scroller.querySelector<HTMLElement>('.scroll-stack-inner') ?? undefined,
-          duration: 1.15,
-          smoothWheel: true,
-          touchMultiplier: 1.5,
-          lerp: 0.1,
+    if (useWindowScroll) {
+      let scrollFrame = 0;
+      const scheduleUpdate = () => {
+        if (window.matchMedia('(max-width: 767px)').matches || scrollFrame) return;
+        scrollFrame = window.requestAnimationFrame(() => {
+          scrollFrame = 0;
+          updateCardTransforms();
         });
+      };
 
-    lenis.on('scroll', updateCardTransforms);
-    lenisRef.current = lenis;
+      const remeasure = () => { measureOffsets(); updateCardTransforms(); };
+      remeasure();
+      window.addEventListener('scroll', scheduleUpdate, { passive: true });
+      window.addEventListener('resize', remeasure);
+      window.addEventListener('load', remeasure);
+      const ro = new ResizeObserver(remeasure);
+      ro.observe(scroller);
 
-    const raf = (time: number) => {
-      lenis.raf(time);
-      animationFrameRef.current = requestAnimationFrame(raf);
+      return () => {
+        if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+        ro.disconnect();
+        window.removeEventListener('scroll', scheduleUpdate);
+        window.removeEventListener('resize', remeasure);
+        window.removeEventListener('load', remeasure);
+        stackCompletedRef.current = false;
+        cardsRef.current = [];
+        transformsCache.clear();
+        isUpdatingRef.current = false;
+      };
+    }
+
+    let scrollFrame = 0;
+    const scheduleUpdate = () => {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(() => {
+        scrollFrame = 0;
+        updateCardTransforms();
+      });
     };
-    animationFrameRef.current = requestAnimationFrame(raf);
-    updateCardTransforms();
+
+    const remeasureLocal = () => { measureOffsets(); updateCardTransforms(); };
+    remeasureLocal();
+    scroller.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', remeasureLocal);
 
     return () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-      lenis.destroy();
-      lenisRef.current = undefined;
+      if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+      scroller.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', remeasureLocal);
       stackCompletedRef.current = false;
       cardsRef.current = [];
       transformsCache.clear();
@@ -227,6 +258,7 @@ const ScrollStack = ({
     };
   }, [
     itemDistance,
+    measureOffsets,
     scaleDuration,
     updateCardTransforms,
     useWindowScroll,

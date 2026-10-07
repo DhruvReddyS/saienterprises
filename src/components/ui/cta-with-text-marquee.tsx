@@ -57,8 +57,12 @@ export default function CTAWithVerticalMarquee() {
 
   useEffect(() => {
     const container = marqueeRef.current;
-    if (!container) return;
+    if (!container || !revealed || !window.matchMedia('(min-width: 1024px)').matches) return;
+
+    let frame = 0;
+    let running = true;
     const tick = () => {
+      if (!running) return;
       const items = container.querySelectorAll(".marquee-item");
       const rect = container.getBoundingClientRect();
       const cy = rect.top + rect.height / 2;
@@ -68,11 +72,14 @@ export default function CTAWithVerticalMarquee() {
         const opacity = Math.max(0.08, 1 - (d / (rect.height / 2)) * 0.88);
         (item as HTMLElement).style.opacity = String(opacity);
       });
-      requestAnimationFrame(tick);
+      frame = requestAnimationFrame(tick);
     };
-    const id = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(id);
-  }, []);
+    frame = requestAnimationFrame(tick);
+    return () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+  }, [revealed]);
 
   return (
     <section
@@ -122,38 +129,66 @@ export default function CTAWithVerticalMarquee() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 36 }}>
               <img src={saiLogo} alt="Sai Enterprises" loading="lazy" decoding="async" style={{ height: 28, objectFit: 'contain' }} />
               <div style={{ width: 1, height: 22, background: 'rgba(13,20,33,0.12)' }} />
-              <span style={{
-                fontFamily: "'Manrope', sans-serif",
-                fontSize: 9, letterSpacing: '0.32em', textTransform: 'uppercase',
-                color: '#2563EB', fontWeight: 800,
+              <span className="font-mono" style={{
+                fontSize: 9.5, letterSpacing: '0.24em', textTransform: 'uppercase',
+                color: '#1565E0', fontWeight: 700,
               }}>
                 Machinery Guidance
               </span>
             </div>
 
             <h2 style={{
-              fontFamily: "'Manrope', sans-serif",
-              fontSize: 'clamp(42px, 5vw, 72px)',
+              fontSize: 'clamp(38px, 4.6vw, 66px)',
               fontWeight: 700,
-              lineHeight: 0.98,
-              color: '#060A10',
-              margin: '0 0 28px',
-              letterSpacing: '-0.025em',
+              lineHeight: 0.96,
+              color: '#070C16',
+              margin: '0 0 26px',
+              letterSpacing: '-0.035em',
             }}>
               Get the machine<br />
-              <span style={{ color: '#2563EB', fontStyle: 'italic', fontWeight: 400 }}>without the guesswork.</span>
+              <span style={{
+                background: 'linear-gradient(100deg, #1565E0, #0EA5E9)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>without the guesswork.</span>
             </h2>
 
             <p style={{
-              fontFamily: "'Manrope', sans-serif",
-              fontSize: 15,
-              lineHeight: 1.85,
-              color: 'rgba(13,20,33,0.56)',
-              maxWidth: 440,
-              marginBottom: 38,
+              fontSize: 15.5,
+              lineHeight: 1.75,
+              color: 'rgba(13,20,33,0.62)',
+              maxWidth: 450,
+              marginBottom: 30,
             }}>
-              Tell us your output, floor space, and budget, we'll help you get the right machine on your print floor, faster.
+              Tell us your output, floor space and budget. We'll point you at the
+              right machine for your print floor — and say so if you don't need one.
             </p>
+
+            {/* What the next step actually involves, so the CTA is not a leap. */}
+            <ul style={{
+              listStyle: 'none', margin: '0 0 34px', padding: 0,
+              display: 'flex', flexDirection: 'column', gap: 10,
+            }}>
+              {[
+                'Match output and budget',
+                'Plan the floor layout',
+                'Installation and operator training',
+              ].map((step, i) => (
+                <li key={step} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span className="font-mono" style={{
+                    fontSize: 9.5, fontWeight: 700, letterSpacing: '0.14em',
+                    color: '#1565E0', minWidth: 20,
+                  }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span style={{ width: 18, height: 1, background: 'rgba(13,20,33,0.16)' }} />
+                  <span style={{ fontSize: 13.5, color: 'rgba(13,20,33,0.74)', fontWeight: 500 }}>
+                    {step}
+                  </span>
+                </li>
+              ))}
+            </ul>
 
             {/* CTA buttons */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
@@ -164,8 +199,8 @@ export default function CTAWithVerticalMarquee() {
                   padding: '15px 30px',
                   background: '#060A10',
                   color: '#FFFFFF',
-                  fontFamily: "'Manrope', sans-serif",
-                  fontSize: 10, fontWeight: 800, letterSpacing: '0.20em', textTransform: 'uppercase',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
                   textDecoration: 'none',
                   transition: 'all 0.3s cubic-bezier(0.16,1,0.3,1)',
                   borderRadius: 999,
@@ -196,8 +231,8 @@ export default function CTAWithVerticalMarquee() {
                   padding: '15px 28px',
                   background: 'transparent',
                   color: '#060A10',
-                  fontFamily: "'Manrope', sans-serif",
-                  fontSize: 10, fontWeight: 800, letterSpacing: '0.20em', textTransform: 'uppercase',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase',
                   textDecoration: 'none',
                   border: '1.5px solid rgba(13,20,33,0.15)',
                   transition: 'all 0.25s cubic-bezier(0.16,1,0.3,1)',
